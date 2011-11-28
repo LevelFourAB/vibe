@@ -88,7 +88,24 @@ public class LoggingBackend
 		@Override
 		public void eventRegistered(Events events, Object event)
 		{
-			logger.info("{}: {}", path, event);
+			switch(events.getDefaultSeverity())
+			{
+				case DEBUG:
+					logger.debug("{}: {}", path, event);
+					break;
+				case INFO:
+					logger.info("{}: {}", path, event);
+					break;
+				case WARN:
+					logger.warn("{}: {}", path, event);
+					break;
+				case ERROR:
+					logger.error("{}: {}", path, event);
+					break;
+				case CRITICAL:
+					logger.error("CRITICAL: {}: {}", path, event);
+					break;
+			}
 		}
 	}
 }

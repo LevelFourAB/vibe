@@ -18,6 +18,13 @@ public interface Events<T>
 	void register(T event);
 	
 	/**
+	 * Get the default severity for this object.
+	 * 
+	 * @return
+	 */
+	EventSeverity getDefaultSeverity();
+	
+	/**
 	 * Add a listener that will receive events.
 	 * 
 	 * @param listener

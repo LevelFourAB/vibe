@@ -4,6 +4,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import se.l4.vibe.event.EventListener;
+import se.l4.vibe.event.EventSeverity;
 import se.l4.vibe.event.Events;
 
 /**
@@ -18,11 +19,15 @@ public class EventsImpl<T>
 {
 	private static final EventListener[] EMPTY = new EventListener[0];
 	
+	private final EventSeverity severity;
+	
 	private final Lock listenerLock;
 	protected volatile EventListener<T>[] listeners;
 	
-	public EventsImpl()
+	public EventsImpl(EventSeverity severity)
 	{
+		this.severity = severity;
+		
 		listenerLock = new ReentrantLock();
 		listeners = EMPTY;
 	}
@@ -34,6 +39,12 @@ public class EventsImpl<T>
 		{
 			listener.eventRegistered(this, event);
 		}
+	}
+	
+	@Override
+	public EventSeverity getDefaultSeverity()
+	{
+		return severity;
 	}
 	
 	@Override

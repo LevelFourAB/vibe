@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import se.l4.vibe.Vibe;
 import se.l4.vibe.backend.VibeBackend;
+import se.l4.vibe.event.EventSeverity;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.SampledProbe;
@@ -201,12 +202,27 @@ public class DefaultVibe
 		extends AbstractBuilder<EventsBuilder<T>>
 		implements EventsBuilder<T>
 	{
+		private EventSeverity severity;
+
+		public EventsBuilderImpl()
+		{
+			severity = EventSeverity.INFO;
+		}
+		
+		@Override
+		public EventsBuilder<T> setSeverity(EventSeverity severity)
+		{
+			this.severity = severity;
+			
+			return this;
+		}
+		
 		@Override
 		public Events<T> create()
 		{
 			verify();
 			
-			EventsImpl<T> events = new EventsImpl<T>();
+			EventsImpl<T> events = new EventsImpl<T>(severity);
 			backend.export(path, events);
 			
 			return events;
