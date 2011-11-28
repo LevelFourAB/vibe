@@ -1,13 +1,12 @@
 package se.l4.vibe.probes;
 
 import java.util.Iterator;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
 
 /**
  * Sampler that will sample certain {@link SampledProbe}s at a given time
@@ -28,10 +27,12 @@ public class TimeSeriesSampler
 	private final Lock seriesLock;
 	protected volatile TimeSeriesImpl[] series;
 	
-	private ScheduledExecutorService executor;
+	private final ScheduledExecutorService executor;
 
-	public TimeSeriesSampler(long sampleInterval, long retention, TimeUnit unit)
+	public TimeSeriesSampler(ScheduledExecutorService executor, long sampleInterval, long retention, TimeUnit unit)
 	{
+		this.executor = executor;
+		
 		this.sampleInterval = unit.toMillis(sampleInterval);
 		maxSamples = (int) (unit.toMillis(retention) / this.sampleInterval);
 		
@@ -75,19 +76,8 @@ public class TimeSeriesSampler
 	 * 
 	 * @return
 	 */
-	public TimeSeriesSampler start()
+	public void start()
 	{
-		executor = Executors.newScheduledThreadPool(1, new ThreadFactory()
-		{
-			@Override
-			public Thread newThread(Runnable r)
-			{
-				Thread t = new Thread(r, "time-sampler");
-				t.setDaemon(true);
-				return t;
-			}
-		});
-		
 		Runnable r = new Runnable()
 		{
 			@Override
@@ -100,13 +90,6 @@ public class TimeSeriesSampler
 		long now = System.currentTimeMillis();
 		long rounded = (now / sampleInterval) * sampleInterval + sampleInterval;
 		executor.scheduleAtFixedRate(r, rounded - now, sampleInterval, TimeUnit.MILLISECONDS);
-		
-		return this;
-	}
-	
-	public void stop()
-	{
-		executor.shutdown();
 	}
 	
 	protected void sample()

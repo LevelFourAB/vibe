@@ -2,6 +2,9 @@ package se.l4.vibe.internal;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import se.l4.vibe.Vibe;
@@ -27,6 +30,7 @@ public class DefaultVibe
 	private final long defaultSampleRetention;
 	
 	private final Map<SampleTime, TimeSeriesSampler> samplers;
+	private final ScheduledExecutorService executor;
 
 	/**
 	 * Create a new instance.
@@ -45,6 +49,17 @@ public class DefaultVibe
 		this.defaultSampleRetention = sampleRetention;
 		
 		samplers = new HashMap<SampleTime, TimeSeriesSampler>();
+		
+		executor = Executors.newScheduledThreadPool(1, new ThreadFactory()
+		{
+			@Override
+			public Thread newThread(Runnable r)
+			{
+				Thread t = new Thread(r, "vibe");
+				t.setDaemon(true);
+				return t;
+			}
+		});
 	}
 
 	@Override
@@ -143,7 +158,7 @@ public class DefaultVibe
 			TimeSeriesSampler sampler = samplers.get(time);
 			if(sampler == null)
 			{
-				sampler = new TimeSeriesSampler(sampleInterval, sampleRetention, TimeUnit.MILLISECONDS);
+				sampler = new TimeSeriesSampler(executor, sampleInterval, sampleRetention, TimeUnit.MILLISECONDS);
 				samplers.put(time, sampler);
 				sampler.start();
 			}
