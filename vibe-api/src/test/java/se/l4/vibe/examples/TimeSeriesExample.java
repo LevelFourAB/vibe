@@ -3,8 +3,8 @@ package se.l4.vibe.examples;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import se.l4.vibe.DefaultVibe;
 import se.l4.vibe.Vibe;
-import se.l4.vibe.VibeBuilder;
 import se.l4.vibe.probes.RuntimeProbes;
 
 /**
@@ -18,8 +18,8 @@ public class TimeSeriesExample
 	public static void main(String[] args)
 		throws IOException
 	{
-		Vibe vibe = new VibeBuilder()
-			.setSamplingInterval(4, TimeUnit.SECONDS)
+		Vibe vibe = DefaultVibe.builder()
+			.setSampleInterval(5, TimeUnit.SECONDS)
 			.build();
 		
 		vibe.timeSeries(RuntimeProbes.getCpuUsage())

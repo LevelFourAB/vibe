@@ -1,4 +1,4 @@
-package se.l4.vibe.internal;
+package se.l4.vibe;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,10 +7,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
-import se.l4.vibe.Vibe;
 import se.l4.vibe.backend.VibeBackend;
 import se.l4.vibe.event.EventSeverity;
 import se.l4.vibe.event.Events;
+import se.l4.vibe.internal.EventsImpl;
+import se.l4.vibe.internal.SampleTime;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.probes.TimeSeries;
@@ -60,6 +61,16 @@ public class DefaultVibe
 				return t;
 			}
 		});
+	}
+	
+	/**
+	 * Start building a new {@link Vibe}.
+	 * 
+	 * @return
+	 */
+	public static VibeBuilder builder()
+	{
+		return new DefaultVibeBuilder();
 	}
 
 	@Override
