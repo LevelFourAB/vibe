@@ -19,6 +19,14 @@ public interface VibeBuilder
 	 * @return
 	 */
 	VibeBuilder setBackend(VibeBackend backend);
+	
+	/**
+	 * Set that several backends should be used.
+	 * 
+	 * @param backends
+	 * @return
+	 */
+	VibeBuilder setBackends(VibeBackend... backends);
 
 	/**
 	 * Set at which interval samples should be taken by default.

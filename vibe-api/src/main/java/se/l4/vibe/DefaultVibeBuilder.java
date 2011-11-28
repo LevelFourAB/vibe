@@ -3,6 +3,7 @@ package se.l4.vibe;
 import java.util.concurrent.TimeUnit;
 
 import se.l4.vibe.backend.LoggingBackend;
+import se.l4.vibe.backend.MergedBackend;
 import se.l4.vibe.backend.VibeBackend;
 
 /**
@@ -30,6 +31,12 @@ public class DefaultVibeBuilder
 	{
 		this.backend = backend;
 		return this;
+	}
+	
+	@Override
+	public VibeBuilder setBackends(VibeBackend... backends)
+	{
+		return setBackend(new MergedBackend(backends));
 	}
 	
 	@Override

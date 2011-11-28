@@ -5,6 +5,8 @@ import java.util.concurrent.TimeUnit;
 
 import se.l4.vibe.DefaultVibe;
 import se.l4.vibe.Vibe;
+import se.l4.vibe.backend.JmxBackend;
+import se.l4.vibe.backend.LoggingBackend;
 import se.l4.vibe.probes.RuntimeProbes;
 
 /**
@@ -19,6 +21,7 @@ public class TimeSeriesExample
 		throws IOException
 	{
 		Vibe vibe = DefaultVibe.builder()
+			.setBackends(new LoggingBackend(), new JmxBackend())
 			.setSampleInterval(5, TimeUnit.SECONDS)
 			.build();
 		
