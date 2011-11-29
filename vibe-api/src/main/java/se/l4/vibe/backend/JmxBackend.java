@@ -54,6 +54,12 @@ public class JmxBackend
 		this.server = server;
 	}
 	
+	/**
+	 * Translate a path into a JMX location.
+	 * 
+	 * @param path
+	 * @return
+	 */
 	private String toJmxLocation(String path)
 	{
 		StringBuilder builder = new StringBuilder(path.length());
@@ -88,7 +94,7 @@ public class JmxBackend
 			}
 			else if(i == lastSeparator)
 			{
-				builder.append(":type=");
+				builder.append(":name=");
 			}
 			else
 			{
