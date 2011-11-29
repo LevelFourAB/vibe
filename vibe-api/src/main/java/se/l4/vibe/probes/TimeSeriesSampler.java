@@ -153,9 +153,15 @@ public class TimeSeriesSampler
 			add(data, value);
 			
 			SampleListener<T>[] listeners = this.listeners;
-			for(SampleListener<T> listener : listeners)
+			if(listeners.length > 0)
 			{
-				listener.sampleAcquired(probe, value);
+				SampleInfo sample = samples.getLast();
+				SampleEntry<T> entry = new SampleEntry<T>(sample.time, value);
+				
+				for(SampleListener<T> listener : listeners)
+				{
+					listener.sampleAcquired(probe, entry);
+				}
 			}
 		}
 		

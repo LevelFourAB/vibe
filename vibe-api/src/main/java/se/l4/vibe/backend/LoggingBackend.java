@@ -67,9 +67,9 @@ public class LoggingBackend
 		}
 		
 		@Override
-		public void sampleAcquired(SampledProbe probe, Object value)
+		public void sampleAcquired(SampledProbe probe, TimeSeries.Entry entry)
 		{
-			logger.info("{}: {}", path, value);
+			logger.info("{}: {}", path, entry.getValue());
 		}
 	}
 	

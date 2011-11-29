@@ -15,5 +15,5 @@ public interface SampleListener<T>
 	 * @param probe
 	 * @param value
 	 */
-	void sampleAcquired(SampledProbe<T> probe, T value);
+	void sampleAcquired(SampledProbe<T> probe, TimeSeries.Entry<T> value);
 }
