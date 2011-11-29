@@ -11,31 +11,20 @@
 		<relativePath>..</relativePath>
 	</parent>
 	
-	<artifactId>vibe-api</artifactId>
+	<artifactId>vibe-sigar</artifactId>
 	<name>${project.artifactId}</name>
 	
 	<dependencies>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>vibe-api</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit-dep</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>  
-			<scope>test</scope>
+			<groupId>org.fusesource</groupId>
+			<artifactId>sigar</artifactId>
+			<version>1.6.4</version>
 		</dependency>
 	</dependencies>
 </project>

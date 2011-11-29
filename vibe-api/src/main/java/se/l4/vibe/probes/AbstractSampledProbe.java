@@ -12,7 +12,7 @@ package se.l4.vibe.probes;
 public abstract class AbstractSampledProbe<T>
 	implements SampledProbe<T>
 {
-	private T value;
+	protected T value;
 	
 	public AbstractSampledProbe()
 	{

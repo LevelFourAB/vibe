@@ -23,6 +23,7 @@
 
 	<modules>
 		<module>vibe-api</module>
+		<module>vibe-sigar</module>
 	</modules>
 	
 	<dependencyManagement>
