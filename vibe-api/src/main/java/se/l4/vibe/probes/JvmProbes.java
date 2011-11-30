@@ -33,8 +33,8 @@ public class JvmProbes
 		
 		return new AbstractSampledProbe<Double>()
 		{
-			private long lastUptime;
-			private long lastCpu;
+			private long lastUptime = runtime.getUptime();
+			private long lastCpu = os.getProcessCpuTime();
 			
 			@Override
 			public Double peek()
