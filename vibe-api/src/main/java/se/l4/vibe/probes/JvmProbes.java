@@ -11,9 +11,9 @@ import java.lang.management.RuntimeMXBean;
  * @author Andreas Holstenson
  *
  */
-public class RuntimeProbes
+public class JvmProbes
 {
-	private RuntimeProbes()
+	private JvmProbes()
 	{
 	}
 	

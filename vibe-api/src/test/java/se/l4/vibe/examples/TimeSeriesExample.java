@@ -8,7 +8,7 @@ import se.l4.vibe.Vibe;
 import se.l4.vibe.backend.JmxBackend;
 import se.l4.vibe.backend.LoggingBackend;
 import se.l4.vibe.event.EventSeverity;
-import se.l4.vibe.probes.RuntimeProbes;
+import se.l4.vibe.probes.JvmProbes;
 import se.l4.vibe.trigger.Conditions;
 import se.l4.vibe.trigger.Triggers;
 
@@ -28,7 +28,7 @@ public class TimeSeriesExample
 			.setSampleInterval(5, TimeUnit.SECONDS)
 			.build();
 		
-		vibe.timeSeries(RuntimeProbes.getCpuUsage())
+		vibe.timeSeries(JvmProbes.getCpuUsage())
 			.at("sys/cpu")
 			.trigger(EventSeverity.CRITICAL, Triggers.average(10, TimeUnit.SECONDS), Conditions.below(0.8))
 			.export();
