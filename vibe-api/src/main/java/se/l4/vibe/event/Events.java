@@ -18,6 +18,14 @@ public interface Events<T>
 	void register(T event);
 	
 	/**
+	 * Register a new event with the specified severity.
+	 * 
+	 * @param severity
+	 * @param event
+	 */
+	void register(EventSeverity severity, T event);
+	
+	/**
 	 * Get the default severity for this object.
 	 * 
 	 * @return

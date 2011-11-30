@@ -37,7 +37,16 @@ public class EventsImpl<T>
 		EventListener<T>[] listeners = this.listeners;
 		for(EventListener<T> listener : listeners)
 		{
-			listener.eventRegistered(this, event);
+			listener.eventRegistered(this, severity, event);
+		}
+	}
+	
+	public void register(EventSeverity severity, T event)
+	{
+		EventListener<T>[] listeners = this.listeners;
+		for(EventListener<T> listener : listeners)
+		{
+			listener.eventRegistered(this, severity, event);
 		}
 	}
 	

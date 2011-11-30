@@ -15,5 +15,5 @@ public interface EventListener<T>
 	 * @param events
 	 * @param event
 	 */
-	void eventRegistered(Events<T> events, T event);
+	void eventRegistered(Events<T> events, EventSeverity severity, T event);
 }

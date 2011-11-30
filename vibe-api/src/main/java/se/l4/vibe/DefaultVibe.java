@@ -1,6 +1,8 @@
 package se.l4.vibe;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -13,9 +15,14 @@ import se.l4.vibe.event.Events;
 import se.l4.vibe.internal.EventsImpl;
 import se.l4.vibe.internal.SampleTime;
 import se.l4.vibe.probes.Probe;
+import se.l4.vibe.probes.SampleListener;
 import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.probes.TimeSeries.Entry;
 import se.l4.vibe.probes.TimeSeriesSampler;
+import se.l4.vibe.trigger.Condition;
+import se.l4.vibe.trigger.Trigger;
+import se.l4.vibe.trigger.TriggerEvent;
 
 /**
  * Implementation of {@link Vibe}.
@@ -148,12 +155,16 @@ public class DefaultVibe
 	{
 		private final SampledProbe<T> probe;
 		
+		private final List<TriggerHolder> triggers;
+		
 		private long sampleInterval;
 		private long sampleRetention;
 		
 		public TimeSeriesBuilderImpl(SampledProbe<T> probe)
 		{
 			this.probe = probe;
+			
+			triggers = new ArrayList<TriggerHolder>();
 			
 			sampleInterval = defaultSampleInterval;
 			sampleRetention = defaultSampleRetention;
@@ -174,10 +185,51 @@ public class DefaultVibe
 				sampler.start();
 			}
 			
+			// Create the series
 			TimeSeries<T> series = sampler.add(probe);
+			
+			// Create the triggers
+			List<Runnable> builtTriggers = new ArrayList<Runnable>(); 
+			if(! triggers.isEmpty())
+			{
+				Events<TriggerEvent> events = new EventsImpl<TriggerEvent>(EventSeverity.WARN);
+				
+				for(TriggerHolder th : triggers)
+				{
+					Runnable r = th.create(series, events);
+					builtTriggers.add(r);
+				}
+				
+				backend.export(path, events);
+			}
+			
 			backend.export(path, series);
 			
+			// Create listener for triggers
+			final Runnable[] triggers = builtTriggers.toArray(new Runnable[builtTriggers.size()]);
+			series.addListener(new SampleListener<T>()
+			{
+				@Override
+				public void sampleAcquired(SampledProbe<T> probe, Entry<T> value)
+				{
+					for(Runnable r : triggers)
+					{
+						r.run();
+					}
+				}
+			});
+			
 			return series;
+		}
+		
+		@Override
+		public <Type> TimeSeriesBuilder<T> trigger(
+				EventSeverity severity,
+				Trigger<? super T, Type> trigger, 
+				Condition<Type> condition)
+		{
+			triggers.add(new TriggerHolder(severity, trigger, condition));
+			return this;
 		}
 		
 		@Override
@@ -192,6 +244,41 @@ public class DefaultVibe
 		{
 			sampleRetention = unit.toMillis(time);
 			return this;
+		}
+	}
+	
+	private static class TriggerHolder<Input, Output>
+	{
+		private final EventSeverity severity;
+		private final Trigger<Input, Output> trigger;
+		private final Condition<Output> condition;
+
+		public TriggerHolder(
+				EventSeverity severity, 
+				Trigger<Input, Output> trigger, 
+				Condition<Output> condition)
+		{
+			this.severity = severity;
+			this.trigger = trigger;
+			this.condition = condition;
+		}
+
+		public Runnable create(final TimeSeries<Input> series, final Events<TriggerEvent> events)
+		{
+			final Probe<Output> probe = trigger.forTimeSeries(series);
+			return new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					Output value = probe.read();
+					if(condition.matches(value))
+					{
+						String desc = trigger.toString() + " " + condition.toString() + " (value is " + value + ")";
+						events.register(new TriggerEvent(desc));
+					}
+				}
+			};
 		}
 	}
 	

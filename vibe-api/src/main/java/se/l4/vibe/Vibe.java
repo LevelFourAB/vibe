@@ -7,6 +7,10 @@ import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.trigger.Condition;
+import se.l4.vibe.trigger.Conditions;
+import se.l4.vibe.trigger.Trigger;
+import se.l4.vibe.trigger.Triggers;
 
 /**
  * Main interface for statistics and events.
@@ -110,6 +114,36 @@ public interface Vibe
 		 */
 		TimeSeriesBuilder<T> withRetention(long time, TimeUnit unit);
 
+		/**
+		 * Create a trigger for this time series. Triggers will send events
+		 * if the condition is met. Use {@link Triggers} and {@link Conditions}
+		 * to create triggers and conditions suitable for usage with this
+		 * method.
+		 * 
+		 * <p>
+		 * Example:
+		 * <pre>
+		 * trigger(
+		 * 	{@link EventSeverity#CRITICAL}, 
+		 * 	{@link Triggers#average(long, TimeUnit) average(5, TimeUnit.MINUTES)},
+		 * 	{@link Conditions#above(Number) above(0.8)
+		 * )
+		 * </pre>
+		 * 
+		 * This will create a trigger that activates when the average of the
+		 * series over 5 minutes is above {@code 0.8}.
+		 * 
+		 * @param severity
+		 * @param trigger
+		 * @param condition
+		 * @return
+		 */
+		<Type> TimeSeriesBuilder<T> trigger(
+			EventSeverity severity, 
+			Trigger<? super T, Type> trigger,
+			Condition<Type> condition
+		);
+		
 		/**
 		 * Export and return the time series.
 		 *  

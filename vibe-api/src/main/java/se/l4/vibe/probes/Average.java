@@ -122,8 +122,12 @@ public class Average
 					
 					entries.add(entry);
 					
-					totalSum += entry.getValue().doubleValue();
-					totalEntries += 1;
+					double v = entry.getValue().doubleValue();
+					if(! Double.isNaN(v))
+					{
+						totalSum += v;
+						totalEntries += 1;
+					}
 				}
 			});
 		}

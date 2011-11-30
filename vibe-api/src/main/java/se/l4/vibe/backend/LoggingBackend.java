@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import se.l4.vibe.Vibe;
 import se.l4.vibe.event.EventListener;
+import se.l4.vibe.event.EventSeverity;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.SampleListener;
@@ -86,9 +87,9 @@ public class LoggingBackend
 		}
 		
 		@Override
-		public void eventRegistered(Events events, Object event)
+		public void eventRegistered(Events events, EventSeverity severity, Object event)
 		{
-			switch(events.getDefaultSeverity())
+			switch(severity)
 			{
 				case DEBUG:
 					logger.debug("{}: {}", path, event);
