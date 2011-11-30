@@ -87,7 +87,7 @@ public class MailBackend
 		executor.shutdown();
 	}
 	
-	private void send(long time, EventSeverity severity, Object event)
+	private void send(String path, long time, EventSeverity severity, Object event)
 		throws MessagingException
 	{
 		Properties props = System.getProperties();
@@ -125,11 +125,16 @@ public class MailBackend
 		
 		msg.setRecipients(Message.RecipientType.TO, receivers);
 		
-		msg.setSubject(subject.replace("{severity}", severity.toString()));
+		msg.setSubject(subject
+			.replace("{severity}", severity.toString())
+			.replace("{path}", path)
+		);
 		
 		StringBuilder body = new StringBuilder();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		body.append("The following ")
+		body
+			.append(path)
+			.append(": The following ")
 			.append(severity)
 			.append(" event was received at ")
 			.append(sdf.format(new Date(time)))
@@ -158,7 +163,7 @@ public class MailBackend
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void export(String path, Events<?> events)
+	public void export(final String path, Events<?> events)
 	{
 		events.addListener(new EventListener()
 		{
@@ -180,7 +185,7 @@ public class MailBackend
 					{
 						try
 						{
-							send(time, severity, event);
+							send(path, time, severity, event);
 						}
 						catch(MessagingException e)
 						{
@@ -238,7 +243,7 @@ public class MailBackend
 			receivers = new ArrayList<String>();
 			
 			minimumSeverity = EventSeverity.ERROR;
-			subject = "Event with {severity} severity received";
+			subject = "{path}: Event with {severity} severity received";
 			
 			smtpPort = 25;
 		}
