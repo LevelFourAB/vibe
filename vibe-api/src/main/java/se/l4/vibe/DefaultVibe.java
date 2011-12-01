@@ -307,7 +307,7 @@ public class DefaultVibe
 			
 			backend.export(path, probe);
 			
-			return null;
+			return probe;
 		}
 	}
 	
