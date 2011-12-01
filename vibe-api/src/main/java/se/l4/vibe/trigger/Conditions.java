@@ -19,13 +19,13 @@ public class Conditions
 	 * @param value
 	 * @return
 	 */
-	public static <T extends Number> Condition<T> above(final T threshold)
+	public static <T extends Number> Condition<T> above(final double threshold)
 	{
 		return new Condition<T>()
 		{
 			public boolean matches(T value)
 			{
-				return value.doubleValue() > threshold.doubleValue();
+				return value.doubleValue() > threshold;
 			}
 			
 			@Override
@@ -43,13 +43,13 @@ public class Conditions
 	 * @param value
 	 * @return
 	 */
-	public static <T extends Number> Condition<T> below(final T threshold)
+	public static <T extends Number> Condition<T> below(final double threshold)
 	{
 		return new Condition<T>()
 		{
 			public boolean matches(T value)
 			{
-				return value.doubleValue() < threshold.doubleValue();
+				return value.doubleValue() < threshold;
 			}
 			
 			@Override

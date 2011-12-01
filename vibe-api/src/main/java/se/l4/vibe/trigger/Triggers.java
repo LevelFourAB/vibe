@@ -43,6 +43,29 @@ public class Triggers
 	}
 	
 	/**
+	 * Get a trigger that will return the exact value of a probe as a number.
+	 * 
+	 * @return
+	 */
+	public static <T extends Number> Trigger<T, Number> numericValue()
+	{
+		return new Trigger<T, Number>()
+		{
+			@Override
+			public Probe<Number> forTimeSeries(TimeSeries<T> series)
+			{
+				return (Probe) series.getProbe();
+			}
+			
+			@Override
+			public String toString()
+			{
+				return "value";
+			}
+		};
+	}
+	
+	/**
 	 * Calculate the average for a specific duration and check conditions
 	 * against the specified value.
 	 * 
@@ -50,14 +73,14 @@ public class Triggers
 	 * @param unit
 	 * @return
 	 */
-	public static <T extends Number> Trigger<T, Double> average(final long duration, final TimeUnit unit)
+	public static <T extends Number> Trigger<T, Number> average(final long duration, final TimeUnit unit)
 	{
-		return new TimedTrigger<T, Double>()
+		return new TimedTrigger<T, Number>()
 		{
 			@Override
-			public Probe<Double> forTimeSeries(TimeSeries<T> series)
+			public Probe<Number> forTimeSeries(TimeSeries<T> series)
 			{
-				return Average.forSeries(series, duration, unit);
+				return (Probe) Average.forSeries(series, duration, unit);
 			}
 			
 			@Override
@@ -81,14 +104,14 @@ public class Triggers
 	 * @param unit
 	 * @return
 	 */
-	public static <T extends Number> Trigger<T, Double> minimum(final long duration, final TimeUnit unit)
+	public static <T extends Number> Trigger<T, Number> minimum(final long duration, final TimeUnit unit)
 	{
-		return new TimedTrigger<T, Double>()
+		return new TimedTrigger<T, Number>()
 		{
 			@Override
-			public Probe<Double> forTimeSeries(TimeSeries<T> series)
+			public Probe<Number> forTimeSeries(TimeSeries<T> series)
 			{
-				return Range.minimum(series, duration, unit);
+				return (Probe) Range.minimum(series, duration, unit);
 			}
 			
 			@Override
@@ -112,14 +135,14 @@ public class Triggers
 	 * @param unit
 	 * @return
 	 */
-	public static <T extends Number> Trigger<T, Double> maximum(final long duration, final TimeUnit unit)
+	public static <T extends Number> Trigger<T, Number> maximum(final long duration, final TimeUnit unit)
 	{
-		return new TimedTrigger<T, Double>()
+		return new TimedTrigger<T, Number>()
 		{
 			@Override
-			public Probe<Double> forTimeSeries(TimeSeries<T> series)
+			public Probe<Number> forTimeSeries(TimeSeries<T> series)
 			{
-				return Range.maximum(series, duration, unit);
+				return (Probe) Range.maximum(series, duration, unit);
 			}
 			
 			@Override

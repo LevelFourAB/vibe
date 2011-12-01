@@ -286,7 +286,7 @@ public class DefaultVibe
 					{
 						long now = System.currentTimeMillis();
 						
-						if(maxEvery > 0)
+						if(lastEvent > 0 && maxEvery > 0)
 						{
 							// Check if we should send an event or not
 							long diff = now - lastEvent;
@@ -303,7 +303,7 @@ public class DefaultVibe
 					}
 					else if(sendOnNormal && lastEvent > 0)
 					{
-						String desc = "value is now + " + value + ", no longer matching: " + trigger.toString() + " " + condition.toString();
+						String desc = "value is now " + value + ", no longer matching: " + trigger.toString() + " " + condition.toString();
 						listener.onEvent(new TriggerEvent(desc, false));
 						
 						// Reset last event time
@@ -406,6 +406,14 @@ public class DefaultVibe
 		public TriggerBuilder<TimeSeriesBuilder<T>> andWhenNoLongerMet()
 		{
 			whenNoLongerMet = true;
+			
+			return this;
+		}
+		
+		@Override
+		public TriggerBuilder<TimeSeriesBuilder<T>> onlyOnce()
+		{
+			maxTime = Long.MAX_VALUE;
 			
 			return this;
 		}

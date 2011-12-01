@@ -195,6 +195,15 @@ public interface Vibe
 		TriggerBuilder<B> andWhenNoLongerMet();
 		
 		/**
+		 * Set that the trigger should only trigger once until it is no longer
+		 * met. This equivalent of calling {@link #atMostEvery(long, TimeUnit)}
+		 * with a high value.
+		 * 
+		 * @return
+		 */
+		TriggerBuilder<B> onlyOnce();
+		
+		/**
 		 * Limit the number of times the event is triggered. This time is
 		 * normally fetched from the used trigger, but sometimes it may be
 		 * desirable to override this with a custom value.
