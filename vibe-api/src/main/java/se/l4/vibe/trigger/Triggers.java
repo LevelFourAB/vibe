@@ -24,7 +24,7 @@ public class Triggers
 	 * 
 	 * @return
 	 */
-	public static <T> Trigger<T, T> valueIs()
+	public static <T> Trigger<T, T> value()
 	{
 		return new Trigger<T, T>()
 		{
@@ -52,12 +52,18 @@ public class Triggers
 	 */
 	public static <T extends Number> Trigger<T, Double> average(final long duration, final TimeUnit unit)
 	{
-		return new Trigger<T, Double>()
+		return new TimedTrigger<T, Double>()
 		{
 			@Override
 			public Probe<Double> forTimeSeries(TimeSeries<T> series)
 			{
 				return Average.forSeries(series, duration, unit);
+			}
+			
+			@Override
+			public long getDefaultRepeatTime()
+			{
+				return unit.toMillis(duration);
 			}
 			
 			@Override
@@ -77,12 +83,18 @@ public class Triggers
 	 */
 	public static <T extends Number> Trigger<T, Double> minimum(final long duration, final TimeUnit unit)
 	{
-		return new Trigger<T, Double>()
+		return new TimedTrigger<T, Double>()
 		{
 			@Override
 			public Probe<Double> forTimeSeries(TimeSeries<T> series)
 			{
 				return Range.minimum(series, duration, unit);
+			}
+			
+			@Override
+			public long getDefaultRepeatTime()
+			{
+				return unit.toMillis(duration);
 			}
 			
 			@Override
@@ -102,12 +114,18 @@ public class Triggers
 	 */
 	public static <T extends Number> Trigger<T, Double> maximum(final long duration, final TimeUnit unit)
 	{
-		return new Trigger<T, Double>()
+		return new TimedTrigger<T, Double>()
 		{
 			@Override
 			public Probe<Double> forTimeSeries(TimeSeries<T> series)
 			{
 				return Range.maximum(series, duration, unit);
+			}
+			
+			@Override
+			public long getDefaultRepeatTime()
+			{
+				return unit.toMillis(duration);
 			}
 			
 			@Override

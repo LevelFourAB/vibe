@@ -21,8 +21,10 @@ import se.l4.vibe.probes.TimeSeries;
 import se.l4.vibe.probes.TimeSeries.Entry;
 import se.l4.vibe.probes.TimeSeriesSampler;
 import se.l4.vibe.trigger.Condition;
+import se.l4.vibe.trigger.TimedTrigger;
 import se.l4.vibe.trigger.Trigger;
 import se.l4.vibe.trigger.TriggerEvent;
+import se.l4.vibe.trigger.TriggerListener;
 
 /**
  * Implementation of {@link Vibe}.
@@ -156,6 +158,7 @@ public class DefaultVibe
 		private final SampledProbe<T> probe;
 		
 		private final List<TriggerHolder> triggers;
+		private Events<TriggerEvent> triggerEvents;
 		
 		private long sampleInterval;
 		private long sampleRetention;
@@ -190,17 +193,10 @@ public class DefaultVibe
 			
 			// Create the triggers
 			List<Runnable> builtTriggers = new ArrayList<Runnable>(); 
-			if(! triggers.isEmpty())
+			for(TriggerHolder th : triggers)
 			{
-				Events<TriggerEvent> events = new EventsImpl<TriggerEvent>(EventSeverity.WARN);
-				
-				for(TriggerHolder th : triggers)
-				{
-					Runnable r = th.create(series, events);
-					builtTriggers.add(r);
-				}
-				
-				backend.export(path, events);
+				Runnable r = th.create(series, triggerEvents);
+				builtTriggers.add(r);
 			}
 			
 			backend.export(path, series);
@@ -223,13 +219,19 @@ public class DefaultVibe
 		}
 		
 		@Override
-		public <Type> TimeSeriesBuilder<T> trigger(
-				EventSeverity severity,
+		public <Type> TriggerBuilder<TimeSeriesBuilder<T>> when(
 				Trigger<? super T, Type> trigger, 
 				Condition<Type> condition)
 		{
-			triggers.add(new TriggerHolder(severity, trigger, condition));
-			return this;
+			verify();
+			
+			if(triggerEvents == null)
+			{
+				triggerEvents = new EventsImpl<TriggerEvent>(EventSeverity.WARN);
+				backend.export(path, triggerEvents);
+			}
+			
+			return new TimeSeriesTriggerBuilder(this, trigger, condition, triggerEvents);
 		}
 		
 		@Override
@@ -249,18 +251,24 @@ public class DefaultVibe
 	
 	private static class TriggerHolder<Input, Output>
 	{
-		private final EventSeverity severity;
 		private final Trigger<Input, Output> trigger;
 		private final Condition<Output> condition;
+		private final long maxEvery;
+		private final boolean sendOnNormal;
+		private final TriggerListener listener;
 
 		public TriggerHolder(
-				EventSeverity severity, 
 				Trigger<Input, Output> trigger, 
-				Condition<Output> condition)
+				Condition<Output> condition,
+				long maxEvery,
+				boolean sendOnNormal,
+				TriggerListener listener)
 		{
-			this.severity = severity;
 			this.trigger = trigger;
 			this.condition = condition;
+			this.maxEvery = maxEvery;
+			this.sendOnNormal = sendOnNormal;
+			this.listener = listener;
 		}
 
 		public Runnable create(final TimeSeries<Input> series, final Events<TriggerEvent> events)
@@ -268,14 +276,38 @@ public class DefaultVibe
 			final Probe<Output> probe = trigger.forTimeSeries(series);
 			return new Runnable()
 			{
+				private long lastEvent;
+				
 				@Override
 				public void run()
 				{
 					Output value = probe.read();
 					if(condition.matches(value))
 					{
+						long now = System.currentTimeMillis();
+						
+						if(maxEvery > 0)
+						{
+							// Check if we should send an event or not
+							long diff = now - lastEvent;
+							if(diff < maxEvery)
+							{
+								// Within the interval
+								return;
+							}
+						}
+						
+						lastEvent = now;
 						String desc = trigger.toString() + " " + condition.toString() + " (value is " + value + ")";
-						events.register(new TriggerEvent(desc));
+						listener.onEvent(new TriggerEvent(desc, true));
+					}
+					else if(sendOnNormal && lastEvent > 0)
+					{
+						String desc = "value is now + " + value + ", no longer matching: " + trigger.toString() + " " + condition.toString();
+						listener.onEvent(new TriggerEvent(desc, false));
+						
+						// Reset last event time
+						lastEvent = 0;
 					}
 				}
 			};
@@ -339,6 +371,90 @@ public class DefaultVibe
 			backend.export(path, events);
 			
 			return events;
+		}
+	}
+	
+	private class TimeSeriesTriggerBuilder<T, Input, Output>
+		implements TriggerBuilder<TimeSeriesBuilder<T>>
+	{
+		private final TimeSeriesBuilderImpl<T> builder;
+		private final Trigger<Input, Output> trigger;
+		private final Condition<Output> condition;
+		
+		private final Events<TriggerEvent> events;
+		
+		private long maxTime;
+		private boolean whenNoLongerMet;
+
+		public TimeSeriesTriggerBuilder(
+				TimeSeriesBuilderImpl<T> builder,
+				Trigger<Input, Output> trigger,
+				Condition<Output> condition,
+				Events<TriggerEvent> events)
+		{
+			this.builder = builder;
+			this.trigger = trigger;
+			this.condition = condition;
+			this.events = events;
+			
+			maxTime = trigger instanceof TimedTrigger
+				? ((TimedTrigger) trigger).getDefaultRepeatTime()
+				: 0;
+		}
+		
+		@Override
+		public TriggerBuilder<TimeSeriesBuilder<T>> andWhenNoLongerMet()
+		{
+			whenNoLongerMet = true;
+			
+			return this;
+		}
+		
+		@Override
+		public TriggerBuilder<TimeSeriesBuilder<T>> atMostEvery(long duration, TimeUnit unit)
+		{
+			maxTime = unit.toMillis(duration);
+			
+			return this;
+		}
+		
+		@Override
+		public TimeSeriesBuilder<T> sendEvent(EventSeverity severity)
+		{
+			return handleWith(new EventTriggerListener(events, severity));
+		}
+		
+		@Override
+		public TimeSeriesBuilder<T> handleWith(TriggerListener listener)
+		{
+			builder.triggers.add(new TriggerHolder<Input, Output>(
+				trigger, 
+				condition, 
+				maxTime,
+				whenNoLongerMet,
+				listener
+			));
+				
+			return builder;
+		}
+	}
+	
+	private static class EventTriggerListener
+		implements TriggerListener
+	{
+		private final Events<TriggerEvent> events;
+		private final EventSeverity severity;
+
+		public EventTriggerListener(Events<TriggerEvent> events, EventSeverity severity)
+		{
+			this.events = events;
+			this.severity = severity;
+		}
+		
+		@Override
+		public void onEvent(TriggerEvent event)
+		{
+			events.register(severity, event);
 		}
 	}
 }

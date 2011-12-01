@@ -10,6 +10,7 @@ import se.l4.vibe.probes.TimeSeries;
 import se.l4.vibe.trigger.Condition;
 import se.l4.vibe.trigger.Conditions;
 import se.l4.vibe.trigger.Trigger;
+import se.l4.vibe.trigger.TriggerListener;
 import se.l4.vibe.trigger.Triggers;
 
 /**
@@ -123,23 +124,21 @@ public interface Vibe
 		 * <p>
 		 * Example:
 		 * <pre>
-		 * trigger(
-		 * 	{@link EventSeverity#CRITICAL}, 
+		 * when(
 		 * 	{@link Triggers#average(long, TimeUnit) average(5, TimeUnit.MINUTES)},
 		 * 	{@link Conditions#above(Number) above(0.8)
 		 * )
+		 * .sendEvent({@link EventSeverity#CRITICAL})
 		 * </pre>
 		 * 
 		 * This will create a trigger that activates when the average of the
 		 * series over 5 minutes is above {@code 0.8}.
 		 * 
-		 * @param severity
 		 * @param trigger
 		 * @param condition
 		 * @return
 		 */
-		<Type> TimeSeriesBuilder<T> trigger(
-			EventSeverity severity, 
+		<Type> TriggerBuilder<TimeSeriesBuilder<T>> when(
 			Trigger<? super T, Type> trigger,
 			Condition<Type> condition
 		);
@@ -176,5 +175,50 @@ public interface Vibe
 		 * @return
 		 */
 		Events<T> create();
+	}
+	
+	/**
+	 * Builder for triggers.
+	 * 
+	 * @author Andreas Holstenson
+	 *
+	 * @param <B>
+	 */
+	interface TriggerBuilder<B>
+	{
+		/**
+		 * Set that the trigger should also handle the case where the condition
+		 * is no longer met.
+		 * 
+		 * @return
+		 */
+		TriggerBuilder<B> andWhenNoLongerMet();
+		
+		/**
+		 * Limit the number of times the event is triggered. This time is
+		 * normally fetched from the used trigger, but sometimes it may be
+		 * desirable to override this with a custom value.
+		 * 
+		 * @param duration
+		 * @param unit
+		 * @return
+		 */
+		TriggerBuilder<B> atMostEvery(long duration, TimeUnit unit);
+		
+		/**
+		 * Indicate that an event should be sent.
+		 * 
+		 * @param severity
+		 * @return
+		 */
+		B sendEvent(EventSeverity severity);
+		
+		/**
+		 * Handle the trigger with the specified listener.
+		 * 
+		 * @param listener
+		 * @return
+		 */
+		B handleWith(TriggerListener listener);
 	}
 }
