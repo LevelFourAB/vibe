@@ -1,9 +1,11 @@
 package se.l4.vibe.probes;
 
+import java.lang.management.ClassLoadingMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.RuntimeMXBean;
+import java.lang.management.ThreadMXBean;
 
 /**
  * Probes for the JVM runtime.
@@ -154,6 +156,75 @@ public class JvmProbes
 			public Double peek()
 			{
 				return sample0();
+			}
+		};
+	}
+
+	/**
+	 * Probe that measures the uptime of the JVM in milliseconds.
+	 * 
+	 * @return
+	 */
+	public static Probe<Long> uptime()
+	{
+		final RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
+		
+		return new Probe<Long>()
+		{
+			@Override
+			public Long read()
+			{
+				return runtime.getUptime();
+			}
+		};
+	}
+	
+	/**
+	 * Get a probe suitable for sampling the number of threads active.
+	 * 
+	 * @return
+	 */
+	public static SampledProbe<Integer> threadCount()
+	{
+		final ThreadMXBean thread = ManagementFactory.getThreadMXBean();
+		
+		return new AbstractSampledProbe<Integer>()
+		{
+			@Override
+			public Integer peek()
+			{
+				return sample0();
+			}
+			
+			@Override
+			protected Integer sample0()
+			{
+				return thread.getThreadCount();
+			}
+		};
+	}
+	
+	/**
+	 * Get the number of classes that are currently loaded by the JVM.
+	 * 
+	 * @return
+	 */
+	public static SampledProbe<Integer> loadedClassCount()
+	{
+		final ClassLoadingMXBean cl = ManagementFactory.getClassLoadingMXBean();
+		
+		return new AbstractSampledProbe<Integer>()
+		{
+			@Override
+			public Integer peek()
+			{
+				return sample0();
+			}
+			
+			@Override
+			protected Integer sample0()
+			{
+				return cl.getLoadedClassCount();
 			}
 		};
 	}
