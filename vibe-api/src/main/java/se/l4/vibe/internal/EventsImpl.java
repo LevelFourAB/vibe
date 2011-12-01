@@ -1,11 +1,15 @@
 package se.l4.vibe.internal;
 
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import se.l4.vibe.event.EventListener;
 import se.l4.vibe.event.EventSeverity;
 import se.l4.vibe.event.Events;
+import se.l4.vibe.probes.AbstractSampledProbe;
+import se.l4.vibe.probes.Probe;
+import se.l4.vibe.probes.SampledProbe;
 
 /**
  * Implementation of {@link Events}.
@@ -24,21 +28,21 @@ public class EventsImpl<T>
 	private final Lock listenerLock;
 	protected volatile EventListener<T>[] listeners;
 	
+	private final AtomicLong totalEvents;
+	
 	public EventsImpl(EventSeverity severity)
 	{
 		this.severity = severity;
 		
 		listenerLock = new ReentrantLock();
 		listeners = EMPTY;
+		
+		totalEvents = new AtomicLong();
 	}
 	
 	public void register(T event)
 	{
-		EventListener<T>[] listeners = this.listeners;
-		for(EventListener<T> listener : listeners)
-		{
-			listener.eventRegistered(this, severity, event);
-		}
+		register(severity, event);
 	}
 	
 	public void register(EventSeverity severity, T event)
@@ -48,6 +52,8 @@ public class EventsImpl<T>
 		{
 			listener.eventRegistered(this, severity, event);
 		}
+		
+		totalEvents.incrementAndGet();
 	}
 	
 	@Override
@@ -114,5 +120,42 @@ public class EventsImpl<T>
 			listenerLock.unlock();
 		}
 	}
+	
+	@Override
+	public Probe<Long> getTotalEventsProbe()
+	{
+		return new Probe<Long>()
+		{
+			@Override
+			public Long read()
+			{
+				return totalEvents.longValue();
+			}
+		};
+	}
 
+	@Override
+	public SampledProbe<Long> getEventsProbe()
+	{
+		return new AbstractSampledProbe<Long>()
+		{
+			private long lastValue;
+			
+			@Override
+			public Long peek()
+			{
+				return totalEvents.longValue() - lastValue;
+			}
+			
+			@Override
+			protected Long sample0()
+			{
+				long current = totalEvents.longValue();
+				long sinceLastSample = current - lastValue;
+				lastValue = current;
+				
+				return sinceLastSample;
+			}
+		};
+	}
 }

@@ -1,5 +1,8 @@
 package se.l4.vibe.event;
 
+import se.l4.vibe.probes.Probe;
+import se.l4.vibe.probes.SampledProbe;
+
 
 /**
  * Abstraction for a collection of events.
@@ -45,4 +48,19 @@ public interface Events<T>
 	 * @param listener
 	 */
 	void removeListener(EventListener<T> listener);
+	
+	/**
+	 * Get a probe that will return the total amount of events registered.
+	 * 
+	 * @return
+	 */
+	Probe<Long> getTotalEventsProbe();
+	
+	/**
+	 * Get a probe that will return the number of events received since it
+	 * was last sampled.
+	 * 
+	 * @return
+	 */
+	SampledProbe<Long> getEventsProbe();
 }
