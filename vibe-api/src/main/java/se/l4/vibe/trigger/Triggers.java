@@ -82,7 +82,7 @@ public class Triggers
 			@Override
 			public Probe<Double> forTimeSeries(TimeSeries<T> series)
 			{
-				return Range.min(series, duration, unit);
+				return Range.minimum(series, duration, unit);
 			}
 			
 			@Override
@@ -107,7 +107,7 @@ public class Triggers
 			@Override
 			public Probe<Double> forTimeSeries(TimeSeries<T> series)
 			{
-				return Range.max(series, duration, unit);
+				return Range.maximum(series, duration, unit);
 			}
 			
 			@Override

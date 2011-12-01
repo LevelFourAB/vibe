@@ -1,10 +1,7 @@
 package se.l4.vibe.probes;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
-
-import se.l4.vibe.probes.TimeSeries.Entry;
 
 /**
  * Probes for creating average values.
@@ -26,7 +23,7 @@ public class Average
 	 */
 	public static <T extends Number> Probe<Double> forSeries(TimeSeries<T> series)
 	{
-		return new SeriesAverage<T>(series);
+		return TimeSeriesProbes.forSeries(series, new AverageOperation<T>());
 	}
 	
 	/**
@@ -43,7 +40,7 @@ public class Average
 			long duration,
 			TimeUnit unit)
 	{
-		return new SeriesTimedAverage<T>(series, unit.toMillis(duration));
+		return TimeSeriesProbes.forSeries(series, duration, unit, new AverageOperation<T>());
 	}
 	
 	/**
@@ -58,82 +55,46 @@ public class Average
 	{
 		return new AveragingProbe<T>(probe);
 	}
-
-	private static class SeriesAverage<T extends Number>
-		implements Probe<Double>
-	{
-		private double totalSum;
-		private long totalEntries;
-		
-		public SeriesAverage(TimeSeries<T> series)
-		{
-			series.addListener(new SampleListener<T>()
-			{
-				@Override
-				public void sampleAcquired(SampledProbe<T> probe, TimeSeries.Entry<T> entry)
-				{
-					totalSum += entry.getValue().doubleValue();
-					totalEntries += 1;
-				}
-			});
-		}
-		
-		@Override
-		public Double read()
-		{
-			return totalSum / totalEntries;
-		}
-	}
 	
-	private static class SeriesTimedAverage<T extends Number>
-		implements Probe<Double>
+	/**
+	 * Create an operation that will calculate an average.
+	 * 
+	 * @return
+	 */
+	public static <T extends Number> TimeSeriesOperation<T, Double> newOperation()
 	{
-		private final List<TimeSeries.Entry<T>> entries;
-		private final long maxAge;
-		
+		return new AverageOperation<T>();
+	}
+
+	/**
+	 * Operation that will calculate the average.
+	 * 
+	 * @author Andreas Holstenson
+	 *
+	 * @param <T>
+	 */
+	private static class AverageOperation<T extends Number>
+		implements TimeSeriesOperation<T, Double>
+	{
 		private double totalSum;
-		private long totalEntries;
+		private double totalEntries;
 		
-		public SeriesTimedAverage(TimeSeries<T> series, long maxAge0)
+		@Override
+		public void add(T value, Collection<TimeSeries.Entry<T>> entries)
 		{
-			this.maxAge = maxAge0;
-			entries = new LinkedList<TimeSeries.Entry<T>>();
-			
-			series.addListener(new SampleListener<T>()
-			{
-				@Override
-				public void sampleAcquired(SampledProbe<T> probe, TimeSeries.Entry<T> entry)
-				{
-					if(! entries.isEmpty())
-					{
-						/*
-						 * If we have entries check if the first one should be
-						 * removed or kept.
-						 */
-						Entry<T> firstEntry = entries.get(0);
-						if(firstEntry.getTime() < System.currentTimeMillis() - maxAge)
-						{
-							entries.remove(0);
-							
-							totalSum = firstEntry.getValue().doubleValue();
-							totalEntries -= 1;
-						}
-					}
-					
-					entries.add(entry);
-					
-					double v = entry.getValue().doubleValue();
-					if(! Double.isNaN(v))
-					{
-						totalSum += v;
-						totalEntries += 1;
-					}
-				}
-			});
+			totalSum += value.doubleValue();
+			totalEntries += 1;
+		}
+
+		@Override
+		public void remove(T value, Collection<TimeSeries.Entry<T>> entries)
+		{
+			totalSum -= value.doubleValue();
+			totalEntries -= 1;
 		}
 		
 		@Override
-		public Double read()
+		public Double get()
 		{
 			return totalSum / totalEntries;
 		}

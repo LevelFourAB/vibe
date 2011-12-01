@@ -1,7 +1,6 @@
 package se.l4.vibe.probes;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -47,12 +46,12 @@ public class Range
 	 * @param series
 	 * @return
 	 */
-	public static <T extends Number> Probe<Double> min(
+	public static <T extends Number> Probe<Double> minimum(
 			TimeSeries<T> series,
 			long duration,
 			TimeUnit unit)
 	{
-		return new SeriesTimedMinMax<T>(series, unit.toMillis(duration), true);
+		return TimeSeriesProbes.forSeries(series, duration, unit, new MinOperation<T>());
 	}
 	
 	/**
@@ -62,12 +61,83 @@ public class Range
 	 * @param series
 	 * @return
 	 */
-	public static <T extends Number> Probe<Double> max(
+	public static <T extends Number> Probe<Double> maximum(
 			TimeSeries<T> series,
 			long duration,
 			TimeUnit unit)
 	{
-		return new SeriesTimedMinMax<T>(series, unit.toMillis(duration), false);
+		return TimeSeriesProbes.forSeries(series, duration, unit, new MaxOperation<T>());
+	}
+	
+	/**
+	 * Create a new operation that will calculate the minimum of any time
+	 * series.
+	 * 
+	 * @return
+	 */
+	public static <T extends Number> TimeSeriesOperation<T, Double> newMinimumOperation()
+	{
+		return new MinOperation<T>();
+	}
+	
+	private static class MinOperation<T extends Number>
+		implements TimeSeriesOperation<T, Double>
+	{
+		private double value;
+
+		@Override
+		public void add(T value, Collection<TimeSeries.Entry<T>> entries)
+		{
+			double min = Double.MAX_VALUE;
+			for(TimeSeries.Entry<T> entry : entries)
+			{
+				min = Math.min(min, entry.getValue().doubleValue());
+			}
+			
+			this.value = min;
+		}
+		
+		@Override
+		public void remove(T value, Collection<TimeSeries.Entry<T>> entries)
+		{
+			// Do nothing
+		}
+		
+		@Override
+		public Double get()
+		{
+			return value;
+		}
+	}
+	
+	private static class MaxOperation<T extends Number>
+		implements TimeSeriesOperation<T, Double>
+	{
+		private double value;
+	
+		@Override
+		public void add(T value, Collection<TimeSeries.Entry<T>> entries)
+		{
+			double max = Double.MIN_VALUE;
+			for(TimeSeries.Entry<T> entry : entries)
+			{
+				max = Math.min(max, entry.getValue().doubleValue());
+			}
+			
+			this.value = max;
+		}
+		
+		@Override
+		public void remove(T value, Collection<TimeSeries.Entry<T>> entries)
+		{
+			// Do nothing
+		}
+		
+		@Override
+		public Double get()
+		{
+			return value;
+		}
 	}
 	
 	private static class SeriesMinMax<T extends Number>
@@ -77,7 +147,7 @@ public class Range
 		
 		public SeriesMinMax(TimeSeries<T> series, final boolean min)
 		{
-			value = min ? Double.MIN_NORMAL : Double.MAX_VALUE;
+			value = min ? Double.MAX_VALUE : Double.MIN_NORMAL;
 			series.addListener(new SampleListener<T>()
 			{
 				@Override
@@ -92,65 +162,6 @@ public class Range
 					{
 						value = Math.max(newValue, value);
 					}
-				}
-			});
-		}
-		
-		@Override
-		public Double read()
-		{
-			return value;
-		}
-	}
-	
-	private static class SeriesTimedMinMax<T extends Number>
-		implements Probe<Double>
-	{
-		private final List<TimeSeries.Entry<T>> entries;
-		private final long maxAge;
-		
-		private double value;
-		
-		public SeriesTimedMinMax(TimeSeries<T> series, long maxAge0, final boolean min)
-		{
-			this.maxAge = maxAge0;
-			entries = new LinkedList<TimeSeries.Entry<T>>();
-			
-			series.addListener(new SampleListener<T>()
-			{
-				@Override
-				public void sampleAcquired(SampledProbe<T> probe, TimeSeries.Entry<T> entry)
-				{
-					if(! entries.isEmpty())
-					{
-						/*
-						 * If we have entries check if the first one should be
-						 * removed or kept.
-						 */
-						TimeSeries.Entry<T> firstEntry = entries.get(0);
-						if(firstEntry.getTime() < System.currentTimeMillis() - maxAge)
-						{
-							entries.remove(0);
-						}
-					}
-					
-					entries.add(entry);
-					
-					double newValue = 0;
-					for(TimeSeries.Entry<T> e : entries)
-					{
-						double v = e.getValue().doubleValue();
-						if(min)
-						{
-							newValue = Math.min(newValue, v);
-						}
-						else
-						{
-							newValue = Math.max(newValue, v);
-						}
-					}
-					
-					value = newValue;
 				}
 			});
 		}
