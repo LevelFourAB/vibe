@@ -69,7 +69,7 @@ public class SigarProbes
 	 * 
 	 * @return
 	 */
-	public SampledProbe<Double> getCpuUsage()
+	public SampledProbe<Double> cpuUsage()
 	{
 		verify();
 		
@@ -110,7 +110,7 @@ public class SigarProbes
 	 * 
 	 * @return
 	 */
-	public SampledProbe<MemoryUsage> getMemoryUsage()
+	public SampledProbe<MemoryUsage> memoryUsage()
 	{
 		verify();
 		
@@ -143,7 +143,7 @@ public class SigarProbes
 	 * 
 	 * @return
 	 */
-	public SampledProbe<Double> getUsedMemoryAsFraction()
+	public SampledProbe<Double> usedMemoryAsFraction()
 	{
 		verify();
 		
@@ -176,7 +176,7 @@ public class SigarProbes
 	 * 
 	 * @return
 	 */
-	public SampledProbe<Long> getUsedMemoryInBytes()
+	public SampledProbe<Long> usedMemoryInBytes()
 	{
 		verify();
 		
@@ -209,7 +209,7 @@ public class SigarProbes
 	 * 
 	 * @return
 	 */
-	public SampledProbe<Double> getFreeMemoryAsFraction()
+	public SampledProbe<Double> freeMemoryAsFraction()
 	{
 		verify();
 		
@@ -242,7 +242,7 @@ public class SigarProbes
 	 * 
 	 * @return
 	 */
-	public SampledProbe<Long> getFreeMemoryInBytes()
+	public SampledProbe<Long> freeMemoryInBytes()
 	{
 		verify();
 		

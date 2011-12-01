@@ -23,7 +23,7 @@ public class JvmProbes
 	 * 
 	 * @return
 	 */
-	public static SampledProbe<Double> getCpuUsage()
+	public static SampledProbe<Double> cpuUsage()
 	{
 		final com.sun.management.OperatingSystemMXBean os =
 			(com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
@@ -87,7 +87,7 @@ public class JvmProbes
 	 * 
 	 * @return
 	 */
-	public static SampledProbe<MemoryUsage> getHeapMemoryUsage()
+	public static SampledProbe<MemoryUsage> heapMemoryUsage()
 	{
 		final MemoryMXBean b = ManagementFactory.getMemoryMXBean();
 		
@@ -112,7 +112,7 @@ public class JvmProbes
 	 * 
 	 * @return
 	 */
-	public static SampledProbe<Long> getTotalUsedMemory()
+	public static SampledProbe<Long> totalUsedMemory()
 	{
 		final MemoryMXBean b = ManagementFactory.getMemoryMXBean();
 		
@@ -137,7 +137,7 @@ public class JvmProbes
 	 * 
 	 * @return
 	 */
-	public static SampledProbe<Double> getHeapMemoryAsFraction()
+	public static SampledProbe<Double> heapMemoryAsFraction()
 	{
 		final MemoryMXBean b = ManagementFactory.getMemoryMXBean();
 		

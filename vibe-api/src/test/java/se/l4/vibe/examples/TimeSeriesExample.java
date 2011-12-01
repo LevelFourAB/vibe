@@ -34,7 +34,7 @@ public class TimeSeriesExample
 		 * that will trigger if the average over 10 seconds is below 80%,
 		 * which it always is.
 		 */
-		vibe.timeSeries(JvmProbes.getCpuUsage())
+		vibe.timeSeries(JvmProbes.cpuUsage())
 			.at("jvm/cpu")
 			.when(average(10, TimeUnit.SECONDS), below(0.8))
 				.sendEvent(EventSeverity.CRITICAL)
