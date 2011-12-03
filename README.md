@@ -17,7 +17,7 @@ Vibe vibe = DefaultVibe.builder()
 Export a few things:
 
 ```java
-vibe.timeSeries(JvmProbes.getCpuUsage())
+vibe.timeSeries(JvmProbes.cpuUsage())
 	.at("jvm/cpu")
 	.export();
 ```
@@ -38,7 +38,7 @@ Time series can have triggers:
 
 
 ```java
-vibe.timeSeries(JvmProbes.getCpuUsage())
+vibe.timeSeries(JvmProbes.cpuUsage())
 	.at("jvm/cpu")
 	.when(average(5, TimeUnit.MINUTES), above(0.9))
 		.sendEvent(EventSeverity.CRITICAL)
@@ -47,3 +47,14 @@ vibe.timeSeries(JvmProbes.getCpuUsage())
 
 This will trigger a critical event (at the same path as the series) if the average CPU usage over five minutes exceeds 90%.
 
+It is possible to use a trigger on an automatically calculated value:
+
+```java
+vibe.timeSeries(JvmProbes.totalUsedMemory())
+	.at("jvm/mem/total")
+	.when(changeAsFraction(), on(average(5, TimeUnit.MINUTES)), above(0.1))
+		.sendEvent(EventSeverity.WARN)
+	.export();
+```
+
+This will create a trigger that will be activated if the average value over 5 minutes changes more than 10%.
