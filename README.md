@@ -40,7 +40,7 @@ Time series can have triggers:
 ```java
 vibe.timeSeries(JvmProbes.cpuUsage())
 	.at("jvm/cpu")
-	.when(average(5, TimeUnit.MINUTES), above(0.9))
+	.when(averageOver(5, TimeUnit.MINUTES), above(0.9))
 		.sendEvent(EventSeverity.CRITICAL)
 	.export();
 ```
@@ -52,7 +52,7 @@ It is possible to use a trigger on an automatically calculated value:
 ```java
 vibe.timeSeries(JvmProbes.totalUsedMemory())
 	.at("jvm/mem/total")
-	.when(changeAsFraction(), on(average(5, TimeUnit.MINUTES)), above(0.1))
+	.when(changeAsFraction(), on(averageOver(5, TimeUnit.MINUTES)), above(0.1))
 		.sendEvent(EventSeverity.WARN)
 	.export();
 ```
