@@ -16,6 +16,16 @@ public class SampleTime
 		this.interval = interval;
 		this.retention = retention;
 	}
+	
+	public long getInterval()
+	{
+		return interval;
+	}
+	
+	public long getRetention()
+	{
+		return retention;
+	}
 
 	@Override
 	public int hashCode()
