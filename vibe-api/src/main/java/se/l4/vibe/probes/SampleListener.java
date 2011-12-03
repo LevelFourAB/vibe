@@ -13,7 +13,7 @@ public interface SampleListener<T>
 	 * A sample has been acquired from the probe.
 	 * 
 	 * @param probe
-	 * @param value
+	 * @param entry
 	 */
-	void sampleAcquired(SampledProbe<T> probe, TimeSeries.Entry<T> value);
+	void sampleAcquired(SampledProbe<T> probe, TimeSeries.Entry<T> entry);
 }

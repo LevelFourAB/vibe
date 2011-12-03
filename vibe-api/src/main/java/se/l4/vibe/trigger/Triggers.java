@@ -3,6 +3,7 @@ package se.l4.vibe.trigger;
 import java.util.concurrent.TimeUnit;
 
 import se.l4.vibe.probes.Average;
+import se.l4.vibe.probes.Change;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.Range;
 import se.l4.vibe.probes.TimeSeries;
@@ -155,6 +156,56 @@ public class Triggers
 			public String toString()
 			{
 				return "maximum over " + duration + " " + toReadable(unit, duration);
+			}
+		};
+	}
+	
+	/**
+	 * Calculate the change between sample values.
+	 * 
+	 * @param duration
+	 * @param unit
+	 * @return
+	 */
+	public static <T extends Number> Trigger<T, Number> change()
+	{
+		return new Trigger<T, Number>()
+		{
+			@Override
+			public Probe<Number> forTimeSeries(TimeSeries<T> series)
+			{
+				return Change.forSeries(series);
+			}
+			
+			@Override
+			public String toString()
+			{
+				return "change";
+			}
+		};
+	}
+	
+	/**
+	 * Calculate the change between sample values and return it as a fraction.
+	 * 
+	 * @param duration
+	 * @param unit
+	 * @return
+	 */
+	public static <T extends Number> Trigger<T, Number> changeAsFraction()
+	{
+		return new Trigger<T, Number>()
+		{
+			@Override
+			public Probe<Number> forTimeSeries(TimeSeries<T> series)
+			{
+				return (Probe) Change.asFraction(series);
+			}
+			
+			@Override
+			public String toString()
+			{
+				return "change as fraction";
 			}
 		};
 	}
