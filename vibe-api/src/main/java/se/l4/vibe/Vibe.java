@@ -9,6 +9,7 @@ import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.probes.TimeSeries;
 import se.l4.vibe.trigger.Condition;
 import se.l4.vibe.trigger.Conditions;
+import se.l4.vibe.trigger.On;
 import se.l4.vibe.trigger.Trigger;
 import se.l4.vibe.trigger.TriggerListener;
 import se.l4.vibe.trigger.Triggers;
@@ -140,6 +141,21 @@ public interface Vibe
 		 */
 		<Type> TriggerBuilder<TimeSeriesBuilder<T>> when(
 			Trigger<? super T, Type> trigger,
+			Condition<Type> condition
+		);
+		
+		/**
+		 * Create a trigger for this time series. See 
+		 * {@link #when(Trigger, Condition)}.
+		 * 
+		 * @param trigger
+		 * @param on
+		 * @param condition
+		 * @return
+		 */
+		<Type, Middle> TriggerBuilder<TimeSeriesBuilder<T>> when(
+			Trigger<Middle, Type> trigger,
+			On<? super T, Middle> on,
 			Condition<Type> condition
 		);
 		

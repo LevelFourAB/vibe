@@ -21,6 +21,7 @@ import se.l4.vibe.probes.TimeSeries;
 import se.l4.vibe.probes.TimeSeries.Entry;
 import se.l4.vibe.probes.TimeSeriesSampler;
 import se.l4.vibe.trigger.Condition;
+import se.l4.vibe.trigger.On;
 import se.l4.vibe.trigger.TimedTrigger;
 import se.l4.vibe.trigger.Trigger;
 import se.l4.vibe.trigger.TriggerEvent;
@@ -235,6 +236,17 @@ public class DefaultVibe
 		}
 		
 		@Override
+		public <Type, Middle> TriggerBuilder<TimeSeriesBuilder<T>> when(
+				Trigger<Middle, Type> trigger, 
+				On<? super T, Middle> on,
+				Condition<Type> condition)
+		{
+			Trigger<? super T, Type> newTrigger = on.build(trigger);
+			
+			return when(newTrigger, condition);
+		}
+		
+		@Override
 		public TimeSeriesBuilder<T> withInterval(long time, TimeUnit unit)
 		{
 			sampleInterval = unit.toMillis(time);
@@ -401,7 +413,7 @@ public class DefaultVibe
 				? ((TimedTrigger) trigger).getDefaultRepeatTime()
 				: 0;
 		}
-		
+
 		@Override
 		public TriggerBuilder<TimeSeriesBuilder<T>> andWhenNoLongerMet()
 		{

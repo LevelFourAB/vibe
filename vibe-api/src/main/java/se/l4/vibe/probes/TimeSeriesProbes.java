@@ -142,7 +142,7 @@ public class TimeSeriesProbes
 				{
 					entries.remove(0);
 					
-					operation.remove(entry.getValue(), entries);
+					operation.remove(firstEntry.getValue(), entries);
 				}
 			}
 			
