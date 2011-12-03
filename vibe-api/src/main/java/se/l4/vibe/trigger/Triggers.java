@@ -1,15 +1,12 @@
 package se.l4.vibe.trigger;
 
-import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
-import se.l4.vibe.probes.AbstractTimeSeries;
+import se.l4.vibe.internal.MergedTrigger;
 import se.l4.vibe.probes.Average;
 import se.l4.vibe.probes.Change;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.Range;
-import se.l4.vibe.probes.SampleListener;
-import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.probes.Sum;
 import se.l4.vibe.probes.TimeSeries;
 
@@ -79,7 +76,7 @@ public class Triggers
 	 * @param unit
 	 * @return
 	 */
-	public static <T extends Number> Trigger<T, Number> average(final long duration, final TimeUnit unit)
+	public static <T extends Number> Trigger<T, Number> averageOver(final long duration, final TimeUnit unit)
 	{
 		return new TimedTrigger<T, Number>()
 		{
@@ -110,7 +107,7 @@ public class Triggers
 	 * @param unit
 	 * @return
 	 */
-	public static <T extends Number> Trigger<T, Number> minimum(final long duration, final TimeUnit unit)
+	public static <T extends Number> Trigger<T, Number> minimumOver(final long duration, final TimeUnit unit)
 	{
 		return new TimedTrigger<T, Number>()
 		{
@@ -141,7 +138,7 @@ public class Triggers
 	 * @param unit
 	 * @return
 	 */
-	public static <T extends Number> Trigger<T, Number> maximum(final long duration, final TimeUnit unit)
+	public static <T extends Number> Trigger<T, Number> maximumOver(final long duration, final TimeUnit unit)
 	{
 		return new TimedTrigger<T, Number>()
 		{
@@ -248,7 +245,7 @@ public class Triggers
 	 * @param unit
 	 * @return
 	 */
-	public static <T extends Number> Trigger<T, Number> sum(final long duration, final TimeUnit unit)
+	public static <T extends Number> Trigger<T, Number> sumOver(final long duration, final TimeUnit unit)
 	{
 		return new TimedTrigger<T, Number>()
 		{
@@ -297,93 +294,6 @@ public class Triggers
 				return new MergedTrigger<Input, T>(trigger, second);
 			}
 		};
-	}
-	
-	private static class MergedTrigger<Input, Output>
-		implements Trigger<Input, Output>
-	{
-		private final Trigger<Input, ?> first;
-		private final Trigger<?, Output> second;
-
-		public <T> MergedTrigger(
-				Trigger<Input, T> first,
-				Trigger<T, Output> second)
-		{
-			this.first = first;
-			this.second = second;
-		}
-		
-		@Override
-		public Probe<Output> forTimeSeries(TimeSeries<Input> series)
-		{
-			Probe<?> probe = first.forTimeSeries(series);
-			FakeTimeSeries fakeSeries = new FakeTimeSeries(series, probe);
-			return second.forTimeSeries(fakeSeries);
-		}
-		
-		@Override
-		public String toString()
-		{
-			return second + " on " + first;
-		}
-	}
-	
-	private static class FakeTimeSeries<T>
-		extends AbstractTimeSeries<T>
-	{
-		public <In> FakeTimeSeries(TimeSeries<In> input, final Probe<T> probe)
-		{
-			input.addListener(new SampleListener<In>()
-			{
-				@Override
-				public void sampleAcquired(SampledProbe<In> probe0, Entry<In> entry)
-				{
-					SampleListener<T>[] listeners0 = listeners;
-					Entry<T> newEntry = new EntryImpl<T>(entry.getTime(), probe.read());
-					for(SampleListener<T> l : listeners0)
-					{
-						l.sampleAcquired(null, newEntry);
-					}
-				}
-			});
-		}
-		
-		@Override
-		public SampledProbe<T> getProbe()
-		{
-			return null;
-		}
-		
-		@Override
-		public Iterator<Entry<T>> iterator()
-		{
-			return null;
-		}
-	}
-	
-	private static class EntryImpl<T>
-		implements TimeSeries.Entry<T>
-	{
-		private final long time;
-		private final T value;
-
-		public EntryImpl(long time, T value)
-		{
-			this.time = time;
-			this.value = value;
-		}
-		
-		@Override
-		public long getTime()
-		{
-			return time;
-		}
-		
-		@Override
-		public T getValue()
-		{
-			return value;
-		}
 	}
 	
 	private static String toReadable(TimeUnit unit, long duration)

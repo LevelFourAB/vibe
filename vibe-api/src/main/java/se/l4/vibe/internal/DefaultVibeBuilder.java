@@ -1,7 +1,9 @@
-package se.l4.vibe;
+package se.l4.vibe.internal;
 
 import java.util.concurrent.TimeUnit;
 
+import se.l4.vibe.Vibe;
+import se.l4.vibe.VibeBuilder;
 import se.l4.vibe.backend.LoggingBackend;
 import se.l4.vibe.backend.MergedBackend;
 import se.l4.vibe.backend.VibeBackend;
@@ -63,6 +65,6 @@ public class DefaultVibeBuilder
 	@Override
 	public Vibe build()
 	{
-		return new DefaultVibe(backend, sampleInterval, sampleRetention);
+		return new VibeImpl(backend, sampleInterval, sampleRetention);
 	}
 }

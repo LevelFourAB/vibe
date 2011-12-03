@@ -36,7 +36,7 @@ public class TimeSeriesExample
 		 */
 		vibe.timeSeries(JvmProbes.cpuUsage())
 			.at("jvm/cpu")
-			.when(average(10, TimeUnit.SECONDS), below(0.8))
+			.when(averageOver(10, TimeUnit.SECONDS), below(0.8))
 				.sendEvent(EventSeverity.CRITICAL)
 			.export();
 		

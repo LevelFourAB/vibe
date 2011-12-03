@@ -82,5 +82,34 @@ public abstract class AbstractTimeSeries<T>
 			listenerLock.unlock();
 		}
 	}
+	
+	protected Entry<T> createEntry(long time, T value)
+	{
+		return new EntryImpl<T>(time, value);
+	}
 
+	public static class EntryImpl<T>
+		implements TimeSeries.Entry<T>
+	{
+		private final long time;
+		private final T value;
+	
+		public EntryImpl(long time, T value)
+		{
+			this.time = time;
+			this.value = value;
+		}
+		
+		@Override
+		public long getTime()
+		{
+			return time;
+		}
+		
+		@Override
+		public T getValue()
+		{
+			return value;
+		}
+	}
 }
