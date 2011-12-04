@@ -86,7 +86,35 @@ Vibe can monitor the system it runs on via the use of [Sigar](http://www.hyperic
 </dependency>
 ```
 
-Create a probes for the system via `SigarProbes`
+Create probes for the system via `SigarProbes`
+
+## Send e-mail on events
+
+When you have configured a set of time series and triggers for those you can
+configure an e-mail backend so that you will receive notifications when
+things go wrong.
+
+First include the backend:
+
+```xml
+<dependency>
+	<groupId>se.l4.vibe</groupId>
+	<artifactId>vibe-backend-mail</artifactId>
+	<version>current version</version>
+</dependency>
+``` 
+
+Build a backend with the builder:
+
+```java
+MailBackend backend = MailBackend.builder()
+	.setSender("system@example.org")
+	.setSmtpServer("smtp.example.org")
+	.setSubject("{severity} event for {path}")
+	.setMinimumSeverity(EventSeverity.WARN)
+	.addRecipient("sysadmin@example.org")
+	.build();
+```
 
 ## Other notes
 

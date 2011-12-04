@@ -267,9 +267,11 @@ public class MailBackend
 		 * 
 		 * @param minimumSeverity
 		 */
-		public void setMinimumSeverity(EventSeverity minimumSeverity)
+		public Builder setMinimumSeverity(EventSeverity minimumSeverity)
 		{
 			this.minimumSeverity = minimumSeverity;
+			
+			return this;
 		}
 		
 		/**
