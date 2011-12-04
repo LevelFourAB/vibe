@@ -17,6 +17,17 @@ public class ConstantProbe<T>
 		this.value = value;
 	}
 	
+	/**
+	 * Create a new probe for the given object.
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public static <T> ConstantProbe<T> forValue(T object)
+	{
+		return new ConstantProbe<T>(object);
+	}
+	
 	@Override
 	protected T sample0()
 	{
