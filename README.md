@@ -74,6 +74,20 @@ vibe.timeSeries(JvmProbes.totalUsedMemory())
 
 This will create a trigger that will be activated if the average value over 5 minutes changes more than 10%.
 
+## System probes
+
+Vibe can monitor the system it runs on via the use of [Sigar](http://www.hyperic.com/products/sigar).
+
+```xml
+<dependency>
+	<groupId>se.l4.vibe</groupId>
+	<artifactId>vibe-sigar</artifactId>
+	<version>current version</version>
+</dependency>
+```
+
+Create a probes for the system via `SigarProbes`
+
 ## Other notes
 
 The current development version can also be accessed via a Maven snapshot
