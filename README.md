@@ -2,6 +2,21 @@ Vibe is a simplistic approach to Java application monitoring.
 
 Licensed under Apache 2.0.
 
+## Current version
+
+There is currently no release available. See Other Notes for how you can
+use snaphots.
+
+Using Maven:
+
+```xml
+<dependency>
+	<groupId>se.l4.vibe</groupId>
+	<artifactId>vibe-api</artifactId>
+	<version>version</version>
+</dependency>
+```
+
 ## Creating a new instance
 
 First create a Vibe instance:
@@ -58,3 +73,24 @@ vibe.timeSeries(JvmProbes.totalUsedMemory())
 ```
 
 This will create a trigger that will be activated if the average value over 5 minutes changes more than 10%.
+
+## Other notes
+
+The current development version can also be accessed via a Maven snapshot
+repository. Include the following in your POM:
+
+If you want to you can include this repository to use snapshot releases:
+
+```xml
+<repository>
+	<releases>
+		<enabled>false</enabled>
+	</releases>
+	<snapshots>
+		<enabled>true</enabled>
+	</snapshots>
+	<id>sonatype-nexus-snapshots</id>
+	<name>Sonatype Nexus Snapshots</name>
+	<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+</repository>
+```
