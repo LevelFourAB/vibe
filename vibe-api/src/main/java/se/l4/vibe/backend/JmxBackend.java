@@ -73,6 +73,12 @@ public class JmxBackend
 				.append(".");
 		}
 		
+		if(lastSeparator == -1)
+		{
+			// No separator, append name directly
+			builder.append(":name=");
+		}
+		
 		for(int i=0, n=path.length(); i<n; i++)
 		{
 			char c = path.charAt(i);
