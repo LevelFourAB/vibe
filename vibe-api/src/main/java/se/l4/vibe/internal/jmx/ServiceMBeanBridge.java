@@ -16,7 +16,7 @@ import javax.management.MBeanNotificationInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.ReflectionException;
 
-import se.l4.vibe.service.Service;
+import se.l4.vibe.internal.service.Service;
 
 /**
  * Wrapper that will turn a service into a MBean.

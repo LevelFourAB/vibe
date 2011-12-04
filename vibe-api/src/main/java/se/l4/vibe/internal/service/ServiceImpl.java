@@ -1,4 +1,4 @@
-package se.l4.vibe.internal;
+package se.l4.vibe.internal.service;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import se.l4.vibe.service.ExposeAsAttribute;
-import se.l4.vibe.service.Service;
 
 /**
  * Implementation of {@link Service} that uses reflection.

@@ -10,13 +10,13 @@ import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
 import se.l4.vibe.event.Events;
-import se.l4.vibe.internal.ServiceImpl;
 import se.l4.vibe.internal.jmx.ProbeBean;
 import se.l4.vibe.internal.jmx.ServiceMBeanBridge;
 import se.l4.vibe.internal.jmx.TimeSeriesBean;
+import se.l4.vibe.internal.service.Service;
+import se.l4.vibe.internal.service.ServiceImpl;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.TimeSeries;
-import se.l4.vibe.service.Service;
 
 /**
  * JMX backend that will export everything via JMX.

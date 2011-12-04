@@ -1,7 +1,7 @@
 package se.l4.vibe.internal.jmx;
 
+import se.l4.vibe.internal.service.ExposeAsAttribute;
 import se.l4.vibe.probes.TimeSeries;
-import se.l4.vibe.service.ExposeAsAttribute;
 
 public class TimeSeriesBean
 {
