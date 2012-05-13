@@ -1,4 +1,4 @@
-package se.l4.vibe.service;
+package se.l4.vibe.internal.service;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
