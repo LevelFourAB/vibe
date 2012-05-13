@@ -12,9 +12,16 @@ public class CountingProbe
 	extends AbstractSampledProbe<Long>
 {
 	private final AtomicLong counter;
+	private final boolean resetOnSample;
 
 	public CountingProbe()
 	{
+		this(true);
+	}
+	
+	public CountingProbe(boolean resetOnSample)
+	{
+		this.resetOnSample = resetOnSample;
 		counter = new AtomicLong();
 	}
 
@@ -25,6 +32,15 @@ public class CountingProbe
 	public void increase()
 	{
 		counter.incrementAndGet();
+	}
+	
+	/**
+	 * Decrease the count with one.
+	 * 
+	 */
+	public void decrease()
+	{
+		counter.decrementAndGet();
 	}
 	
 	/**
@@ -46,7 +62,7 @@ public class CountingProbe
 	@Override
 	protected Long sample0()
 	{
-		return counter.getAndSet(0);
+		return resetOnSample ? counter.getAndSet(0) : counter.get();
 	}
 
 }
