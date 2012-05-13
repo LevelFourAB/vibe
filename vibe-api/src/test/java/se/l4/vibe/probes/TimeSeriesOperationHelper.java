@@ -44,6 +44,12 @@ public class TimeSeriesOperationHelper<Input, Output>
 			{
 				return value;
 			}
+			
+			@Override
+			public String toString()
+			{
+				return "Entry{time=0, value=" + value + "}";
+			}
 		});
 		op.add(value, list);
 	}

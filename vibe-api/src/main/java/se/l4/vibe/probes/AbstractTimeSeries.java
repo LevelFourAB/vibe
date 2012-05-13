@@ -111,5 +111,11 @@ public abstract class AbstractTimeSeries<T>
 		{
 			return value;
 		}
+		
+		@Override
+		public String toString()
+		{
+			return "Entry{time=" + time + ", value=" + value + "}";
+		}
 	}
 }

@@ -7,6 +7,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Sampler that will sample certain {@link SampledProbe}s at a given time
@@ -17,6 +20,8 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class TimeSeriesSampler
 {
+	private static final Logger logger = LoggerFactory.getLogger(TimeSeriesSampler.class);
+	
 	private static final TimeSeriesImpl<?>[] EMPTY = new TimeSeriesImpl[0];
 	
 	private final long sampleInterval;
@@ -160,7 +165,14 @@ public class TimeSeriesSampler
 				
 				for(SampleListener<T> listener : listeners)
 				{
-					listener.sampleAcquired(probe, entry);
+					try
+					{
+						listener.sampleAcquired(probe, entry);
+					}
+					catch(Exception e)
+					{
+						logger.warn("Unable to execute listener; " + e.getMessage(), e);
+					}
 				}
 			}
 		}
@@ -228,6 +240,12 @@ public class TimeSeriesSampler
 		public T getValue()
 		{
 			return value;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "Entry{time=" + time + ", value=" + value + "}";
 		}
 	}
 }
