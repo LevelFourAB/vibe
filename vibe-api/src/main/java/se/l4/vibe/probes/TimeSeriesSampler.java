@@ -140,22 +140,23 @@ public class TimeSeriesSampler
 		extends AbstractTimeSeries<T>
 	{
 		private final SampledProbe<T> probe;
-		private final LinkedBlockingDeque<T> data;
+		private final LinkedBlockingDeque<Value<T>> data;
 		
 		public TimeSeriesImpl(SampledProbe<T> probe, int maxSize, int currentSize)
 		{
 			this.probe = probe;
 			
-			data = new LinkedBlockingDeque<T>(maxSize);
+			data = new LinkedBlockingDeque<Value<T>>(maxSize);
 			
 			// Fill the data with empty values
-			for(int i=0, n=currentSize; i<n; i++) data.addLast(null);
+			Value<T> nullValue = new Value<T>(null);
+			for(int i=0, n=currentSize; i<n; i++) data.addLast(nullValue);
 		}
 
 		public void sample()
 		{
 			T value = probe.sample();
-			add(data, value);
+			add(data, new Value<T>(value));
 			
 			SampleListener<T>[] listeners = this.listeners;
 			if(listeners.length > 0)
@@ -187,7 +188,7 @@ public class TimeSeriesSampler
 		public Iterator<Entry<T>> iterator()
 		{
 			final SampleInfo[] info = samples.toArray(new SampleInfo[0]);
-			final Object[] entries = data.toArray();
+			final Value[] entries = data.toArray(new Value[data.size()]);
 			
 			return new Iterator<TimeSeries.Entry<T>>()
 			{
@@ -203,7 +204,7 @@ public class TimeSeriesSampler
 				public Entry<T> next()
 				{
 					SampleInfo s = info[pointer];
-					Object d = entries[pointer];
+					Object d = entries[pointer].value;
 					pointer++;
 					
 					return new SampleEntry(s.time, d);
@@ -246,6 +247,16 @@ public class TimeSeriesSampler
 		public String toString()
 		{
 			return "Entry{time=" + time + ", value=" + value + "}";
+		}
+	}
+	
+	private static class Value<T>
+	{
+		private final T value;
+
+		public Value(T value)
+		{
+			this.value = value;
 		}
 	}
 }
