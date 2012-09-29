@@ -44,6 +44,19 @@ public class AbstractBuilder<Self>
 		return (Self) this;
 	}
 	
+	@Override
+	public Self at(Class<?> type)
+	{
+		if(type == null)
+		{
+			throw new IllegalArgumentException("Type can not be null");
+		}
+		
+		this.path = type.getName().replace('.', '/');
+		
+		return (Self) this;
+	}
+	
 	protected void verify()
 	{
 		if(path == null)

@@ -25,4 +25,13 @@ public interface Builder<Self>
 	 * @return
 	 */
 	Self at(String path);
+	
+	/**
+	 * Set the hierarchy by taking the full class name and replacing dots
+	 * with forward slashes.
+	 * 
+	 * @param type
+	 * @return
+	 */
+	Self at(Class<?> type);
 }
