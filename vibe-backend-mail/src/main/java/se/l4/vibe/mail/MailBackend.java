@@ -144,6 +144,8 @@ public class MailBackend
 		msg.setText(body.toString());
 		
 		msg.setHeader("X-Mailer", "Vibe");
+		msg.setHeader("X-Vibe-Severity", severity.toString());
+		msg.setHeader("X-Vibe-Path", path);
 		msg.setSentDate(new Date());
 		
 		Transport.send(msg);
