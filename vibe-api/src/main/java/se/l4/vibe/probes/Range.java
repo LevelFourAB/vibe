@@ -80,6 +80,17 @@ public class Range
 		return new MinOperation<T>();
 	}
 	
+	/**
+	 * Create a new operation that will calculate the minimum of any time
+	 * series.
+	 * 
+	 * @return
+	 */
+	public static <T extends Number> TimeSeriesOperation<T, Double> newMaximumOperation()
+	{
+		return new MaxOperation<T>();
+	}
+	
 	private static class MinOperation<T extends Number>
 		implements TimeSeriesOperation<T, Double>
 	{
@@ -121,7 +132,7 @@ public class Range
 			double max = Double.MIN_VALUE;
 			for(TimeSeries.Entry<T> entry : entries)
 			{
-				max = Math.min(max, entry.getValue().doubleValue());
+				max = Math.max(max, entry.getValue().doubleValue());
 			}
 			
 			this.value = max;
