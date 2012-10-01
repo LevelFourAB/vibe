@@ -53,7 +53,17 @@ public class Average
 	public static <T extends Number> SampledProbe<Double> forProbe(
 			SampledProbe<T> probe)
 	{
-		return new AveragingProbe<T>(probe);
+		return new AveragingProbeProbe<T>(probe);
+	}
+	
+	/**
+	 * Create a probe that averages numeric values.
+	 * 
+	 * @return
+	 */
+	public static AveragingProbe create()
+	{
+		return new AveragingProbe();
 	}
 	
 	/**
@@ -65,7 +75,7 @@ public class Average
 	{
 		return new AverageOperation<T>();
 	}
-
+	
 	/**
 	 * Operation that will calculate the average.
 	 * 
@@ -107,14 +117,14 @@ public class Average
 	 *
 	 * @param <T>
 	 */
-	private static class AveragingProbe<T extends Number>
+	private static class AveragingProbeProbe<T extends Number>
 		extends AbstractSampledProbe<Double>
 	{
 		private long accumulated;
 		private long samples;
 		private final SampledProbe<T> probe;
 
-		public AveragingProbe(SampledProbe<T> probe)
+		public AveragingProbeProbe(SampledProbe<T> probe)
 		{
 			this.probe = probe;
 		}
