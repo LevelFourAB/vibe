@@ -57,11 +57,6 @@ public class DefaultVibeBuilder
 		return this;
 	}
 	
-	public VibeBuilder setLogging(boolean logging)
-	{
-		return this;
-	}
-	
 	@Override
 	public Vibe build()
 	{
