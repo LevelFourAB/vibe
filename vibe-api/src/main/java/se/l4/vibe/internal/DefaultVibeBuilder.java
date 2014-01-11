@@ -23,7 +23,6 @@ public class DefaultVibeBuilder
 
 	public DefaultVibeBuilder()
 	{
-		backend = new LoggingBackend();
 		sampleInterval = TimeUnit.MINUTES.toMillis(1);
 		sampleRetention = TimeUnit.MINUTES.toMillis(60);
 	}
