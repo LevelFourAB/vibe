@@ -3,6 +3,7 @@ package se.l4.vibe.backend;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.timer.Timer;
 
 /**
  * Collection of several backends that are triggered in order.
@@ -44,6 +45,15 @@ public class MergedBackend
 		for(VibeBackend backend : backends)
 		{
 			backend.export(path, events);
+		}
+	}
+	
+	@Override
+	public void export(String path, Timer timer)
+	{
+		for(VibeBackend backend : backends)
+		{
+			backend.export(path, timer);
 		}
 	}
 }

@@ -5,10 +5,12 @@ import se.l4.vibe.backend.VibeBackend;
 import se.l4.vibe.builder.EventsBuilder;
 import se.l4.vibe.builder.ProbeBuilder;
 import se.l4.vibe.builder.TimeSeriesBuilder;
+import se.l4.vibe.builder.TimerBuilder;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.timer.Timer;
 
 /**
  * Main interface for statistics and events.
@@ -42,6 +44,13 @@ public interface Vibe
 	<T> EventsBuilder<T> events(Class<T> base);
 	
 	/**
+	 * Start creating a new timer.
+	 * 
+	 * @return
+	 */
+	TimerBuilder timer();
+	
+	/**
 	 * Get a {@link Probe} that has been registered at the given path.
 	 * 
 	 * @param path
@@ -64,6 +73,14 @@ public interface Vibe
 	 * @return
 	 */
 	<T> Events<T> getEvents(String path);
+	
+	/**
+	 * Get a {@link Timer} that has been registered at the given path.
+	 * 
+	 * @param path
+	 * @return
+	 */
+	Timer getTimer(String path);
 	
 	/**
 	 * Register a new backend to this instance.

@@ -23,7 +23,18 @@ public class Change
 	 */
 	public static <T extends Number> Probe<Number> forSeries(TimeSeries<T> series)
 	{
-		return new ChangeProbe<T>(series);
+		return new ChangeProbe<T, T>(series, ValueReaders.<T>same());
+	}
+	
+	/**
+	 * Create a probe that will return the numeric change for the given series.
+	 * 
+	 * @param series
+	 * @return
+	 */
+	public static <I, T extends Number> Probe<Number> forSeries(TimeSeries<I> series, ValueReader<I, T> reader)
+	{
+		return new ChangeProbe<I, T>(series, reader);
 	}
 	
 	/**
@@ -35,25 +46,37 @@ public class Change
 	 */
 	public static <T extends Number> Probe<Double> asFraction(TimeSeries<T> series)
 	{
-		return new ChangeAsFractionProbe<T>(series);
+		return new ChangeAsFractionProbe<T, T>(series, ValueReaders.<T>same());
 	}
 	
-	private static class ChangeProbe<T extends Number>
+	/**
+	 * Create a probe that will return the change as a fraction for the given 
+	 * series.
+	 * 
+	 * @param series
+	 * @return
+	 */
+	public static <I, T extends Number> Probe<Double> asFraction(TimeSeries<I> series, ValueReader<I, T> reader)
+	{
+		return new ChangeAsFractionProbe<I, T>(series, reader);
+	}
+	
+	private static class ChangeProbe<I, O extends Number>
 		implements Probe<Number>
 	{
 		private double lastValue;
 		private double value;
 		
-		public ChangeProbe(TimeSeries<T> series)
+		public ChangeProbe(TimeSeries<I> series, final ValueReader<I, O> reader)
 		{
 			lastValue = Double.NaN;
 			
-			series.addListener(new SampleListener<T>()
+			series.addListener(new SampleListener<I>()
 			{
 				@Override
-				public void sampleAcquired(SampledProbe<T> probe, Entry<T> entry)
+				public void sampleAcquired(SampledProbe<I> probe, Entry<I> entry)
 				{
-					double current = entry.getValue().doubleValue();
+					double current = reader.read(entry.getValue()).doubleValue();
 					value = current - lastValue;
 					lastValue = current;
 				}
@@ -67,22 +90,22 @@ public class Change
 		}
 	}
 	
-	private static class ChangeAsFractionProbe<T extends Number>
+	private static class ChangeAsFractionProbe<I, O extends Number>
 		implements Probe<Double>
 	{
 		private double lastValue;
 		private double value;
 		
-		public ChangeAsFractionProbe(TimeSeries<T> series)
+		public ChangeAsFractionProbe(TimeSeries<I> series, final ValueReader<I, O> reader)
 		{
 			lastValue = Double.NaN;
 			
-			series.addListener(new SampleListener<T>()
+			series.addListener(new SampleListener<I>()
 			{
 				@Override
-				public void sampleAcquired(SampledProbe<T> probe, Entry<T> entry)
+				public void sampleAcquired(SampledProbe<I> probe, Entry<I> entry)
 				{
-					double current = entry.getValue().doubleValue();
+					double current = reader.read(entry.getValue()).doubleValue();
 					value = current == lastValue 
 						? 0 
 						: (current - lastValue) / lastValue;

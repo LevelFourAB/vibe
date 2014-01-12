@@ -11,6 +11,7 @@ import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.SampleListener;
 import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.timer.Timer;
 
 /**
  * Basic backend that will log a message every time something is sampled.
@@ -53,6 +54,11 @@ public class LoggingBackend
 	public void export(String path, Events<?> events)
 	{
 		events.addListener(new PrintEventListener(logger, path));
+	}
+	
+	@Override
+	public void export(String path, Timer timer)
+	{
 	}
 
 	private static class PrintSampleListener

@@ -13,14 +13,17 @@ import se.l4.vibe.backend.VibeBackend;
 import se.l4.vibe.builder.EventsBuilder;
 import se.l4.vibe.builder.ProbeBuilder;
 import se.l4.vibe.builder.TimeSeriesBuilder;
+import se.l4.vibe.builder.TimerBuilder;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.internal.builder.EventsBuilderImpl;
 import se.l4.vibe.internal.builder.ProbeBuilderImpl;
 import se.l4.vibe.internal.builder.TimeSeriesBuilderImpl;
+import se.l4.vibe.internal.builder.TimerBuilderImpl;
 import se.l4.vibe.internal.time.TimeSampler;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.timer.Timer;
 
 /**
  * Implementation of {@link Vibe}.
@@ -87,6 +90,12 @@ public class VibeImpl
 	}
 	
 	@Override
+	public TimerBuilder timer()
+	{
+		return new TimerBuilderImpl(backend);
+	}
+	
+	@Override
 	public <T> Events<T> getEvents(String path)
 	{
 		Object o = instances.get(path);
@@ -105,6 +114,13 @@ public class VibeImpl
 	{
 		Object o = instances.get(path);
 		return o instanceof TimeSeries ? (TimeSeries) o : null;
+	}
+	
+	@Override
+	public Timer getTimer(String path)
+	{
+		Object o = instances.get(path);
+		return o instanceof Timer ? (Timer) o : null;
 	}
 	
 	@Override
@@ -160,6 +176,16 @@ public class VibeImpl
 			for(VibeBackend vb : backends)
 			{
 				vb.export(path, series);
+			}
+		}
+		
+		@Override
+		public void export(String path, Timer timer)
+		{
+			checkPathAndAdd(path, timer);
+			for(VibeBackend vb : backends)
+			{
+				vb.export(path, timer);
 			}
 		}
 		

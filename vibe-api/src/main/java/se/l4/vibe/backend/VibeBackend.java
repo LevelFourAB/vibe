@@ -4,6 +4,7 @@ import se.l4.vibe.Vibe;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.timer.Timer;
 
 /**
  * Backend for a {@link Vibe} instance.
@@ -36,4 +37,12 @@ public interface VibeBackend
 	 * @param events
 	 */
 	void export(String path, Events<?> events);
+	
+	/**
+	 * Export a timer.
+	 * 
+	 * @param path
+	 * @param timer
+	 */
+	void export(String path, Timer timer);
 }

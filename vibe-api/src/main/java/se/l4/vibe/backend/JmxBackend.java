@@ -17,6 +17,7 @@ import se.l4.vibe.internal.service.Service;
 import se.l4.vibe.internal.service.ServiceImpl;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.timer.Timer;
 
 /**
  * JMX backend that will export everything via JMX.
@@ -162,6 +163,13 @@ public class JmxBackend
 
 	@Override
 	public void export(String path, Events<?> events)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void export(String path, Timer timer)
 	{
 		// TODO Auto-generated method stub
 		

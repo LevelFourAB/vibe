@@ -23,6 +23,7 @@ import se.l4.vibe.event.EventSeverity;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.timer.Timer;
 
 /**
  * Backend that will e-mail events.
@@ -159,6 +160,12 @@ public class MailBackend
 
 	@Override
 	public void export(String path, Probe<?> probe)
+	{
+		// Do nothing, not supported by mailer
+	}
+	
+	@Override
+	public void export(String path, Timer timer)
 	{
 		// Do nothing, not supported by mailer
 	}
