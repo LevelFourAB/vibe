@@ -74,6 +74,28 @@ vibe.timeSeries(JvmProbes.totalUsedMemory())
 
 This will create a trigger that will be activated if the average value over 5 minutes changes more than 10%.
 
+## Timing calls
+
+Vibe supports timing of actions, such as monitoring the time it takes for your application to handle a request.
+
+To create a timer:
+```java
+Timer timer = vibe.timer()
+	.at("web/requests")
+	.withBuckets(0, 50, 100, 200, 500, 1000) // for calculating percentiles
+	.export();
+```
+
+To use a timer:
+```java
+Stopwatch stopwatch = timer.start();
+try {
+	// Code to measure here
+} finally {
+	stopwatch.stop();
+}
+```
+
 ## System probes
 
 Vibe can monitor the system it runs on via the use of [Sigar](http://www.hyperic.com/products/sigar).
