@@ -27,7 +27,19 @@ public class Sum
 	 */
 	public static <T extends Number> Probe<Long> forSeriesAsLong(TimeSeries<T> series)
 	{
-		return TimeSeriesProbes.forSeries(series, new SumLongOperation<T>());
+		return TimeSeriesProbes.forSeries(series, new SumLongOperation<T, T>(ValueReaders.<T>same()));
+	}
+	
+	/**
+	 * Create a probe that will calculate the sum of the entire series as a
+	 * {@link Long}.
+	 * 
+	 * @param series
+	 * @return
+	 */
+	public static <T, N extends Number> Probe<Long> forSeriesAsLong(TimeSeries<T> series, ValueReader<T, N> reader)
+	{
+		return TimeSeriesProbes.forSeries(series, new SumLongOperation<T, N>(reader));
 	}
 	
 	/**
@@ -39,7 +51,19 @@ public class Sum
 	 */
 	public static <T extends Number> Probe<Double> forSeriesAsDouble(TimeSeries<T> series)
 	{
-		return TimeSeriesProbes.forSeries(series, new SumDoubleOperation<T>());
+		return TimeSeriesProbes.forSeries(series, new SumDoubleOperation<T, T>(ValueReaders.<T>same()));
+	}
+	
+	/**
+	 * Create a probe that will calculate the sum of the entire series as a
+	 * {@link Double}.
+	 * 
+	 * @param series
+	 * @return
+	 */
+	public static <T, N extends Number> Probe<Double> forSeriesAsDouble(TimeSeries<T> series, ValueReader<T, N> reader)
+	{
+		return TimeSeriesProbes.forSeries(series, new SumDoubleOperation<T, N>(reader));
 	}
 	
 	/**
@@ -57,7 +81,26 @@ public class Sum
 		TimeUnit unit
 	)
 	{
-		return TimeSeriesProbes.forSeries(series, duration, unit, new SumLongOperation<T>());
+		return TimeSeriesProbes.forSeries(series, duration, unit, new SumLongOperation<T, T>(ValueReaders.<T>same()));
+	}
+	
+	/**
+	 * Create a probe that will calculate the sum as a sliding window with
+	 * the specified duration.
+	 * 
+	 * @param series
+	 * @param duration
+	 * @param unit
+	 * @return
+	 */
+	public static <T, N extends Number> Probe<Long> forSeriesAsLong(
+		TimeSeries<T> series,
+		ValueReader<T, N> reader,
+		long duration, 
+		TimeUnit unit
+	)
+	{
+		return TimeSeriesProbes.forSeries(series, duration, unit, new SumLongOperation<T, N>(reader));
 	}
 	
 	/**
@@ -75,24 +118,50 @@ public class Sum
 		TimeUnit unit
 	)
 	{
-		return TimeSeriesProbes.forSeries(series, duration, unit, new SumDoubleOperation<T>());
+		return TimeSeriesProbes.forSeries(series, duration, unit, new SumDoubleOperation<T, T>(ValueReaders.<T>same()));
 	}
 	
-	private static class SumDoubleOperation<T extends Number>
+	/**
+	 * Create a probe that will calculate the sum as a sliding window with
+	 * the specified duration.
+	 * 
+	 * @param series
+	 * @param duration
+	 * @param unit
+	 * @return
+	 */
+	public static <T, N extends Number> Probe<Double> forSeriesAsDouble(
+		TimeSeries<T> series,
+		ValueReader<T, N> reader,
+		long duration, 
+		TimeUnit unit
+	)
+	{
+		return TimeSeriesProbes.forSeries(series, duration, unit, new SumDoubleOperation<T, N>(reader));
+	}
+	
+	private static class SumDoubleOperation<T, N extends Number>
 		implements TimeSeriesOperation<T, Double>
 	{
+		private final ValueReader<T, N> reader;
+		
 		private double sum;
+		
+		public SumDoubleOperation(ValueReader<T, N> reader)
+		{
+			this.reader = reader;
+		}
 
 		@Override
 		public void remove(T value, Collection<Entry<T>> entries)
 		{
-			sum -= value.doubleValue();
+			sum -= reader.read(value).doubleValue();
 		}
 
 		@Override
 		public void add(T value, Collection<Entry<T>> entries)
 		{
-			sum += value.doubleValue();
+			sum += reader.read(value).doubleValue();
 		}
 
 		@Override
@@ -102,21 +171,28 @@ public class Sum
 		}
 	}
 	
-	private static class SumLongOperation<T extends Number>
+	private static class SumLongOperation<T, N extends Number>
 		implements TimeSeriesOperation<T, Long>
 	{
+		private final ValueReader<T, N> reader;
+		
 		private long sum;
+		
+		public SumLongOperation(ValueReader<T, N> reader)
+		{
+			this.reader = reader;
+		}
 	
 		@Override
 		public void remove(T value, Collection<Entry<T>> entries)
 		{
-			sum -= value.longValue();
+			sum -= reader.read(value).longValue();
 		}
 	
 		@Override
 		public void add(T value, Collection<Entry<T>> entries)
 		{
-			sum += value.longValue();
+			sum += reader.read(value).longValue();
 		}
 	
 		@Override

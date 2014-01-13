@@ -24,7 +24,19 @@ public class Range
 	 */
 	public static <T extends Number> Probe<Double> min(TimeSeries<T> series)
 	{
-		return new SeriesMinMax<T>(series, true);
+		return new SeriesMinMax<T>(series, ValueReaders.<T>same(), true);
+	}
+	
+	/**
+	 * Return a probe that will always return the minimum value ever measured
+	 * in the given series.
+	 * 
+	 * @param series
+	 * @return
+	 */
+	public static <T, N extends Number> Probe<Double> min(TimeSeries<T> series, ValueReader<T, N> reader)
+	{
+		return new SeriesMinMax<T>(series, reader, true);
 	}
 	
 	/**
@@ -34,9 +46,9 @@ public class Range
 	 * @param series
 	 * @return
 	 */
-	public static <T extends Number> Probe<Double> max(TimeSeries<T> series)
+	public static <T, N extends Number> Probe<Double> max(TimeSeries<T> series, ValueReader<T, N> reader)
 	{
-		return new SeriesMinMax<T>(series, false);
+		return new SeriesMinMax<T>(series, reader, false);
 	}
 	
 	/**
@@ -51,7 +63,23 @@ public class Range
 			long duration,
 			TimeUnit unit)
 	{
-		return TimeSeriesProbes.forSeries(series, duration, unit, new MinOperation<T>());
+		return TimeSeriesProbes.forSeries(series, duration, unit, new MinOperation<T, T>(ValueReaders.<T>same()));
+	}
+	
+	/**
+	 * Return a probe that will return the minimum value measured over a
+	 * certain period.
+	 * 
+	 * @param series
+	 * @return
+	 */
+	public static <T, N extends Number> Probe<Double> minimum(
+			TimeSeries<T> series,
+			ValueReader<T, N> reader,
+			long duration,
+			TimeUnit unit)
+	{
+		return TimeSeriesProbes.forSeries(series, duration, unit, new MinOperation<T, N>(reader));
 	}
 	
 	/**
@@ -66,7 +94,23 @@ public class Range
 			long duration,
 			TimeUnit unit)
 	{
-		return TimeSeriesProbes.forSeries(series, duration, unit, new MaxOperation<T>());
+		return TimeSeriesProbes.forSeries(series, duration, unit, new MaxOperation<T, T>(ValueReaders.<T>same()));
+	}
+	
+	/**
+	 * Return a probe that will return the maximum value measured over a
+	 * certain period.
+	 * 
+	 * @param series
+	 * @return
+	 */
+	public static <T, N extends Number> Probe<Double> maximum(
+			TimeSeries<T> series,
+			ValueReader<T, N> reader,
+			long duration,
+			TimeUnit unit)
+	{
+		return TimeSeriesProbes.forSeries(series, duration, unit, new MaxOperation<T, N>(reader));
 	}
 	
 	/**
@@ -77,7 +121,18 @@ public class Range
 	 */
 	public static <T extends Number> TimeSeriesOperation<T, Double> newMinimumOperation()
 	{
-		return new MinOperation<T>();
+		return new MinOperation<T, T>(ValueReaders.<T>same());
+	}
+
+	/**
+	 * Create a new operation that will calculate the minimum of any time
+	 * series.
+	 * 
+	 * @return
+	 */
+	public static <T, N extends Number> TimeSeriesOperation<T, Double> newMinimumOperation(ValueReader<T, N> reader)
+	{
+		return new MinOperation<T, N>(reader);
 	}
 	
 	/**
@@ -88,28 +143,45 @@ public class Range
 	 */
 	public static <T extends Number> TimeSeriesOperation<T, Double> newMaximumOperation()
 	{
-		return new MaxOperation<T>();
+		return new MaxOperation<T, T>(ValueReaders.<T>same());
 	}
 	
-	private static class MinOperation<T extends Number>
-		implements TimeSeriesOperation<T, Double>
+	/**
+	 * Create a new operation that will calculate the minimum of any time
+	 * series.
+	 * 
+	 * @return
+	 */
+	public static <T, N extends Number> TimeSeriesOperation<T, Double> newMaximumOperation(ValueReader<T, N> reader)
 	{
+		return new MaxOperation<T, N>(reader);
+	}
+	
+	private static class MinOperation<I, O extends Number>
+		implements TimeSeriesOperation<I, Double>
+	{
+		private final ValueReader<I, O> reader;
 		private double value;
+		
+		public MinOperation(ValueReader<I, O> reader)
+		{
+			this.reader = reader;
+		}
 
 		@Override
-		public void add(T value, Collection<TimeSeries.Entry<T>> entries)
+		public void add(I value, Collection<TimeSeries.Entry<I>> entries)
 		{
 			double min = Double.MAX_VALUE;
-			for(TimeSeries.Entry<T> entry : entries)
+			for(TimeSeries.Entry<I> entry : entries)
 			{
-				min = Math.min(min, entry.getValue().doubleValue());
+				min = Math.min(min, reader.read(entry.getValue()).doubleValue());
 			}
 			
 			this.value = min;
 		}
 		
 		@Override
-		public void remove(T value, Collection<TimeSeries.Entry<T>> entries)
+		public void remove(I value, Collection<TimeSeries.Entry<I>> entries)
 		{
 			// Do nothing
 		}
@@ -121,25 +193,31 @@ public class Range
 		}
 	}
 	
-	private static class MaxOperation<T extends Number>
-		implements TimeSeriesOperation<T, Double>
+	private static class MaxOperation<I, T extends Number>
+		implements TimeSeriesOperation<I, Double>
 	{
+		private final ValueReader<I, T> reader;
 		private double value;
 	
+		public MaxOperation(ValueReader<I, T> reader)
+		{
+			this.reader = reader;
+		}
+		
 		@Override
-		public void add(T value, Collection<TimeSeries.Entry<T>> entries)
+		public void add(I value, Collection<TimeSeries.Entry<I>> entries)
 		{
 			double max = Double.MIN_VALUE;
-			for(TimeSeries.Entry<T> entry : entries)
+			for(TimeSeries.Entry<I> entry : entries)
 			{
-				max = Math.max(max, entry.getValue().doubleValue());
+				max = Math.max(max, reader.read(entry.getValue()).doubleValue());
 			}
 			
 			this.value = max;
 		}
 		
 		@Override
-		public void remove(T value, Collection<TimeSeries.Entry<T>> entries)
+		public void remove(I value, Collection<TimeSeries.Entry<I>> entries)
 		{
 			// Do nothing
 		}
@@ -151,12 +229,12 @@ public class Range
 		}
 	}
 	
-	private static class SeriesMinMax<T extends Number>
+	private static class SeriesMinMax<T>
 		implements Probe<Double>
 	{
 		private double value;
 		
-		public SeriesMinMax(TimeSeries<T> series, final boolean min)
+		public SeriesMinMax(TimeSeries<T> series, final ValueReader<T, ? extends Number> reader, final boolean min)
 		{
 			value = min ? Double.MAX_VALUE : Double.MIN_NORMAL;
 			series.addListener(new SampleListener<T>()
@@ -164,7 +242,7 @@ public class Range
 				@Override
 				public void sampleAcquired(SampledProbe<T> probe, TimeSeries.Entry<T> entry)
 				{
-					double newValue = entry.getValue().doubleValue();
+					double newValue = reader.read(entry.getValue()).doubleValue();
 					if(min)
 					{
 						value = Math.min(newValue, value);

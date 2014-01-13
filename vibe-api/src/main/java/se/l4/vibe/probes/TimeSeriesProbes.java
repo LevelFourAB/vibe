@@ -1,5 +1,6 @@
 package se.l4.vibe.probes;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +40,23 @@ public class TimeSeriesProbes
 	}
 	
 	/**
+	 * Create a probe for the specified series that will keep track of values
+	 * over the specified time.
+	 * 
+	 * @param series
+	 * @param duration
+	 * @param unit
+	 * @return
+	 */
+	public static <T extends ModifiableData<T>> Probe<T> forSeries(
+		TimeSeries<T> series,
+		long duration, TimeUnit unit
+	)
+	{
+		return forSeries(series, duration, unit, new ModifiableDataOperation<T>());
+	}
+	
+	/**
 	 * Create a probe for the specified series that keep track of values
 	 * ever sampled.
 	 * 
@@ -57,6 +75,22 @@ public class TimeSeriesProbes
 	)
 	{
 		return new EternityProbe<Input, Output>(series, operation);
+	}
+	
+	/**
+	 * Create a probe for the specified series that keep track of values
+	 * ever sampled.
+	 * 
+	 * <p>
+	 * This is can be used if the data stored in the series implements
+	 * {@link ModifiableData}.
+	 * 
+	 * @param series
+	 * @return
+	 */
+	public static <T extends ModifiableData<T>> Probe<T> forSeries(TimeSeries<T> series)
+	{
+		return forSeries(series, new ModifiableDataOperation<T>());
 	}
 	
 	private static class EternityProbe<Input, Output>
@@ -154,6 +188,38 @@ public class TimeSeriesProbes
 		public Output read()
 		{
 			return operation.get();
+		}
+	}
+	
+	private static class ModifiableDataOperation<T extends ModifiableData<T>>
+		implements TimeSeriesOperation<T, T>
+	{
+		private T data;
+		
+		@Override
+		public void add(T value, Collection<Entry<T>> entries)
+		{
+			if(data == null)
+			{
+				data = value;
+				return;
+			}
+			
+			data = data.add(value);
+		}
+		
+		@Override
+		public void remove(T value, Collection<Entry<T>> entries)
+		{
+			if(data == null) return;
+			
+			data = data.remove(value);
+		}
+		
+		@Override
+		public T get()
+		{
+			return data;
 		}
 	}
 }

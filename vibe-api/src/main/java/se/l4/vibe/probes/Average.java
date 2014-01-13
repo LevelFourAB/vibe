@@ -23,7 +23,19 @@ public class Average
 	 */
 	public static <T extends Number> Probe<Double> forSeries(TimeSeries<T> series)
 	{
-		return TimeSeriesProbes.forSeries(series, new AverageOperation<T>());
+		return TimeSeriesProbes.forSeries(series, Average.<T>newOperation());
+	}
+	
+	/**
+	 * Create an average for the entire time series.
+	 * 
+	 * @param series
+	 * @param reader
+	 * @return
+	 */
+	public static <I, T extends Number> Probe<Double> forSeries(TimeSeries<I> series, ValueReader<I, T> reader)
+	{
+		return TimeSeriesProbes.forSeries(series, Average.<I, T>newOperation(reader));
 	}
 	
 	/**
@@ -40,7 +52,25 @@ public class Average
 			long duration,
 			TimeUnit unit)
 	{
-		return TimeSeriesProbes.forSeries(series, duration, unit, new AverageOperation<T>());
+		return TimeSeriesProbes.forSeries(series, duration, unit, Average.<T>newOperation());
+	}
+	
+	/**
+	 * Create an average for a time series that will keep an average for the
+	 * specified duration.
+	 * 
+	 * @param series
+	 * @param duration
+	 * @param unit
+	 * @return
+	 */
+	public static <I, T extends Number> Probe<Double> forSeries(
+			TimeSeries<I> series,
+			ValueReader<I, T> reader,
+			long duration,
+			TimeUnit unit)
+	{
+		return TimeSeriesProbes.forSeries(series, duration, unit, Average.<I, T>newOperation(reader));
 	}
 	
 	/**
@@ -73,7 +103,17 @@ public class Average
 	 */
 	public static <T extends Number> TimeSeriesOperation<T, Double> newOperation()
 	{
-		return new AverageOperation<T>();
+		return new AverageOperation<T, T>(ValueReaders.<T>same());
+	}
+	
+	/**
+	 * Create an operation that will calculate an average.
+	 * 
+	 * @return
+	 */
+	public static <I, T extends Number> TimeSeriesOperation<I, Double> newOperation(ValueReader<I, T> reader)
+	{
+		return new AverageOperation<I, T>(reader);
 	}
 	
 	/**
@@ -83,23 +123,30 @@ public class Average
 	 *
 	 * @param <T>
 	 */
-	private static class AverageOperation<T extends Number>
-		implements TimeSeriesOperation<T, Double>
+	private static class AverageOperation<I, O extends Number>
+		implements TimeSeriesOperation<I, Double>
 	{
+		private final ValueReader<I, O> reader;
+		
 		private double totalSum;
 		private double totalEntries;
 		
-		@Override
-		public void add(T value, Collection<TimeSeries.Entry<T>> entries)
+		public AverageOperation(ValueReader<I, O> reader)
 		{
-			totalSum += value.doubleValue();
+			this.reader = reader;
+		}
+		
+		@Override
+		public void add(I value, Collection<TimeSeries.Entry<I>> entries)
+		{
+			totalSum += reader.read(value).doubleValue();
 			totalEntries += 1;
 		}
 
 		@Override
-		public void remove(T value, Collection<TimeSeries.Entry<T>> entries)
+		public void remove(I value, Collection<TimeSeries.Entry<I>> entries)
 		{
-			totalSum -= value.doubleValue();
+			totalSum -= reader.read(value).doubleValue();
 			totalEntries -= 1;
 		}
 		
