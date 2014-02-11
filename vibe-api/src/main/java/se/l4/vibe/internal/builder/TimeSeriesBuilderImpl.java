@@ -104,7 +104,7 @@ public class TimeSeriesBuilderImpl<T>
 		if(triggerEvents == null)
 		{
 			triggerEvents = new EventsImpl<TriggerEvent>(EventSeverity.WARN);
-			backend.export(path, triggerEvents);
+			backend.export(path + ':' + triggers.size(), triggerEvents);
 		}
 		
 		return new TimeSeriesTriggerBuilder(this, trigger, condition, triggerEvents);
