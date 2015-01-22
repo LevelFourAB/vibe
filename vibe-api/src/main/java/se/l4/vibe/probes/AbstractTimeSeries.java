@@ -4,14 +4,14 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Abstract implementation of {@link TimeSeries}.
+ * Abstract implementation of {@link Sampler}.
  * 
  * @author Andreas Holstenson
  *
  * @param <T>
  */
 public abstract class AbstractTimeSeries<T>
-	implements TimeSeries<T>
+	implements Sampler<T>
 {
 	private static final SampleListener[] EMPTY = new SampleListener[0];
 	
@@ -89,7 +89,7 @@ public abstract class AbstractTimeSeries<T>
 	}
 
 	public static class EntryImpl<T>
-		implements TimeSeries.Entry<T>
+		implements Sampler.Entry<T>
 	{
 		private final long time;
 		private final T value;

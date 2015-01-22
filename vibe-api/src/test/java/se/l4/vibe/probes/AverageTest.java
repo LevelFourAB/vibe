@@ -16,7 +16,7 @@ public class AverageTest
 	@Test
 	public void testEmtpy()
 	{
-		TimeSeriesOperation<Number, Double> op = Average.newOperation();
+		SampleOperation<Number, Double> op = Average.newOperation();
 		
 		if(! Double.isNaN(op.get()))
 		{

@@ -7,23 +7,22 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
-import se.l4.vibe.internal.SampleTime;
+import se.l4.vibe.internal.SampleCollector;
 import se.l4.vibe.probes.SampledProbe;
-import se.l4.vibe.probes.TimeSeries;
-import se.l4.vibe.probes.TimeSeriesSampler;
+import se.l4.vibe.probes.Sampler;
 
 
 public class TimeSampler
 {
-	private final Map<SampleTime, TimeSeriesSampler> samplers;
+	private final Map<Long, SampleCollector> samplers;
 	private final ScheduledExecutorService executor;
-	private final SampleTime defaultTime;
+	private final long defaultTime;
 	
-	public TimeSampler(SampleTime defaultTime)
+	public TimeSampler(long defaultTime)
 	{
 		this.defaultTime = defaultTime;
 		
-		samplers = new HashMap<SampleTime, TimeSeriesSampler>();
+		samplers = new HashMap<>();
 		
 		executor = Executors.newScheduledThreadPool(1, new ThreadFactory()
 		{
@@ -37,18 +36,18 @@ public class TimeSampler
 		});
 	}
 	
-	public SampleTime getDefaultTime()
+	public long getDefaultTime()
 	{
 		return defaultTime;
 	}
 
-	public <T> TimeSeries<T> sampleTimeSeries(SampleTime time, SampledProbe<T> probe)
+	public <T> Sampler<T> sampleTimeSeries(long sampleIntervalInMs, SampledProbe<T> probe)
 	{
-		TimeSeriesSampler sampler = samplers.get(time);
+		SampleCollector sampler = samplers.get(sampleIntervalInMs);
 		if(sampler == null)
 		{
-			sampler = new TimeSeriesSampler(executor, time.getInterval(), time.getRetention(), TimeUnit.MILLISECONDS);
-			samplers.put(time, sampler);
+			sampler = new SampleCollector(executor, sampleIntervalInMs, TimeUnit.MILLISECONDS);
+			samplers.put(sampleIntervalInMs, sampler);
 			sampler.start();
 		}
 		

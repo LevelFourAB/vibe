@@ -21,9 +21,9 @@ public class Average
 	 * @param series
 	 * @return
 	 */
-	public static <T extends Number> Probe<Double> forSeries(TimeSeries<T> series)
+	public static <T extends Number> Probe<Double> forSeries(Sampler<T> series)
 	{
-		return TimeSeriesProbes.forSeries(series, Average.<T>newOperation());
+		return SamplerProbes.forSampler(series, Average.<T>newOperation());
 	}
 	
 	/**
@@ -33,9 +33,9 @@ public class Average
 	 * @param reader
 	 * @return
 	 */
-	public static <I, T extends Number> Probe<Double> forSeries(TimeSeries<I> series, ValueReader<I, T> reader)
+	public static <I, T extends Number> Probe<Double> forSeries(Sampler<I> series, ValueReader<I, T> reader)
 	{
-		return TimeSeriesProbes.forSeries(series, Average.<I, T>newOperation(reader));
+		return SamplerProbes.forSampler(series, Average.<I, T>newOperation(reader));
 	}
 	
 	/**
@@ -48,11 +48,11 @@ public class Average
 	 * @return
 	 */
 	public static <T extends Number> Probe<Double> forSeries(
-			TimeSeries<T> series,
+			Sampler<T> series,
 			long duration,
 			TimeUnit unit)
 	{
-		return TimeSeriesProbes.forSeries(series, duration, unit, Average.<T>newOperation());
+		return SamplerProbes.forSampler(series, duration, unit, Average.<T>newOperation());
 	}
 	
 	/**
@@ -65,17 +65,17 @@ public class Average
 	 * @return
 	 */
 	public static <I, T extends Number> Probe<Double> forSeries(
-			TimeSeries<I> series,
+			Sampler<I> series,
 			ValueReader<I, T> reader,
 			long duration,
 			TimeUnit unit)
 	{
-		return TimeSeriesProbes.forSeries(series, duration, unit, Average.<I, T>newOperation(reader));
+		return SamplerProbes.forSampler(series, duration, unit, Average.<I, T>newOperation(reader));
 	}
 	
 	/**
 	 * Create a probe that will average another sampled probe. This type of
-	 * probe should be used as part of a {@link TimeSeries time series}.
+	 * probe should be used as part of a {@link Sampler time series}.
 	 * 
 	 * @param probe
 	 * @return
@@ -101,7 +101,7 @@ public class Average
 	 * 
 	 * @return
 	 */
-	public static <T extends Number> TimeSeriesOperation<T, Double> newOperation()
+	public static <T extends Number> SampleOperation<T, Double> newOperation()
 	{
 		return new AverageOperation<T, T>(ValueReaders.<T>same());
 	}
@@ -111,7 +111,7 @@ public class Average
 	 * 
 	 * @return
 	 */
-	public static <I, T extends Number> TimeSeriesOperation<I, Double> newOperation(ValueReader<I, T> reader)
+	public static <I, T extends Number> SampleOperation<I, Double> newOperation(ValueReader<I, T> reader)
 	{
 		return new AverageOperation<I, T>(reader);
 	}
@@ -124,7 +124,7 @@ public class Average
 	 * @param <T>
 	 */
 	private static class AverageOperation<I, O extends Number>
-		implements TimeSeriesOperation<I, Double>
+		implements SampleOperation<I, Double>
 	{
 		private final ValueReader<I, O> reader;
 		
@@ -137,14 +137,14 @@ public class Average
 		}
 		
 		@Override
-		public void add(I value, Collection<TimeSeries.Entry<I>> entries)
+		public void add(I value, Collection<Sampler.Entry<I>> entries)
 		{
 			totalSum += reader.read(value).doubleValue();
 			totalEntries += 1;
 		}
 
 		@Override
-		public void remove(I value, Collection<TimeSeries.Entry<I>> entries)
+		public void remove(I value, Collection<Sampler.Entry<I>> entries)
 		{
 			totalSum -= reader.read(value).doubleValue();
 			totalEntries -= 1;

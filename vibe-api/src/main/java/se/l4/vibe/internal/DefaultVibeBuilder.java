@@ -4,7 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 import se.l4.vibe.Vibe;
 import se.l4.vibe.VibeBuilder;
-import se.l4.vibe.backend.LoggingBackend;
 import se.l4.vibe.backend.MergedBackend;
 import se.l4.vibe.backend.VibeBackend;
 
@@ -19,12 +18,10 @@ public class DefaultVibeBuilder
 {
 	private VibeBackend backend;
 	private long sampleInterval;
-	private long sampleRetention;
 
 	public DefaultVibeBuilder()
 	{
 		sampleInterval = TimeUnit.MINUTES.toMillis(1);
-		sampleRetention = TimeUnit.MINUTES.toMillis(60);
 	}
 	
 	@Override
@@ -49,16 +46,8 @@ public class DefaultVibeBuilder
 	}
 	
 	@Override
-	public VibeBuilder setSampleRetention(long time, TimeUnit unit)
-	{
-		this.sampleRetention = unit.toMillis(time);
-		
-		return this;
-	}
-	
-	@Override
 	public Vibe build()
 	{
-		return new VibeImpl(backend, sampleInterval, sampleRetention);
+		return new VibeImpl(backend, sampleInterval);
 	}
 }

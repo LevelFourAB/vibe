@@ -38,15 +38,6 @@ public interface VibeBuilder
 	VibeBuilder setSampleInterval(long time, TimeUnit unit);
 
 	/**
-	 * Set how long samples should be retained for.
-	 * 
-	 * @param time
-	 * @param unit
-	 * @return
-	 */
-	VibeBuilder setSampleRetention(long time, TimeUnit unit);
-
-	/**
 	 * Build the instance.
 	 * 
 	 * @return

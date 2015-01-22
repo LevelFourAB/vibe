@@ -19,7 +19,7 @@ import se.l4.vibe.probes.JvmProbes;
  * @author Andreas Holstenson
  *
  */
-public class TimeSeriesExample
+public class SamplerExample
 {
 	public static void main(String[] args)
 		throws IOException
@@ -34,7 +34,7 @@ public class TimeSeriesExample
 		 * that will trigger if the average over 10 seconds is below 80%,
 		 * which it always is.
 		 */
-		vibe.timeSeries(JvmProbes.cpuUsage())
+		vibe.sample(JvmProbes.cpuUsage())
 			.at("jvm/cpu")
 			.when(averageOver(10, TimeUnit.SECONDS), below(0.8))
 				.sendEvent(EventSeverity.CRITICAL)

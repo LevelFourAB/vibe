@@ -1,10 +1,10 @@
 package se.l4.vibe.probes;
 
-import se.l4.vibe.probes.TimeSeries.Entry;
+import se.l4.vibe.probes.Sampler.Entry;
 
 /**
  * Probes for detecting changes to the sampled values of a 
- * {@link TimeSeries time series}.
+ * {@link Sampler time series}.
  * 
  * @author Andreas Holstenson
  *
@@ -21,7 +21,7 @@ public class Change
 	 * @param series
 	 * @return
 	 */
-	public static <T extends Number> Probe<Number> forSeries(TimeSeries<T> series)
+	public static <T extends Number> Probe<Number> forSeries(Sampler<T> series)
 	{
 		return new ChangeProbe<T, T>(series, ValueReaders.<T>same());
 	}
@@ -32,7 +32,7 @@ public class Change
 	 * @param series
 	 * @return
 	 */
-	public static <I, T extends Number> Probe<Number> forSeries(TimeSeries<I> series, ValueReader<I, T> reader)
+	public static <I, T extends Number> Probe<Number> forSeries(Sampler<I> series, ValueReader<I, T> reader)
 	{
 		return new ChangeProbe<I, T>(series, reader);
 	}
@@ -44,7 +44,7 @@ public class Change
 	 * @param series
 	 * @return
 	 */
-	public static <T extends Number> Probe<Double> asFraction(TimeSeries<T> series)
+	public static <T extends Number> Probe<Double> asFraction(Sampler<T> series)
 	{
 		return new ChangeAsFractionProbe<T, T>(series, ValueReaders.<T>same());
 	}
@@ -56,7 +56,7 @@ public class Change
 	 * @param series
 	 * @return
 	 */
-	public static <I, T extends Number> Probe<Double> asFraction(TimeSeries<I> series, ValueReader<I, T> reader)
+	public static <I, T extends Number> Probe<Double> asFraction(Sampler<I> series, ValueReader<I, T> reader)
 	{
 		return new ChangeAsFractionProbe<I, T>(series, reader);
 	}
@@ -67,7 +67,7 @@ public class Change
 		private double lastValue;
 		private double value;
 		
-		public ChangeProbe(TimeSeries<I> series, final ValueReader<I, O> reader)
+		public ChangeProbe(Sampler<I> series, final ValueReader<I, O> reader)
 		{
 			lastValue = Double.NaN;
 			
@@ -96,7 +96,7 @@ public class Change
 		private double lastValue;
 		private double value;
 		
-		public ChangeAsFractionProbe(TimeSeries<I> series, final ValueReader<I, O> reader)
+		public ChangeAsFractionProbe(Sampler<I> series, final ValueReader<I, O> reader)
 		{
 			lastValue = Double.NaN;
 			

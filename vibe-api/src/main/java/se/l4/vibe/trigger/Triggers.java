@@ -8,7 +8,7 @@ import se.l4.vibe.probes.Change;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.Range;
 import se.l4.vibe.probes.Sum;
-import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.probes.Sampler;
 
 /**
  * Triggers that can be used together with monitoring.
@@ -32,7 +32,7 @@ public class Triggers
 		return new Trigger<T, T>()
 		{
 			@Override
-			public Probe<T> forTimeSeries(TimeSeries<T> series)
+			public Probe<T> forTimeSeries(Sampler<T> series)
 			{
 				return series.getProbe();
 			}
@@ -55,7 +55,7 @@ public class Triggers
 		return new Trigger<T, Number>()
 		{
 			@Override
-			public Probe<Number> forTimeSeries(TimeSeries<T> series)
+			public Probe<Number> forTimeSeries(Sampler<T> series)
 			{
 				return (Probe) series.getProbe();
 			}
@@ -81,7 +81,7 @@ public class Triggers
 		return new TimedTrigger<T, Number>()
 		{
 			@Override
-			public Probe<Number> forTimeSeries(TimeSeries<T> series)
+			public Probe<Number> forTimeSeries(Sampler<T> series)
 			{
 				return (Probe) Average.forSeries(series, duration, unit);
 			}
@@ -112,7 +112,7 @@ public class Triggers
 		return new TimedTrigger<T, Number>()
 		{
 			@Override
-			public Probe<Number> forTimeSeries(TimeSeries<T> series)
+			public Probe<Number> forTimeSeries(Sampler<T> series)
 			{
 				return (Probe) Range.minimum(series, duration, unit);
 			}
@@ -143,7 +143,7 @@ public class Triggers
 		return new TimedTrigger<T, Number>()
 		{
 			@Override
-			public Probe<Number> forTimeSeries(TimeSeries<T> series)
+			public Probe<Number> forTimeSeries(Sampler<T> series)
 			{
 				return (Probe) Range.maximum(series, duration, unit);
 			}
@@ -174,7 +174,7 @@ public class Triggers
 		return new Trigger<T, Number>()
 		{
 			@Override
-			public Probe<Number> forTimeSeries(TimeSeries<T> series)
+			public Probe<Number> forTimeSeries(Sampler<T> series)
 			{
 				return Change.forSeries(series);
 			}
@@ -199,7 +199,7 @@ public class Triggers
 		return new Trigger<T, Number>()
 		{
 			@Override
-			public Probe<Number> forTimeSeries(TimeSeries<T> series)
+			public Probe<Number> forTimeSeries(Sampler<T> series)
 			{
 				return (Probe) Change.asFraction(series);
 			}
@@ -224,7 +224,7 @@ public class Triggers
 		return new Trigger<T, Number>()
 		{
 			@Override
-			public Probe<Number> forTimeSeries(TimeSeries<T> series)
+			public Probe<Number> forTimeSeries(Sampler<T> series)
 			{
 				return (Probe) Sum.forSeriesAsDouble(series);
 			}
@@ -250,7 +250,7 @@ public class Triggers
 		return new TimedTrigger<T, Number>()
 		{
 			@Override
-			public Probe<Number> forTimeSeries(TimeSeries<T> series)
+			public Probe<Number> forTimeSeries(Sampler<T> series)
 			{
 				return (Probe) Sum.forSeriesAsDouble(series, duration, unit);
 			}

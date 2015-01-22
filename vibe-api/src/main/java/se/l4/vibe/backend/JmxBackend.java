@@ -16,7 +16,7 @@ import se.l4.vibe.internal.jmx.TimeSeriesBean;
 import se.l4.vibe.internal.service.Service;
 import se.l4.vibe.internal.service.ServiceImpl;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.probes.Sampler;
 import se.l4.vibe.timer.Timer;
 
 /**
@@ -150,7 +150,7 @@ public class JmxBackend
 	}
 
 	@Override
-	public void export(String path, TimeSeries<?> series)
+	public void export(String path, Sampler<?> series)
 	{
 		export(path, new TimeSeriesBean(series));
 	}

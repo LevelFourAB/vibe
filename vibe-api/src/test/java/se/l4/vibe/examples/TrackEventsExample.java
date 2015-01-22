@@ -39,7 +39,7 @@ public class TrackEventsExample
 			.create();
 		
 		// Sampling the number of events sent during 10 second interval
-		vibe.timeSeries(accessEvents.getEventsProbe())
+		vibe.sample(accessEvents.getEventsProbe())
 			.at("auth/sampled")
 			.export();
 		

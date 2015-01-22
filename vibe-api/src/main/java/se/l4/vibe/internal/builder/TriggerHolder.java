@@ -2,7 +2,7 @@ package se.l4.vibe.internal.builder;
 
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.probes.Sampler;
 import se.l4.vibe.trigger.Condition;
 import se.l4.vibe.trigger.Trigger;
 import se.l4.vibe.trigger.TriggerEvent;
@@ -38,7 +38,7 @@ public class TriggerHolder<Input, Output>
 		this.listener = listener;
 	}
 
-	public Runnable create(final TimeSeries<Input> series, final Events<TriggerEvent> events)
+	public Runnable create(final Sampler<Input> series, final Events<TriggerEvent> events)
 	{
 		final Probe<Output> probe = trigger.forTimeSeries(series);
 		return new Runnable()

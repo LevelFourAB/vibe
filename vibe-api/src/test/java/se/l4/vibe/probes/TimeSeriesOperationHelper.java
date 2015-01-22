@@ -2,10 +2,10 @@ package se.l4.vibe.probes;
 
 import java.util.LinkedList;
 
-import se.l4.vibe.probes.TimeSeries.Entry;
+import se.l4.vibe.probes.Sampler.Entry;
 
 /**
- * Utility class to help with testing of {@link TimeSeriesOperation}s.
+ * Utility class to help with testing of {@link SampleOperation}s.
  * 
  * @author Andreas Holstenson
  *
@@ -14,17 +14,17 @@ import se.l4.vibe.probes.TimeSeries.Entry;
  */
 public class TimeSeriesOperationHelper<Input, Output>
 {
-	private LinkedList<TimeSeries.Entry<Input>> list;
-	private final TimeSeriesOperation<Input, Output> op;
+	private LinkedList<Sampler.Entry<Input>> list;
+	private final SampleOperation<Input, Output> op;
 
-	public TimeSeriesOperationHelper(TimeSeriesOperation<Input, Output> op)
+	public TimeSeriesOperationHelper(SampleOperation<Input, Output> op)
 	{
 		this.op = op;
-		list = new LinkedList<TimeSeries.Entry<Input>>();
+		list = new LinkedList<Sampler.Entry<Input>>();
 	}
 	
 	public static <Input, Output> TimeSeriesOperationHelper<Input, Output>
-		create(TimeSeriesOperation<Input, Output> op)
+		create(SampleOperation<Input, Output> op)
 	{
 		return new TimeSeriesOperationHelper<Input, Output>(op);
 	}

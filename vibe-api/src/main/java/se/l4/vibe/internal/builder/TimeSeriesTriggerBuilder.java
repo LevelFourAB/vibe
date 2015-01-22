@@ -2,7 +2,7 @@ package se.l4.vibe.internal.builder;
 
 import java.util.concurrent.TimeUnit;
 
-import se.l4.vibe.builder.TimeSeriesBuilder;
+import se.l4.vibe.builder.SamplerBuilder;
 import se.l4.vibe.builder.TriggerBuilder;
 import se.l4.vibe.event.EventSeverity;
 import se.l4.vibe.event.Events;
@@ -22,9 +22,9 @@ import se.l4.vibe.trigger.TriggerListener;
  * @param <Output>
  */
 public class TimeSeriesTriggerBuilder<T, Input, Output>
-	implements TriggerBuilder<TimeSeriesBuilder<T>>
+	implements TriggerBuilder<SamplerBuilder<T>>
 {
-	private final TimeSeriesBuilderImpl<T> builder;
+	private final SamplerBuilderImpl<T> builder;
 	private final Trigger<Input, Output> trigger;
 	private final Condition<Output> condition;
 	
@@ -34,7 +34,7 @@ public class TimeSeriesTriggerBuilder<T, Input, Output>
 	private boolean whenNoLongerMet;
 
 	public TimeSeriesTriggerBuilder(
-			TimeSeriesBuilderImpl<T> builder,
+			SamplerBuilderImpl<T> builder,
 			Trigger<Input, Output> trigger,
 			Condition<Output> condition,
 			Events<TriggerEvent> events)
@@ -50,7 +50,7 @@ public class TimeSeriesTriggerBuilder<T, Input, Output>
 	}
 
 	@Override
-	public TriggerBuilder<TimeSeriesBuilder<T>> andWhenNoLongerMet()
+	public TriggerBuilder<SamplerBuilder<T>> andWhenNoLongerMet()
 	{
 		whenNoLongerMet = true;
 		
@@ -58,7 +58,7 @@ public class TimeSeriesTriggerBuilder<T, Input, Output>
 	}
 	
 	@Override
-	public TriggerBuilder<TimeSeriesBuilder<T>> onlyOnce()
+	public TriggerBuilder<SamplerBuilder<T>> onlyOnce()
 	{
 		maxTime = Long.MAX_VALUE;
 		
@@ -66,7 +66,7 @@ public class TimeSeriesTriggerBuilder<T, Input, Output>
 	}
 	
 	@Override
-	public TriggerBuilder<TimeSeriesBuilder<T>> atMostEvery(long duration, TimeUnit unit)
+	public TriggerBuilder<SamplerBuilder<T>> atMostEvery(long duration, TimeUnit unit)
 	{
 		maxTime = unit.toMillis(duration);
 		
@@ -74,13 +74,13 @@ public class TimeSeriesTriggerBuilder<T, Input, Output>
 	}
 	
 	@Override
-	public TimeSeriesBuilder<T> sendEvent(EventSeverity severity)
+	public SamplerBuilder<T> sendEvent(EventSeverity severity)
 	{
 		return handleWith(new EventTriggerListener(events, severity));
 	}
 	
 	@Override
-	public TimeSeriesBuilder<T> handleWith(TriggerListener listener)
+	public SamplerBuilder<T> handleWith(TriggerListener listener)
 	{
 		builder.triggers.add(new TriggerHolder<Input, Output>(
 			trigger, 

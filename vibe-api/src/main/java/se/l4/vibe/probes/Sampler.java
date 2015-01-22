@@ -6,11 +6,10 @@ package se.l4.vibe.probes;
  * @author Andreas Holstenson
  *
  */
-public interface TimeSeries<T>
-	extends Iterable<TimeSeries.Entry<T>>
+public interface Sampler<T>
 {
 	/**
-	 * Entry within a {@link TimeSeries}.
+	 * Entry within a {@link Sampler}.
 	 * 
 	 * @author Andreas Holstenson
 	 *

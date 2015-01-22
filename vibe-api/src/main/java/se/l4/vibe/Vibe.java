@@ -4,12 +4,12 @@ package se.l4.vibe;
 import se.l4.vibe.backend.VibeBackend;
 import se.l4.vibe.builder.EventsBuilder;
 import se.l4.vibe.builder.ProbeBuilder;
-import se.l4.vibe.builder.TimeSeriesBuilder;
+import se.l4.vibe.builder.SamplerBuilder;
 import se.l4.vibe.builder.TimerBuilder;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.SampledProbe;
-import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.probes.Sampler;
 import se.l4.vibe.timer.Timer;
 
 /**
@@ -33,7 +33,7 @@ public interface Vibe
 	 * 
 	 * @return
 	 */
-	<T> TimeSeriesBuilder<T> timeSeries(SampledProbe<T> probe);
+	<T> SamplerBuilder<T> sample(SampledProbe<T> probe);
 	
 	/**
 	 * Create a new events instance.
@@ -59,12 +59,12 @@ public interface Vibe
 	<T> Probe<T> getProbe(String path);
 	
 	/**
-	 * Get a {@link TimeSeries} that has been registered at the given path.
+	 * Get a {@link Sampler} that has been registered at the given path.
 	 * 
 	 * @param path
 	 * @return
 	 */
-	<T> TimeSeries<T> getTimeSeries(String path);
+	<T> Sampler<T> getTimeSeries(String path);
 	
 	/**
 	 * Get a {@link Events} that has been registered at the given path.

@@ -1,7 +1,7 @@
 package se.l4.vibe.internal;
 
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.probes.Sampler;
 import se.l4.vibe.trigger.TimedTrigger;
 import se.l4.vibe.trigger.Trigger;
 
@@ -28,10 +28,10 @@ public class MergedTrigger<Input, Output>
 	}
 	
 	@Override
-	public Probe<Output> forTimeSeries(TimeSeries<Input> series)
+	public Probe<Output> forTimeSeries(Sampler<Input> series)
 	{
 		Probe<?> probe = first.forTimeSeries(series);
-		TimeSeriesForMergedTrigger fakeSeries = new TimeSeriesForMergedTrigger(series, probe);
+		SamplerForMergedTrigger fakeSeries = new SamplerForMergedTrigger(series, probe);
 		return second.forTimeSeries(fakeSeries);
 	}
 	

@@ -10,7 +10,7 @@ import java.util.Collection;
  * @param <Input>
  * @param <Output>
  */
-public interface TimeSeriesOperation<Input, Output>
+public interface SampleOperation<Input, Output>
 {
 	/**
 	 * A value has been removed.
@@ -20,7 +20,7 @@ public interface TimeSeriesOperation<Input, Output>
 	 * @param entries
 	 * 		collection with all of the entries
 	 */
-	void remove(Input value, Collection<TimeSeries.Entry<Input>> entries);
+	void remove(Input value, Collection<Sampler.Entry<Input>> entries);
 
 	/**
 	 * A value has been added.
@@ -30,7 +30,7 @@ public interface TimeSeriesOperation<Input, Output>
 	 * @param entries
 	 * 		collection with all of the entries
 	 */
-	void add(Input value, Collection<TimeSeries.Entry<Input>> entries);
+	void add(Input value, Collection<Sampler.Entry<Input>> entries);
 
 	/**
 	 * Get the current calculated value.

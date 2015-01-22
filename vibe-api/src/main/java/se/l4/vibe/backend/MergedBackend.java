@@ -2,7 +2,7 @@ package se.l4.vibe.backend;
 
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.probes.Sampler;
 import se.l4.vibe.timer.Timer;
 
 /**
@@ -22,7 +22,7 @@ public class MergedBackend
 	}
 
 	@Override
-	public void export(String path, TimeSeries<?> series)
+	public void export(String path, Sampler<?> series)
 	{
 		for(VibeBackend backend : backends)
 		{

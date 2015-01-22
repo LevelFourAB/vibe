@@ -17,7 +17,7 @@ public class Ratio
 	 * 
 	 * <p>
 	 * Note that the ratio will call {@link SampledProbe#sample()}, which means
-	 * that the probes used should not be used as part of a {@link TimeSeries}.
+	 * that the probes used should not be used as part of a {@link Sampler}.
 	 * 
 	 * @param probe1
 	 * @param probe2
@@ -35,7 +35,7 @@ public class Ratio
 	 * 
 	 * <p>
 	 * Note that the ratio will call {@link SampledProbe#sample()}, which means
-	 * that the probes used should not be used as part of a {@link TimeSeries}.
+	 * that the probes used should not be used as part of a {@link Sampler}.
 	 * 
 	 * @param probe1
 	 * @param number
@@ -53,7 +53,7 @@ public class Ratio
 	 * 
 	 * <p>
 	 * Note that the ratio will call {@link SampledProbe#sample()}, which means
-	 * that the probes used should not be used as part of a {@link TimeSeries}.
+	 * that the probes used should not be used as part of a {@link Sampler}.
 	 *
 	 * @param number
 	 * @param probe2

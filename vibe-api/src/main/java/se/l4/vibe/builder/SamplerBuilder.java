@@ -3,7 +3,7 @@ package se.l4.vibe.builder;
 import java.util.concurrent.TimeUnit;
 
 import se.l4.vibe.event.EventSeverity;
-import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.probes.Sampler;
 import se.l4.vibe.trigger.Condition;
 import se.l4.vibe.trigger.Conditions;
 import se.l4.vibe.trigger.On;
@@ -11,13 +11,13 @@ import se.l4.vibe.trigger.Trigger;
 import se.l4.vibe.trigger.Triggers;
 
 /**
- * Builder for a {@link TimeSeries time series}. 
+ * Builder for a {@link Sampler time series}. 
  * 
  * @author Andreas Holstenson
  *
  */
-public interface TimeSeriesBuilder<T>
-	extends Builder<TimeSeriesBuilder<T>>
+public interface SamplerBuilder<T>
+	extends Builder<SamplerBuilder<T>>
 {
 	/**
 	 * Override the default interval for sampling.
@@ -26,17 +26,8 @@ public interface TimeSeriesBuilder<T>
 	 * @param unit
 	 * @return
 	 */
-	TimeSeriesBuilder<T> withInterval(long time, TimeUnit unit);
+	SamplerBuilder<T> withInterval(long time, TimeUnit unit);
 	
-	/**
-	 * Override the default retention for samples.
-	 * 
-	 * @param time
-	 * @param unit
-	 * @return
-	 */
-	TimeSeriesBuilder<T> withRetention(long time, TimeUnit unit);
-
 	/**
 	 * Create a trigger for this time series. Triggers will send events
 	 * if the condition is met. Use {@link Triggers} and {@link Conditions}
@@ -60,7 +51,7 @@ public interface TimeSeriesBuilder<T>
 	 * @param condition
 	 * @return
 	 */
-	<Type> TriggerBuilder<TimeSeriesBuilder<T>> when(
+	<Type> TriggerBuilder<SamplerBuilder<T>> when(
 		Trigger<? super T, Type> trigger,
 		Condition<Type> condition
 	);
@@ -74,7 +65,7 @@ public interface TimeSeriesBuilder<T>
 	 * @param condition
 	 * @return
 	 */
-	<Type, Middle> TriggerBuilder<TimeSeriesBuilder<T>> when(
+	<Type, Middle> TriggerBuilder<SamplerBuilder<T>> when(
 		Trigger<Middle, Type> trigger,
 		On<? super T, Middle> on,
 		Condition<Type> condition
@@ -85,5 +76,5 @@ public interface TimeSeriesBuilder<T>
 	 *  
 	 * @return
 	 */
-	TimeSeries<T> export();
+	Sampler<T> export();
 }

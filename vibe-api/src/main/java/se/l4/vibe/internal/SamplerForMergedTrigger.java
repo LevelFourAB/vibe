@@ -1,25 +1,23 @@
 package se.l4.vibe.internal;
 
-import java.util.Iterator;
-
 import se.l4.vibe.probes.AbstractTimeSeries;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.SampleListener;
 import se.l4.vibe.probes.SampledProbe;
-import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.probes.Sampler;
 import se.l4.vibe.trigger.On;
 
 /**
- * Implementation of {@link TimeSeries} for use {@link On}.
+ * Implementation of {@link Sampler} for use {@link On}.
  * 
  * @author Andreas Holstenson
  *
  * @param <T>
  */
-public class TimeSeriesForMergedTrigger<T>
+public class SamplerForMergedTrigger<T>
 	extends AbstractTimeSeries<T>
 {
-	public <In> TimeSeriesForMergedTrigger(TimeSeries<In> input, final Probe<T> probe)
+	public <In> SamplerForMergedTrigger(Sampler<In> input, final Probe<T> probe)
 	{
 		input.addListener(new SampleListener<In>()
 		{
@@ -38,12 +36,6 @@ public class TimeSeriesForMergedTrigger<T>
 	
 	@Override
 	public SampledProbe<T> getProbe()
-	{
-		return null;
-	}
-	
-	@Override
-	public Iterator<Entry<T>> iterator()
 	{
 		return null;
 	}

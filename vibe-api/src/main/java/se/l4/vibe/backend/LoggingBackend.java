@@ -10,7 +10,7 @@ import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.SampleListener;
 import se.l4.vibe.probes.SampledProbe;
-import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.probes.Sampler;
 import se.l4.vibe.timer.Timer;
 
 /**
@@ -40,7 +40,7 @@ public class LoggingBackend
 	}
 
 	@Override
-	public void export(String path, TimeSeries<?> series)
+	public void export(String path, Sampler<?> series)
 	{
 		series.addListener(new PrintSampleListener(logger, path));
 	}
@@ -74,7 +74,7 @@ public class LoggingBackend
 		}
 		
 		@Override
-		public void sampleAcquired(SampledProbe probe, TimeSeries.Entry entry)
+		public void sampleAcquired(SampledProbe probe, Sampler.Entry entry)
 		{
 			logger.info("{}: {}", path, entry.getValue());
 		}

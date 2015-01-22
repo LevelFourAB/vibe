@@ -12,17 +12,17 @@ import se.l4.vibe.VibeException;
 import se.l4.vibe.backend.VibeBackend;
 import se.l4.vibe.builder.EventsBuilder;
 import se.l4.vibe.builder.ProbeBuilder;
-import se.l4.vibe.builder.TimeSeriesBuilder;
+import se.l4.vibe.builder.SamplerBuilder;
 import se.l4.vibe.builder.TimerBuilder;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.internal.builder.EventsBuilderImpl;
 import se.l4.vibe.internal.builder.ProbeBuilderImpl;
-import se.l4.vibe.internal.builder.TimeSeriesBuilderImpl;
+import se.l4.vibe.internal.builder.SamplerBuilderImpl;
 import se.l4.vibe.internal.builder.TimerBuilderImpl;
 import se.l4.vibe.internal.time.TimeSampler;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.SampledProbe;
-import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.probes.Sampler;
 import se.l4.vibe.timer.Timer;
 
 /**
@@ -48,7 +48,7 @@ public class VibeImpl
 	 * @param sampleRetention
 	 * 		sample retention in ms
 	 */
-	public VibeImpl(VibeBackend backend, long sampleInterval, long sampleRetention)
+	public VibeImpl(VibeBackend backend, long sampleInterval)
 	{
 		instances = new ConcurrentHashMap<String, Object>();
 		
@@ -58,7 +58,7 @@ public class VibeImpl
 			this.backend.add(backend);
 		}
 		
-		sampler = new TimeSampler(new SampleTime(sampleInterval, sampleRetention));
+		sampler = new TimeSampler(sampleInterval);
 	}
 	
 	/**
@@ -78,9 +78,9 @@ public class VibeImpl
 	}
 
 	@Override
-	public <T> TimeSeriesBuilder<T> timeSeries(SampledProbe<T> probe)
+	public <T> SamplerBuilder<T> sample(SampledProbe<T> probe)
 	{
-		return new TimeSeriesBuilderImpl<T>(backend, sampler, probe);
+		return new SamplerBuilderImpl<T>(backend, sampler, probe);
 	}
 	
 	@Override
@@ -110,10 +110,10 @@ public class VibeImpl
 	}
 	
 	@Override
-	public <T> TimeSeries<T> getTimeSeries(String path)
+	public <T> Sampler<T> getTimeSeries(String path)
 	{
 		Object o = instances.get(path);
-		return o instanceof TimeSeries ? (TimeSeries) o : null;
+		return o instanceof Sampler ? (Sampler) o : null;
 	}
 	
 	@Override
@@ -170,7 +170,7 @@ public class VibeImpl
 		}
 		
 		@Override
-		public void export(String path, TimeSeries<?> series)
+		public void export(String path, Sampler<?> series)
 		{
 			checkPathAndAdd(path, series);
 			for(VibeBackend vb : backends)
@@ -204,9 +204,9 @@ public class VibeImpl
 				{
 					backend.export(path, (Probe) o);
 				}
-				else if(o instanceof TimeSeries)
+				else if(o instanceof Sampler)
 				{
-					backend.export(path, (TimeSeries) o);
+					backend.export(path, (Sampler) o);
 				}
 			}
 		}

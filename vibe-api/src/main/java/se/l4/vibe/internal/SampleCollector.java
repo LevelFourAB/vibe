@@ -1,7 +1,5 @@
-package se.l4.vibe.probes;
+package se.l4.vibe.internal;
 
-import java.util.Iterator;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -9,6 +7,12 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import se.l4.vibe.probes.AbstractTimeSeries;
+import se.l4.vibe.probes.SampleListener;
+import se.l4.vibe.probes.SampledProbe;
+import se.l4.vibe.probes.Sampler;
+import se.l4.vibe.probes.Sampler.Entry;
 
 
 /**
@@ -18,30 +22,25 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Holstenson
  *
  */
-public class TimeSeriesSampler
+public class SampleCollector
 {
-	private static final Logger logger = LoggerFactory.getLogger(TimeSeriesSampler.class);
+	private static final Logger logger = LoggerFactory.getLogger(SampleCollector.class);
 	
 	private static final TimeSeriesImpl<?>[] EMPTY = new TimeSeriesImpl[0];
 	
 	private final long sampleInterval;
-	private final int maxSamples;
-	
-	private final LinkedBlockingDeque<SampleInfo> samples;
 	
 	private final Lock seriesLock;
 	protected volatile TimeSeriesImpl[] series;
 	
 	private final ScheduledExecutorService executor;
 
-	public TimeSeriesSampler(ScheduledExecutorService executor, long sampleInterval, long retention, TimeUnit unit)
+	public SampleCollector(ScheduledExecutorService executor, long sampleInterval, TimeUnit unit)
 	{
 		this.executor = executor;
 		
 		this.sampleInterval = unit.toMillis(sampleInterval);
-		maxSamples = (int) (unit.toMillis(retention) / this.sampleInterval);
 		
-		samples = new LinkedBlockingDeque<SampleInfo>(maxSamples);
 		seriesLock = new ReentrantLock();
 		series = EMPTY;
 	}
@@ -53,9 +52,9 @@ public class TimeSeriesSampler
 	 * @param stat
 	 * @return
 	 */
-	public <T> TimeSeries<T> add(SampledProbe<T> stat)
+	public <T> Sampler<T> add(SampledProbe<T> stat)
 	{
-		TimeSeriesImpl<T> series = new TimeSeriesImpl<T>(stat, maxSamples, samples.size());
+		TimeSeriesImpl<T> series = new TimeSeriesImpl<T>(stat);
 		
 		// Store in series array
 		seriesLock.lock();
@@ -99,40 +98,12 @@ public class TimeSeriesSampler
 	
 	protected void sample()
 	{
-		SampleInfo info = new SampleInfo(System.currentTimeMillis());
-		add(samples, info);
+		long time = System.currentTimeMillis();
 		
 		TimeSeriesImpl[] series = this.series;
 		for(TimeSeriesImpl s : series)
 		{
-			s.sample();
-		}
-	}
-	
-	/**
-	 * Perform an add on a bounded {@link LinkedBlockingDeque} by removing the
-	 * first value if the queue is full.
-	 * 
-	 * @param <T>
-	 * @param queue
-	 * @param value
-	 */
-	private static <T> void add(LinkedBlockingDeque<T> queue, T value)
-	{
-		synchronized(queue)
-		{
-			if(queue.remainingCapacity() == 0) queue.removeFirst();
-			queue.addLast(value);
-		}
-	}
-	
-	private static class SampleInfo
-	{
-		private final long time;
-
-		public SampleInfo(long time)
-		{
-			this.time = time;
+			s.sample(time);
 		}
 	}
 	
@@ -140,29 +111,20 @@ public class TimeSeriesSampler
 		extends AbstractTimeSeries<T>
 	{
 		private final SampledProbe<T> probe;
-		private final LinkedBlockingDeque<Value<T>> data;
 		
-		public TimeSeriesImpl(SampledProbe<T> probe, int maxSize, int currentSize)
+		public TimeSeriesImpl(SampledProbe<T> probe)
 		{
 			this.probe = probe;
-			
-			data = new LinkedBlockingDeque<Value<T>>(maxSize);
-			
-			// Fill the data with empty values
-			Value<T> nullValue = new Value<T>(null);
-			for(int i=0, n=currentSize; i<n; i++) data.addLast(nullValue);
 		}
 
-		public void sample()
+		public void sample(long time)
 		{
 			T value = probe.sample();
-			add(data, new Value<T>(value));
 			
 			SampleListener<T>[] listeners = this.listeners;
 			if(listeners.length > 0)
 			{
-				SampleInfo sample = samples.getLast();
-				SampleEntry<T> entry = new SampleEntry<T>(sample.time, value);
+				SampleEntry<T> entry = new SampleEntry<T>(time, value);
 				
 				for(SampleListener<T> listener : listeners)
 				{
@@ -183,44 +145,10 @@ public class TimeSeriesSampler
 		{
 			return probe;
 		}
-		
-		@Override
-		public Iterator<Entry<T>> iterator()
-		{
-			final SampleInfo[] info = samples.toArray(new SampleInfo[0]);
-			final Value[] entries = data.toArray(new Value[data.size()]);
-			
-			return new Iterator<TimeSeries.Entry<T>>()
-			{
-				private int pointer = 0;
-				
-				@Override
-				public boolean hasNext()
-				{
-					return pointer < info.length;
-				}
-				
-				@Override
-				public Entry<T> next()
-				{
-					SampleInfo s = info[pointer];
-					Object d = entries[pointer].value;
-					pointer++;
-					
-					return new SampleEntry(s.time, d);
-				}
-				
-				@Override
-				public void remove()
-				{
-					throw new UnsupportedOperationException();
-				}
-			};
-		}
 	}
 	
 	private static class SampleEntry<T>
-		implements TimeSeries.Entry<T>
+		implements Sampler.Entry<T>
 	{
 		private final long time;
 		private final T value;
@@ -247,16 +175,6 @@ public class TimeSeriesSampler
 		public String toString()
 		{
 			return "Entry{time=" + time + ", value=" + value + "}";
-		}
-	}
-	
-	private static class Value<T>
-	{
-		private final T value;
-
-		public Value(T value)
-		{
-			this.value = value;
 		}
 	}
 }

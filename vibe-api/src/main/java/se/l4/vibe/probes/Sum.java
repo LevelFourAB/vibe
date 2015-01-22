@@ -3,11 +3,11 @@ package se.l4.vibe.probes;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
-import se.l4.vibe.probes.TimeSeries.Entry;
+import se.l4.vibe.probes.Sampler.Entry;
 
 /**
  * Probes that will calculate the sum of other {@link Probe probes} and
- * {@link TimeSeries time series}.
+ * {@link Sampler time series}.
  * 
  * @author Andreas Holstenson
  *
@@ -25,9 +25,9 @@ public class Sum
 	 * @param series
 	 * @return
 	 */
-	public static <T extends Number> Probe<Long> forSeriesAsLong(TimeSeries<T> series)
+	public static <T extends Number> Probe<Long> forSeriesAsLong(Sampler<T> series)
 	{
-		return TimeSeriesProbes.forSeries(series, new SumLongOperation<T, T>(ValueReaders.<T>same()));
+		return SamplerProbes.forSampler(series, new SumLongOperation<T, T>(ValueReaders.<T>same()));
 	}
 	
 	/**
@@ -37,9 +37,9 @@ public class Sum
 	 * @param series
 	 * @return
 	 */
-	public static <T, N extends Number> Probe<Long> forSeriesAsLong(TimeSeries<T> series, ValueReader<T, N> reader)
+	public static <T, N extends Number> Probe<Long> forSeriesAsLong(Sampler<T> series, ValueReader<T, N> reader)
 	{
-		return TimeSeriesProbes.forSeries(series, new SumLongOperation<T, N>(reader));
+		return SamplerProbes.forSampler(series, new SumLongOperation<T, N>(reader));
 	}
 	
 	/**
@@ -49,9 +49,9 @@ public class Sum
 	 * @param series
 	 * @return
 	 */
-	public static <T extends Number> Probe<Double> forSeriesAsDouble(TimeSeries<T> series)
+	public static <T extends Number> Probe<Double> forSeriesAsDouble(Sampler<T> series)
 	{
-		return TimeSeriesProbes.forSeries(series, new SumDoubleOperation<T, T>(ValueReaders.<T>same()));
+		return SamplerProbes.forSampler(series, new SumDoubleOperation<T, T>(ValueReaders.<T>same()));
 	}
 	
 	/**
@@ -61,9 +61,9 @@ public class Sum
 	 * @param series
 	 * @return
 	 */
-	public static <T, N extends Number> Probe<Double> forSeriesAsDouble(TimeSeries<T> series, ValueReader<T, N> reader)
+	public static <T, N extends Number> Probe<Double> forSeriesAsDouble(Sampler<T> series, ValueReader<T, N> reader)
 	{
-		return TimeSeriesProbes.forSeries(series, new SumDoubleOperation<T, N>(reader));
+		return SamplerProbes.forSampler(series, new SumDoubleOperation<T, N>(reader));
 	}
 	
 	/**
@@ -76,12 +76,12 @@ public class Sum
 	 * @return
 	 */
 	public static <T extends Number> Probe<Long> forSeriesAsLong(
-		TimeSeries<T> series,
+		Sampler<T> series,
 		long duration, 
 		TimeUnit unit
 	)
 	{
-		return TimeSeriesProbes.forSeries(series, duration, unit, new SumLongOperation<T, T>(ValueReaders.<T>same()));
+		return SamplerProbes.forSampler(series, duration, unit, new SumLongOperation<T, T>(ValueReaders.<T>same()));
 	}
 	
 	/**
@@ -94,13 +94,13 @@ public class Sum
 	 * @return
 	 */
 	public static <T, N extends Number> Probe<Long> forSeriesAsLong(
-		TimeSeries<T> series,
+		Sampler<T> series,
 		ValueReader<T, N> reader,
 		long duration, 
 		TimeUnit unit
 	)
 	{
-		return TimeSeriesProbes.forSeries(series, duration, unit, new SumLongOperation<T, N>(reader));
+		return SamplerProbes.forSampler(series, duration, unit, new SumLongOperation<T, N>(reader));
 	}
 	
 	/**
@@ -113,12 +113,12 @@ public class Sum
 	 * @return
 	 */
 	public static <T extends Number> Probe<Double> forSeriesAsDouble(
-		TimeSeries<T> series,
+		Sampler<T> series,
 		long duration, 
 		TimeUnit unit
 	)
 	{
-		return TimeSeriesProbes.forSeries(series, duration, unit, new SumDoubleOperation<T, T>(ValueReaders.<T>same()));
+		return SamplerProbes.forSampler(series, duration, unit, new SumDoubleOperation<T, T>(ValueReaders.<T>same()));
 	}
 	
 	/**
@@ -131,17 +131,17 @@ public class Sum
 	 * @return
 	 */
 	public static <T, N extends Number> Probe<Double> forSeriesAsDouble(
-		TimeSeries<T> series,
+		Sampler<T> series,
 		ValueReader<T, N> reader,
 		long duration, 
 		TimeUnit unit
 	)
 	{
-		return TimeSeriesProbes.forSeries(series, duration, unit, new SumDoubleOperation<T, N>(reader));
+		return SamplerProbes.forSampler(series, duration, unit, new SumDoubleOperation<T, N>(reader));
 	}
 	
 	private static class SumDoubleOperation<T, N extends Number>
-		implements TimeSeriesOperation<T, Double>
+		implements SampleOperation<T, Double>
 	{
 		private final ValueReader<T, N> reader;
 		
@@ -172,7 +172,7 @@ public class Sum
 	}
 	
 	private static class SumLongOperation<T, N extends Number>
-		implements TimeSeriesOperation<T, Long>
+		implements SampleOperation<T, Long>
 	{
 		private final ValueReader<T, N> reader;
 		

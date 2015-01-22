@@ -5,17 +5,16 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import se.l4.vibe.backend.VibeBackend;
-import se.l4.vibe.builder.TimeSeriesBuilder;
+import se.l4.vibe.builder.SamplerBuilder;
 import se.l4.vibe.builder.TriggerBuilder;
 import se.l4.vibe.event.EventSeverity;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.internal.EventsImpl;
-import se.l4.vibe.internal.SampleTime;
 import se.l4.vibe.internal.time.TimeSampler;
 import se.l4.vibe.probes.SampleListener;
 import se.l4.vibe.probes.SampledProbe;
-import se.l4.vibe.probes.TimeSeries;
-import se.l4.vibe.probes.TimeSeries.Entry;
+import se.l4.vibe.probes.Sampler;
+import se.l4.vibe.probes.Sampler.Entry;
 import se.l4.vibe.trigger.Condition;
 import se.l4.vibe.trigger.On;
 import se.l4.vibe.trigger.Trigger;
@@ -28,9 +27,9 @@ import se.l4.vibe.trigger.TriggerEvent;
  *
  * @param <T>
  */
-public class TimeSeriesBuilderImpl<T>
-	extends AbstractBuilder<TimeSeriesBuilder<T>>
-	implements TimeSeriesBuilder<T>
+public class SamplerBuilderImpl<T>
+	extends AbstractBuilder<SamplerBuilder<T>>
+	implements SamplerBuilder<T>
 {
 	private final VibeBackend backend;
 	private final TimeSampler sampler;
@@ -40,9 +39,8 @@ public class TimeSeriesBuilderImpl<T>
 	private Events<TriggerEvent> triggerEvents;
 	
 	private long sampleInterval;
-	private long sampleRetention;
 	
-	public TimeSeriesBuilderImpl(VibeBackend backend, 
+	public SamplerBuilderImpl(VibeBackend backend, 
 			TimeSampler sampler,
 			SampledProbe<T> probe)
 	{
@@ -52,20 +50,16 @@ public class TimeSeriesBuilderImpl<T>
 		
 		triggers = new ArrayList<TriggerHolder>();
 		
-		SampleTime time = sampler.getDefaultTime();
-		sampleInterval = time.getInterval();
-		sampleRetention = time.getRetention();
+		sampleInterval = sampler.getDefaultTime();
 	}
 	
 	@Override
-	public TimeSeries<T> export()
+	public Sampler<T> export()
 	{
 		verify();
 		
 		// Find or create a suitable sampler
-		SampleTime time = new SampleTime(sampleInterval, sampleRetention);
-		
-		TimeSeries<T> series = sampler.sampleTimeSeries(time, probe);
+		Sampler<T> series = sampler.sampleTimeSeries(sampleInterval, probe);
 		
 		// Create the triggers
 		List<Runnable> builtTriggers = new ArrayList<Runnable>(); 
@@ -95,7 +89,7 @@ public class TimeSeriesBuilderImpl<T>
 	}
 	
 	@Override
-	public <Type> TriggerBuilder<TimeSeriesBuilder<T>> when(
+	public <Type> TriggerBuilder<SamplerBuilder<T>> when(
 			Trigger<? super T, Type> trigger, 
 			Condition<Type> condition)
 	{
@@ -111,7 +105,7 @@ public class TimeSeriesBuilderImpl<T>
 	}
 	
 	@Override
-	public <Type, Middle> TriggerBuilder<TimeSeriesBuilder<T>> when(
+	public <Type, Middle> TriggerBuilder<SamplerBuilder<T>> when(
 			Trigger<Middle, Type> trigger, 
 			On<? super T, Middle> on,
 			Condition<Type> condition)
@@ -122,16 +116,9 @@ public class TimeSeriesBuilderImpl<T>
 	}
 	
 	@Override
-	public TimeSeriesBuilder<T> withInterval(long time, TimeUnit unit)
+	public SamplerBuilder<T> withInterval(long time, TimeUnit unit)
 	{
 		sampleInterval = unit.toMillis(time);
-		return this;
-	}
-	
-	@Override
-	public TimeSeriesBuilder<T> withRetention(long time, TimeUnit unit)
-	{
-		sampleRetention = unit.toMillis(time);
 		return this;
 	}
 }

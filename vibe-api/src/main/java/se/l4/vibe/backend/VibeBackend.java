@@ -3,7 +3,7 @@ package se.l4.vibe.backend;
 import se.l4.vibe.Vibe;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.probes.Sampler;
 import se.l4.vibe.timer.Timer;
 
 /**
@@ -20,7 +20,7 @@ public interface VibeBackend
 	 * @param path
 	 * @param series
 	 */
-	void export(String path, TimeSeries<?> series);
+	void export(String path, Sampler<?> series);
 	
 	/**
 	 * Export a probe.

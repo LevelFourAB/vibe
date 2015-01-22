@@ -1,7 +1,7 @@
 package se.l4.vibe.trigger;
 
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.probes.Sampler;
 
 /**
  * Trigger for automatic events. The trigger will create a probe that can
@@ -20,5 +20,5 @@ public interface Trigger<Input, Output>
 	 * @param series
 	 * @return
 	 */
-	Probe<Output> forTimeSeries(TimeSeries<Input> series);
+	Probe<Output> forTimeSeries(Sampler<Input> series);
 }

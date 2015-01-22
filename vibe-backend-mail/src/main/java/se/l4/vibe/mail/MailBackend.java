@@ -22,7 +22,7 @@ import se.l4.vibe.event.EventListener;
 import se.l4.vibe.event.EventSeverity;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.TimeSeries;
+import se.l4.vibe.probes.Sampler;
 import se.l4.vibe.timer.Timer;
 
 /**
@@ -153,7 +153,7 @@ public class MailBackend
 	}
 
 	@Override
-	public void export(String path, TimeSeries<?> series)
+	public void export(String path, Sampler<?> series)
 	{
 		// Do nothing, not supported by mailer
 	}
