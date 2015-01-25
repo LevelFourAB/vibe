@@ -83,6 +83,14 @@ public interface Vibe
 	Timer getTimer(String path);
 	
 	/**
+	 * Create a Vibe instance for the given sub path.
+	 * 
+	 * @param path
+	 * @return
+	 */
+	Vibe scope(String path);
+	
+	/**
 	 * Register a new backend to this instance.
 	 * 
 	 * @param backend

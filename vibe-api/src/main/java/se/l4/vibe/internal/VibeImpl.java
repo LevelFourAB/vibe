@@ -83,6 +83,11 @@ public class VibeImpl
 		return new SamplerBuilderImpl<T>(backend, sampler, probe);
 	}
 	
+	public TimeSampler sampler()
+	{
+		return sampler;
+	}
+	
 	@Override
 	public <T> EventsBuilder<T> events(Class<T> base)
 	{
@@ -121,6 +126,12 @@ public class VibeImpl
 	{
 		Object o = instances.get(path);
 		return o instanceof Timer ? (Timer) o : null;
+	}
+	
+	@Override
+	public Vibe scope(String path)
+	{
+		return new ScopedVibe(this, backend, path);
 	}
 	
 	@Override
