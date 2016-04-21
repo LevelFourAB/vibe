@@ -1,7 +1,7 @@
 package se.l4.vibe.examples;
 
-import static se.l4.vibe.trigger.Conditions.*;
-import static se.l4.vibe.trigger.Triggers.*;
+import static se.l4.vibe.trigger.Conditions.below;
+import static se.l4.vibe.trigger.Triggers.averageOver;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +30,7 @@ public class SamplerExample
 			.build();
 		
 		/**
-		 * Export a time series over JVM CPU usage. Include a trigger
+		 * Export a sample over JVM CPU usage. Include a trigger
 		 * that will trigger if the average over 10 seconds is below 80%,
 		 * which it always is.
 		 */

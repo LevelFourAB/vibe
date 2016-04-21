@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @param <T>
  */
-public abstract class AbstractTimeSeries<T>
+public abstract class AbstractSampler<T>
 	implements Sampler<T>
 {
 	private static final SampleListener[] EMPTY = new SampleListener[0];
@@ -18,7 +18,7 @@ public abstract class AbstractTimeSeries<T>
 	private final Lock listenerLock;
 	protected volatile SampleListener<T>[] listeners;
 	
-	public AbstractTimeSeries()
+	public AbstractSampler()
 	{
 		listenerLock = new ReentrantLock();
 		listeners = EMPTY;

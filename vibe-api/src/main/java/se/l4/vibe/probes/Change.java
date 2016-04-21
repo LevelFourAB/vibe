@@ -21,7 +21,7 @@ public class Change
 	 * @param series
 	 * @return
 	 */
-	public static <T extends Number> Probe<Number> forSeries(Sampler<T> series)
+	public static <T extends Number> Probe<Number> forSampler(Sampler<T> series)
 	{
 		return new ChangeProbe<T, T>(series, ValueReaders.<T>same());
 	}
@@ -32,7 +32,7 @@ public class Change
 	 * @param series
 	 * @return
 	 */
-	public static <I, T extends Number> Probe<Number> forSeries(Sampler<I> series, ValueReader<I, T> reader)
+	public static <I, T extends Number> Probe<Number> forSampler(Sampler<I> series, ValueReader<I, T> reader)
 	{
 		return new ChangeProbe<I, T>(series, reader);
 	}

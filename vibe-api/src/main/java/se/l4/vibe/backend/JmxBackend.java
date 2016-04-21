@@ -12,7 +12,7 @@ import javax.management.ObjectName;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.internal.jmx.ProbeBean;
 import se.l4.vibe.internal.jmx.ServiceMBeanBridge;
-import se.l4.vibe.internal.jmx.TimeSeriesBean;
+import se.l4.vibe.internal.jmx.SamplerBean;
 import se.l4.vibe.internal.service.Service;
 import se.l4.vibe.internal.service.ServiceImpl;
 import se.l4.vibe.probes.Probe;
@@ -152,7 +152,7 @@ public class JmxBackend
 	@Override
 	public void export(String path, Sampler<?> series)
 	{
-		export(path, new TimeSeriesBean(series));
+		export(path, new SamplerBean(series));
 	}
 
 	@Override

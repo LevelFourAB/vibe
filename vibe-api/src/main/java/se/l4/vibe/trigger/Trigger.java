@@ -20,5 +20,5 @@ public interface Trigger<Input, Output>
 	 * @param series
 	 * @return
 	 */
-	Probe<Output> forTimeSeries(Sampler<Input> series);
+	Probe<Output> forSampler(Sampler<Input> series);
 }

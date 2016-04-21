@@ -40,7 +40,7 @@ public class TriggerHolder<Input, Output>
 
 	public Runnable create(final Sampler<Input> series, final Events<TriggerEvent> events)
 	{
-		final Probe<Output> probe = trigger.forTimeSeries(series);
+		final Probe<Output> probe = trigger.forSampler(series);
 		return new Runnable()
 		{
 			private long lastEvent;

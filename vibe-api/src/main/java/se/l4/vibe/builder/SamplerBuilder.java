@@ -11,7 +11,7 @@ import se.l4.vibe.trigger.Trigger;
 import se.l4.vibe.trigger.Triggers;
 
 /**
- * Builder for a {@link Sampler time series}. 
+ * Builder for a {@link Sampler}. 
  * 
  * @author Andreas Holstenson
  *
@@ -29,7 +29,7 @@ public interface SamplerBuilder<T>
 	SamplerBuilder<T> withInterval(long time, TimeUnit unit);
 	
 	/**
-	 * Create a trigger for this time series. Triggers will send events
+	 * Create a trigger for this sampler. Triggers will send events
 	 * if the condition is met. Use {@link Triggers} and {@link Conditions}
 	 * to create triggers and conditions suitable for usage with this
 	 * method.
@@ -57,8 +57,7 @@ public interface SamplerBuilder<T>
 	);
 	
 	/**
-	 * Create a trigger for this time series. See 
-	 * {@link #when(Trigger, Condition)}.
+	 * Create a trigger for this sampler. See {@link #when(Trigger, Condition)}.
 	 * 
 	 * @param trigger
 	 * @param on
@@ -72,7 +71,14 @@ public interface SamplerBuilder<T>
 	);
 	
 	/**
-	 * Export and return the time series.
+	 * Return the sampler without exporting it.
+	 *  
+	 * @return
+	 */
+	Sampler<T> build();
+	
+	/**
+	 * Export and return the sampler.
 	 *  
 	 * @return
 	 */

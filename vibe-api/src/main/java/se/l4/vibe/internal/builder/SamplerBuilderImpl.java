@@ -54,26 +54,22 @@ public class SamplerBuilderImpl<T>
 	}
 	
 	@Override
-	public Sampler<T> export()
+	public Sampler<T> build()
 	{
-		verify();
-		
 		// Find or create a suitable sampler
-		Sampler<T> series = sampler.sampleTimeSeries(sampleInterval, probe);
+		Sampler<T> instance = sampler.sampleTimeSeries(sampleInterval, probe);
 		
 		// Create the triggers
 		List<Runnable> builtTriggers = new ArrayList<Runnable>(); 
 		for(TriggerHolder th : triggers)
 		{
-			Runnable r = th.create(series, triggerEvents);
+			Runnable r = th.create(instance, triggerEvents);
 			builtTriggers.add(r);
 		}
 		
-		backend.export(path, series);
-		
 		// Create listener for triggers
 		final Runnable[] triggers = builtTriggers.toArray(new Runnable[builtTriggers.size()]);
-		series.addListener(new SampleListener<T>()
+		instance.addListener(new SampleListener<T>()
 		{
 			@Override
 			public void sampleAcquired(SampledProbe<T> probe, Entry<T> value)
@@ -85,7 +81,17 @@ public class SamplerBuilderImpl<T>
 			}
 		});
 		
-		return series;
+		return instance;
+	}
+	
+	@Override
+	public Sampler<T> export()
+	{
+		verify();
+		
+		Sampler<T> instance = build();
+		backend.export(path, instance);
+		return instance;
 	}
 	
 	@Override
@@ -101,7 +107,7 @@ public class SamplerBuilderImpl<T>
 			backend.export(path + ':' + triggers.size(), triggerEvents);
 		}
 		
-		return new TimeSeriesTriggerBuilder(this, trigger, condition, triggerEvents);
+		return new SamplerTriggerBuilder(this, trigger, condition, triggerEvents);
 	}
 	
 	@Override

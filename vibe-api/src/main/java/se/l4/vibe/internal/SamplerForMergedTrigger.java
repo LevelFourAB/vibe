@@ -1,6 +1,6 @@
 package se.l4.vibe.internal;
 
-import se.l4.vibe.probes.AbstractTimeSeries;
+import se.l4.vibe.probes.AbstractSampler;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.SampleListener;
 import se.l4.vibe.probes.SampledProbe;
@@ -15,7 +15,7 @@ import se.l4.vibe.trigger.On;
  * @param <T>
  */
 public class SamplerForMergedTrigger<T>
-	extends AbstractTimeSeries<T>
+	extends AbstractSampler<T>
 {
 	public <In> SamplerForMergedTrigger(Sampler<In> input, final Probe<T> probe)
 	{

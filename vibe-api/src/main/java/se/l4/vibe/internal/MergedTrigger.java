@@ -28,11 +28,11 @@ public class MergedTrigger<Input, Output>
 	}
 	
 	@Override
-	public Probe<Output> forTimeSeries(Sampler<Input> series)
+	public Probe<Output> forSampler(Sampler<Input> series)
 	{
-		Probe<?> probe = first.forTimeSeries(series);
+		Probe<?> probe = first.forSampler(series);
 		SamplerForMergedTrigger fakeSeries = new SamplerForMergedTrigger(series, probe);
-		return second.forTimeSeries(fakeSeries);
+		return second.forSampler(fakeSeries);
 	}
 	
 	@Override

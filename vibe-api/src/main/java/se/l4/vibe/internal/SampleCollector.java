@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import se.l4.vibe.probes.AbstractTimeSeries;
+import se.l4.vibe.probes.AbstractSampler;
 import se.l4.vibe.probes.SampleListener;
 import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.probes.Sampler;
@@ -108,7 +108,7 @@ public class SampleCollector
 	}
 	
 	private class TimeSeriesImpl<T>
-		extends AbstractTimeSeries<T>
+		extends AbstractSampler<T>
 	{
 		private final SampledProbe<T> probe;
 		

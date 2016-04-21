@@ -21,7 +21,7 @@ import se.l4.vibe.trigger.TriggerListener;
  * @param <Input>
  * @param <Output>
  */
-public class TimeSeriesTriggerBuilder<T, Input, Output>
+public class SamplerTriggerBuilder<T, Input, Output>
 	implements TriggerBuilder<SamplerBuilder<T>>
 {
 	private final SamplerBuilderImpl<T> builder;
@@ -33,7 +33,7 @@ public class TimeSeriesTriggerBuilder<T, Input, Output>
 	private long maxTime;
 	private boolean whenNoLongerMet;
 
-	public TimeSeriesTriggerBuilder(
+	public SamplerTriggerBuilder(
 			SamplerBuilderImpl<T> builder,
 			Trigger<Input, Output> trigger,
 			Condition<Output> condition,

@@ -25,7 +25,7 @@ public class Sum
 	 * @param series
 	 * @return
 	 */
-	public static <T extends Number> Probe<Long> forSeriesAsLong(Sampler<T> series)
+	public static <T extends Number> Probe<Long> forSamplerAsLong(Sampler<T> series)
 	{
 		return SamplerProbes.forSampler(series, new SumLongOperation<T, T>(ValueReaders.<T>same()));
 	}
@@ -37,7 +37,7 @@ public class Sum
 	 * @param series
 	 * @return
 	 */
-	public static <T, N extends Number> Probe<Long> forSeriesAsLong(Sampler<T> series, ValueReader<T, N> reader)
+	public static <T, N extends Number> Probe<Long> forSamplerAsLong(Sampler<T> series, ValueReader<T, N> reader)
 	{
 		return SamplerProbes.forSampler(series, new SumLongOperation<T, N>(reader));
 	}
@@ -49,7 +49,7 @@ public class Sum
 	 * @param series
 	 * @return
 	 */
-	public static <T extends Number> Probe<Double> forSeriesAsDouble(Sampler<T> series)
+	public static <T extends Number> Probe<Double> forSamplerAsDouble(Sampler<T> series)
 	{
 		return SamplerProbes.forSampler(series, new SumDoubleOperation<T, T>(ValueReaders.<T>same()));
 	}
@@ -61,7 +61,7 @@ public class Sum
 	 * @param series
 	 * @return
 	 */
-	public static <T, N extends Number> Probe<Double> forSeriesAsDouble(Sampler<T> series, ValueReader<T, N> reader)
+	public static <T, N extends Number> Probe<Double> forSamplerAsDouble(Sampler<T> series, ValueReader<T, N> reader)
 	{
 		return SamplerProbes.forSampler(series, new SumDoubleOperation<T, N>(reader));
 	}
@@ -75,7 +75,7 @@ public class Sum
 	 * @param unit
 	 * @return
 	 */
-	public static <T extends Number> Probe<Long> forSeriesAsLong(
+	public static <T extends Number> Probe<Long> forSamplerAsLong(
 		Sampler<T> series,
 		long duration, 
 		TimeUnit unit
@@ -93,7 +93,7 @@ public class Sum
 	 * @param unit
 	 * @return
 	 */
-	public static <T, N extends Number> Probe<Long> forSeriesAsLong(
+	public static <T, N extends Number> Probe<Long> forSamplerAsLong(
 		Sampler<T> series,
 		ValueReader<T, N> reader,
 		long duration, 
@@ -112,7 +112,7 @@ public class Sum
 	 * @param unit
 	 * @return
 	 */
-	public static <T extends Number> Probe<Double> forSeriesAsDouble(
+	public static <T extends Number> Probe<Double> forSamplerAsDouble(
 		Sampler<T> series,
 		long duration, 
 		TimeUnit unit
@@ -130,7 +130,7 @@ public class Sum
 	 * @param unit
 	 * @return
 	 */
-	public static <T, N extends Number> Probe<Double> forSeriesAsDouble(
+	public static <T, N extends Number> Probe<Double> forSamplerAsDouble(
 		Sampler<T> series,
 		ValueReader<T, N> reader,
 		long duration, 

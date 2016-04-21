@@ -21,7 +21,7 @@ public class Average
 	 * @param series
 	 * @return
 	 */
-	public static <T extends Number> Probe<Double> forSeries(Sampler<T> series)
+	public static <T extends Number> Probe<Double> forSampler(Sampler<T> series)
 	{
 		return SamplerProbes.forSampler(series, Average.<T>newOperation());
 	}
@@ -33,7 +33,7 @@ public class Average
 	 * @param reader
 	 * @return
 	 */
-	public static <I, T extends Number> Probe<Double> forSeries(Sampler<I> series, ValueReader<I, T> reader)
+	public static <I, T extends Number> Probe<Double> forSampler(Sampler<I> series, ValueReader<I, T> reader)
 	{
 		return SamplerProbes.forSampler(series, Average.<I, T>newOperation(reader));
 	}
@@ -47,7 +47,7 @@ public class Average
 	 * @param unit
 	 * @return
 	 */
-	public static <T extends Number> Probe<Double> forSeries(
+	public static <T extends Number> Probe<Double> forSampler(
 			Sampler<T> series,
 			long duration,
 			TimeUnit unit)
@@ -64,7 +64,7 @@ public class Average
 	 * @param unit
 	 * @return
 	 */
-	public static <I, T extends Number> Probe<Double> forSeries(
+	public static <I, T extends Number> Probe<Double> forSampler(
 			Sampler<I> series,
 			ValueReader<I, T> reader,
 			long duration,
