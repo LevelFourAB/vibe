@@ -27,12 +27,12 @@ Vibe vibe = DefaultVibe.builder()
 	.build();
 ```
 
-## Exporting probes
+## Sampling a probe
 
 Export a few things:
 
 ```java
-vibe.timeSeries(JvmProbes.cpuUsage())
+vibe.sample(JvmProbes.cpuUsage())
 	.at("jvm/cpu")
 	.export();
 ```
@@ -53,7 +53,7 @@ Time series can have triggers:
 
 
 ```java
-vibe.timeSeries(JvmProbes.cpuUsage())
+vibe.sample(JvmProbes.cpuUsage())
 	.at("jvm/cpu")
 	.when(averageOver(5, TimeUnit.MINUTES), above(0.9))
 		.sendEvent(EventSeverity.CRITICAL)
@@ -112,7 +112,7 @@ Create probes for the system via `SigarProbes`
 
 ## Send e-mail on events
 
-When you have configured a set of time series and triggers for those you can
+When you have started sampling some data with triggers for those you can
 configure an e-mail backend so that you will receive notifications when
 things go wrong.
 
@@ -135,6 +135,29 @@ MailBackend backend = MailBackend.builder()
 	.setSubject("{severity} event for {path}")
 	.setMinimumSeverity(EventSeverity.WARN)
 	.addRecipient("sysadmin@example.org")
+	.build();
+```
+
+## Sending data to InfluxDB
+
+Samples, timers and events can be exported to InfluxDB.
+
+
+Dependency:
+```xml
+<dependency>
+	<groupId>se.l4.vibe</groupId>
+	<artifactId>vibe-backend-influxdb</artifactId>
+	<version>current version</version>
+</dependency>
+``` 
+
+```java
+VibeBackend backed = InfluxDBBackend.builder()
+	.setUrl("http://localhost:8086")
+	.setDatabase("metrics")
+	.setAuthentication("user", "password")
+	.addTag("host", "server-1")
 	.build();
 ```
 
