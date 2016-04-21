@@ -2,10 +2,9 @@ Vibe is a simplistic approach to Java application monitoring.
 
 Licensed under Apache 2.0.
 
-## Current version
+## Using
 
-There is currently no release available. See Other Notes for how you can
-use snaphots.
+The latest version is **0.2**.
 
 Using Maven:
 
@@ -13,7 +12,7 @@ Using Maven:
 <dependency>
 	<groupId>se.l4.vibe</groupId>
 	<artifactId>vibe-api</artifactId>
-	<version>version</version>
+	<version>0.2</version>
 </dependency>
 ```
 

@@ -6,10 +6,16 @@
 
 	<groupId>se.l4.vibe</groupId>
 	<artifactId>vibe-base</artifactId>
-	<version>0.2-SNAPSHOT</version>
+	<version>0.2</version>
 	<packaging>pom</packaging>
 
-	<name>${project.artifactId}</name>
+	<name>Vibe</name>
+	
+	<url>https://github.com/LevelFourAB/vibe</url>
+	
+	<description>
+		Simplistic application monitoring for Java.
+	</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
