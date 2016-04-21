@@ -45,4 +45,32 @@ public interface TimerSnapshot
 	 * @return
 	 */
 	double getAverageInNs();
+	
+	/**
+	 * Get the minimum time in nanoseconds.
+	 * 
+	 * @return
+	 */
+	long getMinimumInNs();
+	
+	/**
+	 * Get the minimum time in milliseconds.
+	 * 
+	 * @return
+	 */
+	long getMinimumInMs();
+	
+	/**
+	 * Get the maximum time in nanoseconds.
+	 * 
+	 * @return
+	 */
+	long getMaximumInNs();
+	
+	/**
+	 * Get the maximum time in milliseconds.
+	 * 
+	 * @return
+	 */
+	long getMaximumInMs();
 }

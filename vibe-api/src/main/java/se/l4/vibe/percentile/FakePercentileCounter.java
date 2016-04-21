@@ -33,7 +33,7 @@ public class FakePercentileCounter
 		long total = this.total.get();
 		long samples = this.samples.get();
 		
-		return new FakeSnapshot(total, samples);
+		return new FakeSnapshot(samples, total);
 	}
 
 	@Override

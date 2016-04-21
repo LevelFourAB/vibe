@@ -166,7 +166,7 @@ public class BucketPercentileCounter
 		public long estimatePercentile(int percentile)
 		{
 			long sum = 0;
-			long cutoff = (long) Math.ceil((percentile / 100.0) * samples);
+			long cutoff = (long) Math.ceil((percentile / 100.0) * samples) - 1;
 			for(int i=0, n=buckets.length-1; i<n; i++)
 			{
 				sum += buckets[i];

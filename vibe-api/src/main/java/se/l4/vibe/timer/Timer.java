@@ -15,4 +15,18 @@ public interface Timer
 	 * Start timing something.
 	 */
 	Stopwatch start();
+
+	/**
+	 * Add a listener that is triggered whenever this timer is stopped.
+	 * 
+	 * @param listener
+	 */
+	void addListener(TimerListener listener);
+	
+	/**
+	 * Remove a previously added listener.
+	 * 
+	 * @param listener
+	 */
+	void removeListener(TimerListener listener);
 }

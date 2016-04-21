@@ -52,6 +52,13 @@ public interface TimerBuilder
 	TimerBuilder withPercentiles(PercentileCounter counter);
 	
 	/**
+	 * Build and return the timer without exporting it.
+	 * 
+	 * @return
+	 */
+	Timer build();
+	
+	/**
 	 * Export and return the timer.
 	 * 
 	 * @return

@@ -44,11 +44,19 @@ public class TimerBuilderImpl
 		this.percentileCounter = counter;
 		return this;
 	}
+	
+	@Override
+	public Timer build()
+	{
+		return new TimerImpl(percentileCounter);
+	}
 
 	@Override
 	public Timer export()
 	{
-		Timer result = new TimerImpl(percentileCounter);
+		verify();
+		
+		Timer result = build();
 		
 		backend.export(path, result);
 		
