@@ -115,4 +115,9 @@ public class LoggingBackend
 			}
 		}
 	}
+	
+	@Override
+	public void close()
+	{
+	}
 }

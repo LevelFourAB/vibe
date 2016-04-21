@@ -45,4 +45,9 @@ public interface VibeBackend
 	 * @param timer
 	 */
 	void export(String path, Timer timer);
+	
+	/**
+	 * Release any resources held by this backend.
+	 */
+	void close();
 }

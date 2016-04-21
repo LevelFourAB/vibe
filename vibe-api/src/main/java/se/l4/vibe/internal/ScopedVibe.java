@@ -129,5 +129,11 @@ public class ScopedVibe
 		{
 			parent.export(scopePath(path), timer);
 		}
+		
+		@Override
+		public void close()
+		{
+			// Closing scoped instances does nothing
+		}
 	}
 }

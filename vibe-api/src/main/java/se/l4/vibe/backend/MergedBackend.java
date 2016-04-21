@@ -56,4 +56,13 @@ public class MergedBackend
 			backend.export(path, timer);
 		}
 	}
+	
+	@Override
+	public void close()
+	{
+		for(VibeBackend backend : backends)
+		{
+			backend.close();
+		}
+	}
 }

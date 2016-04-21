@@ -207,6 +207,12 @@ public class MailBackend
 		});
 	}
 	
+	@Override
+	public void close()
+	{
+		executor.shutdown();
+	}
+	
 	/**
 	 * Start building a new mail backend.
 	 * 

@@ -174,4 +174,9 @@ public class JmxBackend
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void close()
+	{
+	}
 }

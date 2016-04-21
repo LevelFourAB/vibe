@@ -200,6 +200,15 @@ public class VibeImpl
 			}
 		}
 		
+		@Override
+		public void close()
+		{
+			for(VibeBackend vb : backends)
+			{
+				vb.close();
+			}
+		}
+		
 		public void add(VibeBackend backend)
 		{
 			backends.add(backend);
