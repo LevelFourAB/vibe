@@ -36,7 +36,7 @@ public class ScopedVibe
 	
 	private String scopePath(String path)
 	{
-		return scope + '.' + path;
+		return scope + '/' + path;
 	}
 	
 	@Override
