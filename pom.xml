@@ -25,6 +25,7 @@
 		<module>vibe-api</module>
 		<module>vibe-sigar</module>
 		<module>vibe-backend-mail</module>
+		<module>vibe-backend-influxdb</module>
 	</modules>
 	
 	<dependencyManagement>
@@ -42,21 +43,9 @@
 			</dependency>
 			
 			<dependency>
-				<groupId>com.google.guava</groupId>
-				<artifactId>guava</artifactId>
-				<version>10.0.1</version>
-			</dependency>
-			
-			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit-dep</artifactId>
 				<version>4.10</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-core</artifactId>  
-				<version>1.9.0-rc1</version> 
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
