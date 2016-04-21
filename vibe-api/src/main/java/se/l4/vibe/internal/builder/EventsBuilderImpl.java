@@ -36,11 +36,17 @@ public class EventsBuilderImpl<T>
 	}
 	
 	@Override
-	public Events<T> create()
+	public Events<T> build()
+	{
+		return new EventsImpl<T>(severity);
+	}
+	
+	@Override
+	public Events<T> export()
 	{
 		verify();
 		
-		EventsImpl<T> events = new EventsImpl<T>(severity);
+		Events<T> events = build();
 		backend.export(path, events);
 		
 		return events;

@@ -36,7 +36,7 @@ public class TrackEventsExample
 		Events<AccessEvent> accessEvents = vibe.events(AccessEvent.class)
 			.at("auth/events")
 			.setSeverity(EventSeverity.INFO)
-			.create();
+			.export();
 		
 		// Sampling the number of events sent during 10 second interval
 		vibe.sample(accessEvents.getEventsProbe())

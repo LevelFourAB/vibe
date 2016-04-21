@@ -20,11 +20,18 @@ public interface EventsBuilder<T>
 	 * @return
 	 */
 	EventsBuilder<T> setSeverity(EventSeverity severity);
-	
+
 	/**
-	 * Create the events instance.
+	 * Build the instance without exporting it.
 	 * 
 	 * @return
 	 */
-	Events<T> create();
+	Events<T> build();
+	
+	/**
+	 * Create and export the events instance.
+	 * 
+	 * @return
+	 */
+	Events<T> export();
 }
