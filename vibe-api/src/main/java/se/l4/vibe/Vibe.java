@@ -96,4 +96,10 @@ public interface Vibe
 	 * @param backend
 	 */
 	void addBackend(VibeBackend backend);
+
+	/**
+	 * Destroy this Vibe instance. This will stop collection of metrics and
+	 * stop any backends that have been added.
+	 */
+	void destroy();
 }

@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,7 +151,16 @@ public class InfluxDBBackend
 	public void close()
 	{
 		queue.close();
+
 		executor.shutdown();
+		
+		try
+		{
+			executor.awaitTermination(5, TimeUnit.SECONDS);
+		}
+		catch(InterruptedException e)
+		{
+		}
 	}
 	
 	private class SampleQueuer

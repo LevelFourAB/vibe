@@ -139,6 +139,15 @@ public class VibeImpl
 	{
 		this.backend.add(backend);
 	}
+
+	@Override
+	public void destroy()
+	{
+		System.out.println("Shutting down");
+		sampler.destroy();
+		
+		this.backend.close();	
+	}
 	
 	private class BackendImpl
 		implements VibeBackend

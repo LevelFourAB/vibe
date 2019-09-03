@@ -55,4 +55,11 @@ public class TimeSampler
 		return sampler.add(probe);
 	}
 	
+	/**
+	 * Destroy the sampler.
+	 */
+	public void destroy()
+	{
+		executor.shutdownNow();
+	}
 }

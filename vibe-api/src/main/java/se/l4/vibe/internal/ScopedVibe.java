@@ -136,4 +136,10 @@ public class ScopedVibe
 			// Closing scoped instances does nothing
 		}
 	}
+
+	@Override
+	public void destroy()
+	{
+		// Destroying the scoped instance does nothing
+	}
 }
