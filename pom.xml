@@ -6,7 +6,7 @@
 
 	<groupId>se.l4.vibe</groupId>
 	<artifactId>vibe-base</artifactId>
-	<version>0.3-SNAPSHOT</version>
+	<version>0.3.0</version>
 	<packaging>pom</packaging>
 
 	<name>Vibe</name>
