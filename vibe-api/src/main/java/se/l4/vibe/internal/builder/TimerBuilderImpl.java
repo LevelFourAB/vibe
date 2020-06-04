@@ -10,7 +10,7 @@ import se.l4.vibe.timer.Timer;
 
 /**
  * Implementation of {@link TimerBuilder}.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -20,7 +20,7 @@ public class TimerBuilderImpl
 {
 	private VibeBackend backend;
 	private PercentileCounter percentileCounter;
-	
+
 	public TimerBuilderImpl(VibeBackend backend)
 	{
 		this.backend = backend;
@@ -37,14 +37,14 @@ public class TimerBuilderImpl
 		}
 		return withPercentiles(new BucketPercentileCounter(msLimits));
 	}
-	
+
 	@Override
 	public TimerBuilder withPercentiles(PercentileCounter counter)
 	{
 		this.percentileCounter = counter;
 		return this;
 	}
-	
+
 	@Override
 	public Timer build()
 	{
@@ -55,11 +55,11 @@ public class TimerBuilderImpl
 	public Timer export()
 	{
 		verify();
-		
+
 		Timer result = build();
-		
+
 		backend.export(path, result);
-		
+
 		return result;
 	}
 }

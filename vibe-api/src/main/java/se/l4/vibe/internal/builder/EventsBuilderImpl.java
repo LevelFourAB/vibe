@@ -8,7 +8,7 @@ import se.l4.vibe.internal.EventsImpl;
 
 /**
  * Builder for events.
- * 
+ *
  * @author Andreas Holstenson
  *
  * @param <T>
@@ -18,7 +18,7 @@ public class EventsBuilderImpl<T>
 	implements EventsBuilder<T>
 {
 	private final VibeBackend backend;
-	
+
 	private EventSeverity severity;
 
 	public EventsBuilderImpl(VibeBackend backend)
@@ -26,29 +26,29 @@ public class EventsBuilderImpl<T>
 		this.backend = backend;
 		severity = EventSeverity.INFO;
 	}
-	
+
 	@Override
 	public EventsBuilder<T> setSeverity(EventSeverity severity)
 	{
 		this.severity = severity;
-		
+
 		return this;
 	}
-	
+
 	@Override
 	public Events<T> build()
 	{
 		return new EventsImpl<T>(severity);
 	}
-	
+
 	@Override
 	public Events<T> export()
 	{
 		verify();
-		
+
 		Events<T> events = build();
 		backend.export(path, events);
-		
+
 		return events;
 	}
 }

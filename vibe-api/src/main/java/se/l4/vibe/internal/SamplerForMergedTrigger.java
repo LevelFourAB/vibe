@@ -9,7 +9,7 @@ import se.l4.vibe.trigger.On;
 
 /**
  * Implementation of {@link Sampler} for use {@link On}.
- * 
+ *
  * @author Andreas Holstenson
  *
  * @param <T>
@@ -33,7 +33,7 @@ public class SamplerForMergedTrigger<T>
 			}
 		});
 	}
-	
+
 	@Override
 	public SampledProbe<T> getProbe()
 	{

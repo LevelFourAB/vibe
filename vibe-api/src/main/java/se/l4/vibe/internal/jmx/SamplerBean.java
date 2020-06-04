@@ -11,7 +11,7 @@ public class SamplerBean
 	{
 		this.series = series;
 	}
-	
+
 	@ExposeAsAttribute
 	public Object currentValue()
 	{

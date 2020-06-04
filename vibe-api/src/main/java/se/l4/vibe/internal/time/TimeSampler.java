@@ -17,13 +17,13 @@ public class TimeSampler
 	private final Map<Long, SampleCollector> samplers;
 	private final ScheduledExecutorService executor;
 	private final long defaultTime;
-	
+
 	public TimeSampler(long defaultTime)
 	{
 		this.defaultTime = defaultTime;
-		
+
 		samplers = new HashMap<>();
-		
+
 		executor = Executors.newScheduledThreadPool(1, new ThreadFactory()
 		{
 			@Override
@@ -35,7 +35,7 @@ public class TimeSampler
 			}
 		});
 	}
-	
+
 	public long getDefaultTime()
 	{
 		return defaultTime;
@@ -50,11 +50,11 @@ public class TimeSampler
 			samplers.put(sampleIntervalInMs, sampler);
 			sampler.start();
 		}
-		
+
 		// Create the series
 		return sampler.add(probe);
 	}
-	
+
 	/**
 	 * Destroy the sampler.
 	 */

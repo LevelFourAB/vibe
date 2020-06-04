@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * A {@link PercentileCounter} that only counts samples and the total value.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -32,7 +32,7 @@ public class FakePercentileCounter
 	{
 		long total = this.total.get();
 		long samples = this.samples.get();
-		
+
 		return new FakeSnapshot(samples, total);
 	}
 
@@ -48,37 +48,37 @@ public class FakePercentileCounter
 	{
 		private final long samples;
 		private final long total;
-		
+
 		public FakeSnapshot(long samples, long total)
 		{
 			this.samples = samples;
 			this.total = total;
 		}
-		
+
 		@Override
 		public long getSamples()
 		{
 			return samples;
 		}
-		
+
 		@Override
 		public long getTotal()
 		{
 			return total;
 		}
-		
+
 		@Override
 		public long estimatePercentile(int percentile)
 		{
 			return -1;
 		}
-		
+
 		@Override
 		public PercentileSnapshot add(PercentileSnapshot other)
 		{
 			return new FakeSnapshot(samples + other.getSamples(), total + other.getTotal());
 		}
-		
+
 		@Override
 		public PercentileSnapshot remove(PercentileSnapshot other)
 		{

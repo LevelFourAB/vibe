@@ -21,7 +21,7 @@ import se.l4.vibe.timer.Timer;
 
 /**
  * JMX backend that will export everything via JMX.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -35,12 +35,12 @@ public class JmxBackend
 	{
 		this("vibe");
 	}
-	
+
 	public JmxBackend(String root)
 	{
 		this(root, ManagementFactory.getPlatformMBeanServer());
 	}
-	
+
 	public JmxBackend(MBeanServer server)
 	{
 		this("vibe", server);
@@ -54,10 +54,10 @@ public class JmxBackend
 			: root;
 		this.server = server;
 	}
-	
+
 	/**
 	 * Translate a path into a JMX location.
-	 * 
+	 *
 	 * @param path
 	 * @return
 	 */
@@ -65,7 +65,7 @@ public class JmxBackend
 	{
 		StringBuilder builder = new StringBuilder(path.length());
 		int lastSeparator = path.lastIndexOf('/');
-		
+
 		if(! "".equals(root))
 		{
 			// Append the root domain
@@ -73,17 +73,17 @@ public class JmxBackend
 				.append(root)
 				.append(".");
 		}
-		
+
 		if(lastSeparator == -1)
 		{
 			// No separator, append name directly
 			builder.append(":name=");
 		}
-		
+
 		for(int i=0, n=path.length(); i<n; i++)
 		{
 			char c = path.charAt(i);
-			
+
 			if(i < lastSeparator)
 			{
 				if(c == '.')
@@ -115,10 +115,10 @@ public class JmxBackend
 				}
 			}
 		}
-		
+
 		return builder.toString();
 	}
-	
+
 	private void export(String path, Service service)
 	{
 		String jmxLocation = toJmxLocation(path);
@@ -143,7 +143,7 @@ public class JmxBackend
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
-	
+
 	public void export(String path, Object object)
 	{
 		export(path, new ServiceImpl(object));
@@ -165,16 +165,16 @@ public class JmxBackend
 	public void export(String path, Events<?> events)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@Override
 	public void export(String path, Timer timer)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@Override
 	public void close()
 	{

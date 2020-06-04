@@ -1,7 +1,7 @@
-<project 
+<project
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	
+
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>se.l4.vibe</groupId>
@@ -10,9 +10,9 @@
 	<packaging>pom</packaging>
 
 	<name>Vibe</name>
-	
+
 	<url>https://github.com/LevelFourAB/vibe</url>
-	
+
 	<description>
 		Simplistic application monitoring for Java.
 	</description>
@@ -27,7 +27,7 @@
 		<module>vibe-backend-mail</module>
 		<module>vibe-backend-influxdb</module>
 	</modules>
-	
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -35,13 +35,13 @@
 				<artifactId>slf4j-api</artifactId>
 				<version>1.7.21</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-simple</artifactId>
 				<version>1.7.21</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -49,7 +49,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -63,14 +63,14 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<!-- Main Github repo -->
 	<scm>
 		<connection>scm:git:git@github.com:LevelFourAB/vibe.git</connection>
 		<url>scm:git:git@github.com:LevelFourAB/vibe.git</url>
 		<developerConnection>scm:git:git@github.com:LevelFourAB/vibe.git</developerConnection>
 	</scm>
-	
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
@@ -81,7 +81,7 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
-	
+
 	<profiles>
 		<profile>
 			<id>release</id>

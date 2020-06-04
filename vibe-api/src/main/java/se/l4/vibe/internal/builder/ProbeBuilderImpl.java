@@ -6,7 +6,7 @@ import se.l4.vibe.probes.Probe;
 
 /**
  * Exporter for probes.
- * 
+ *
  * @author Andreas Holstenson
  *
  * @param <T>
@@ -23,14 +23,14 @@ public class ProbeBuilderImpl<T>
 		this.backend = backend;
 		this.probe = probe;
 	}
-	
+
 	@Override
 	public Probe<T> export()
 	{
 		verify();
-		
+
 		backend.export(path, probe);
-		
+
 		return probe;
 	}
 }

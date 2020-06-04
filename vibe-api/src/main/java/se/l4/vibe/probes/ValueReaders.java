@@ -12,7 +12,7 @@ public class ValueReaders
 			return object;
 		}
 	};
-	
+
 	private static final ValueReader<TimerSnapshot, Long> TIMER_TOTAL_MS = new ValueReader<TimerSnapshot, Long>()
 	{
 		@Override
@@ -21,7 +21,7 @@ public class ValueReaders
 			return object.getTotalTimeInMs();
 		}
 	};
-	
+
 	private static final ValueReader<TimerSnapshot, Long> TIMER_TOTAL_NS = new ValueReader<TimerSnapshot, Long>()
 	{
 		@Override
@@ -30,7 +30,7 @@ public class ValueReaders
 			return object.getTotalTimeInNs();
 		}
 	};
-	
+
 	private static final ValueReader<TimerSnapshot, Long> TIMER_SAMPLES = new ValueReader<TimerSnapshot, Long>()
 	{
 		@Override
@@ -39,34 +39,34 @@ public class ValueReaders
 			return object.getSamples();
 		}
 	};
-	
+
 	private ValueReaders()
 	{
 	}
-	
+
 	public static <T> ValueReader<T, T> same()
 	{
 		return SAME;
 	}
-	
+
 	public static ValueReader<TimerSnapshot, Long> forTimerSnapshotTotalTimeInMs()
 	{
 		return TIMER_TOTAL_MS;
 	}
-	
+
 	public static ValueReader<TimerSnapshot, Long> forTimerSnapshotTotalTimeInNs()
 	{
 		return TIMER_TOTAL_NS;
 	}
-	
+
 	public static ValueReader<TimerSnapshot, Long> forTimerSnapshotSamples()
 	{
 		return TIMER_SAMPLES;
 	}
-	
+
 	/**
 	 * Get a {@link Probe probe} that reads a value from the given object.
-	 * 
+	 *
 	 * @param object
 	 * @param reader
 	 * @return
@@ -75,11 +75,11 @@ public class ValueReaders
 	{
 		return new ValueReadingProbe<I, O>(object, reader);
 	}
-	
+
 	/**
 	 * Get a {@link Probe probe} that reads a value from the result of the
 	 * given probe.
-	 * 
+	 *
 	 * @param probe
 	 * @param reader
 	 * @return
@@ -88,19 +88,19 @@ public class ValueReaders
 	{
 		return new ValueReadingProbeViaProbe<I, O>(probe, reader);
 	}
-	
+
 	private static class ValueReadingProbe<Input, Output>
 		implements Probe<Output>
 	{
 		private final Input object;
 		private final ValueReader<Input, Output> reader;
-	
+
 		public ValueReadingProbe(Input object, ValueReader<Input, Output> reader)
 		{
 			this.object = object;
 			this.reader = reader;
 		}
-		
+
 		@Override
 		public Output read()
 		{
@@ -113,13 +113,13 @@ public class ValueReaders
 	{
 		private final Probe<Input> probe;
 		private final ValueReader<Input, Output> reader;
-	
+
 		public ValueReadingProbeViaProbe(Probe<Input> probe, ValueReader<Input, Output> reader)
 		{
 			this.probe = probe;
 			this.reader = reader;
 		}
-		
+
 		@Override
 		public Output read()
 		{

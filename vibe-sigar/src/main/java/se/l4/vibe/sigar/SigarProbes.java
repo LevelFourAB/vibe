@@ -13,14 +13,14 @@ import se.l4.vibe.probes.SampledProbe;
  * Probes for that use Sigar for monitoring the system. Please note that the
  * native libraries need to be available for this to work. You should check
  * availability with {@link #isAvailable()} before using these probes.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
 public class SigarProbes
 {
 	private final Sigar sigar;
-	
+
 	public SigarProbes()
 	{
 		Sigar sigar = new Sigar();
@@ -37,23 +37,23 @@ public class SigarProbes
 			catch(Throwable t2)
 			{
 			}
-			
+
 			sigar = null;
 		}
-		
+
 		this.sigar = sigar;
 	}
-	
+
 	/**
 	 * Check if probes are available.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isAvailable()
 	{
 		return sigar != null;
 	}
-	
+
 	private void verify()
 	{
 		if(! isAvailable())
@@ -61,18 +61,18 @@ public class SigarProbes
 			throw new VibeException("Sigar is not avaiable");
 		}
 	}
-	
+
 	/**
-	 * Get a probe for CPU usage as a fraction. Please note that each instance 
+	 * Get a probe for CPU usage as a fraction. Please note that each instance
 	 * of {@link SigarProbes} can only have one accurate CPU probe. Calling
 	 * this method more than once will cause your measurements to be off.
-	 * 
+	 *
 	 * @return
 	 */
 	public SampledProbe<Double> cpuUsage()
 	{
 		verify();
-		
+
 		try
 		{
 			sigar.getCpuPerc();
@@ -80,7 +80,7 @@ public class SigarProbes
 		catch(SigarException e1)
 		{
 		}
-		
+
 		return new AbstractSampledProbe<Double>()
 		{
 			@Override
@@ -88,7 +88,7 @@ public class SigarProbes
 			{
 				return value;
 			}
-			
+
 			@Override
 			protected Double sample0()
 			{
@@ -104,16 +104,16 @@ public class SigarProbes
 			}
 		};
 	}
-	
+
 	/**
 	 * Get memory information.
-	 * 
+	 *
 	 * @return
 	 */
 	public SampledProbe<MemoryUsage> memoryUsage()
 	{
 		verify();
-		
+
 		return new AbstractSampledProbe<MemoryUsage>()
 		{
 			@Override
@@ -121,7 +121,7 @@ public class SigarProbes
 			{
 				return sample0();
 			}
-			
+
 			@Override
 			protected MemoryUsage sample0()
 			{
@@ -137,16 +137,16 @@ public class SigarProbes
 			}
 		};
 	}
-	
+
 	/**
 	 * Get used memory as a fraction. Uses {@link Mem#getUsedPercent()}.
-	 * 
+	 *
 	 * @return
 	 */
 	public SampledProbe<Double> usedMemoryAsFraction()
 	{
 		verify();
-		
+
 		return new AbstractSampledProbe<Double>()
 		{
 			@Override
@@ -154,7 +154,7 @@ public class SigarProbes
 			{
 				return sample0();
 			}
-			
+
 			@Override
 			protected Double sample0()
 			{
@@ -170,16 +170,16 @@ public class SigarProbes
 			}
 		};
 	}
-	
+
 	/**
 	 * Get the amount of used memory in bytes. Uses {@link Mem#getUsed()}.
-	 * 
+	 *
 	 * @return
 	 */
 	public SampledProbe<Long> usedMemoryInBytes()
 	{
 		verify();
-		
+
 		return new AbstractSampledProbe<Long>()
 		{
 			@Override
@@ -187,7 +187,7 @@ public class SigarProbes
 			{
 				return sample0();
 			}
-			
+
 			@Override
 			protected Long sample0()
 			{
@@ -203,16 +203,16 @@ public class SigarProbes
 			}
 		};
 	}
-	
+
 	/**
 	 * Get free memory as a fraction. Uses {@link Mem#getFreePercent()}.
-	 * 
+	 *
 	 * @return
 	 */
 	public SampledProbe<Double> freeMemoryAsFraction()
 	{
 		verify();
-		
+
 		return new AbstractSampledProbe<Double>()
 		{
 			@Override
@@ -220,7 +220,7 @@ public class SigarProbes
 			{
 				return sample0();
 			}
-			
+
 			@Override
 			protected Double sample0()
 			{
@@ -236,16 +236,16 @@ public class SigarProbes
 			}
 		};
 	}
-	
+
 	/**
 	 * Get the amount of free memory in bytes. Uses {@link Mem#getFree()}.
-	 * 
+	 *
 	 * @return
 	 */
 	public SampledProbe<Long> freeMemoryInBytes()
 	{
 		verify();
-		
+
 		return new AbstractSampledProbe<Long>()
 		{
 			@Override
@@ -253,7 +253,7 @@ public class SigarProbes
 			{
 				return sample0();
 			}
-			
+
 			@Override
 			protected Long sample0()
 			{

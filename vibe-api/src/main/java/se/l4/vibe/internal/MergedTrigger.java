@@ -7,7 +7,7 @@ import se.l4.vibe.trigger.Trigger;
 
 /**
  * Implementation of {@link Trigger} that combines two other triggers.
- * 
+ *
  * @author Andreas Holstenson
  *
  * @param <Input>
@@ -26,7 +26,7 @@ public class MergedTrigger<Input, Output>
 		this.first = first;
 		this.second = second;
 	}
-	
+
 	@Override
 	public Probe<Output> forSampler(Sampler<Input> series)
 	{
@@ -34,7 +34,7 @@ public class MergedTrigger<Input, Output>
 		SamplerForMergedTrigger fakeSeries = new SamplerForMergedTrigger(series, probe);
 		return second.forSampler(fakeSeries);
 	}
-	
+
 	@Override
 	public long getDefaultRepeatTime()
 	{
@@ -44,18 +44,18 @@ public class MergedTrigger<Input, Output>
 			long time = ((TimedTrigger) second).getDefaultRepeatTime();
 			if(time > 0) return time;
 		}
-		
+
 		if(first instanceof TimedTrigger)
 		{
 			// Get the time of the first trigger if set
 			long time = ((TimedTrigger) first).getDefaultRepeatTime();
 			if(time > 0) return time;
 		}
-		
+
 		// Set to sample time by default
 		return 0;
 	}
-	
+
 	@Override
 	public String toString()
 	{

@@ -15,7 +15,7 @@ import se.l4.vibe.timer.Timer;
 
 /**
  * Basic backend that will log a message every time something is sampled.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -23,17 +23,17 @@ public class LoggingBackend
 	implements VibeBackend
 {
 	private final Logger logger;
-	
+
 	public LoggingBackend()
 	{
 		this(Vibe.class);
 	}
-	
+
 	public LoggingBackend(String root)
 	{
 		logger = LoggerFactory.getLogger(root);
 	}
-	
+
 	public LoggingBackend(Class<?> root)
 	{
 		logger = LoggerFactory.getLogger(root);
@@ -44,18 +44,18 @@ public class LoggingBackend
 	{
 		series.addListener(new PrintSampleListener(logger, path));
 	}
-	
+
 	@Override
 	public void export(String path, Probe<?> probe)
 	{
 	}
-	
+
 	@Override
 	public void export(String path, Events<?> events)
 	{
 		events.addListener(new PrintEventListener(logger, path));
 	}
-	
+
 	@Override
 	public void export(String path, Timer timer)
 	{
@@ -72,26 +72,26 @@ public class LoggingBackend
 			this.logger = logger;
 			this.path = path;
 		}
-		
+
 		@Override
 		public void sampleAcquired(SampledProbe probe, Sampler.Entry entry)
 		{
 			logger.info("{}: {}", path, entry.getValue());
 		}
 	}
-	
+
 	private static class PrintEventListener
 		implements EventListener
 	{
 		private final String path;
 		private final Logger logger;
-	
+
 		public PrintEventListener(Logger logger, String path)
 		{
 			this.logger = logger;
 			this.path = path;
 		}
-		
+
 		@Override
 		public void eventRegistered(Events events, EventSeverity severity, Object event)
 		{
@@ -115,7 +115,7 @@ public class LoggingBackend
 			}
 		}
 	}
-	
+
 	@Override
 	public void close()
 	{

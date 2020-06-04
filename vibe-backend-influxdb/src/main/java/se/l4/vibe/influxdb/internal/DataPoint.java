@@ -4,7 +4,7 @@ import java.util.Map;
 
 /**
  * Data point to be sent to InfluxDB.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -22,12 +22,12 @@ public class DataPoint
 		this.tags = tags;
 		this.values = values;
 	}
-	
+
 	public String toLine()
 	{
 		StringBuilder builder = new StringBuilder();
 		escapeInto(measurement, builder);
-		
+
 		for(Map.Entry<String, String> tag : tags.entrySet())
 		{
 			builder.append(',');
@@ -36,7 +36,7 @@ public class DataPoint
 			escapeInto(tag.getValue(), builder);
 		}
 		builder.append(' ');
-		
+
 		boolean first = true;
 		for(Map.Entry<String, Object> value : values.entrySet())
 		{
@@ -54,10 +54,10 @@ public class DataPoint
 		}
 		builder.append(' ');
 		builder.append(time);
-		
+
 		return builder.toString();
 	}
-	
+
 	private void escapeInto(String value, StringBuilder builder)
 	{
 		for(int i=0, n=value.length(); i<n; i++)
@@ -70,7 +70,7 @@ public class DataPoint
 			builder.append(c);
 		}
 	}
-	
+
 	private void appendValueTo(Object v, StringBuilder builder)
 	{
 		if(v instanceof Boolean)

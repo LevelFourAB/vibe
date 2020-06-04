@@ -4,7 +4,7 @@ import java.util.Collection;
 
 /**
  * Operation that performs all calculations for the probe.
- * 
+ *
  * @author Andreas Holstenson
  *
  * @param <Input>
@@ -14,7 +14,7 @@ public interface SampleOperation<Input, Output>
 {
 	/**
 	 * A value has been removed.
-	 * 
+	 *
 	 * @param value
 	 * 		the actual value that was removed
 	 * @param entries
@@ -24,7 +24,7 @@ public interface SampleOperation<Input, Output>
 
 	/**
 	 * A value has been added.
-	 * 
+	 *
 	 * @param value
 	 * 		the actual value that was added
 	 * @param entries
@@ -34,7 +34,7 @@ public interface SampleOperation<Input, Output>
 
 	/**
 	 * Get the current calculated value.
-	 * 
+	 *
 	 * @return
 	 */
 	Output get();

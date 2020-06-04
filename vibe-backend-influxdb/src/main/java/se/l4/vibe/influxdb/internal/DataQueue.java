@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 /**
  * Queue for data points that are going to be sent to InfluxDB.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -22,18 +22,18 @@ public class DataQueue
 	private final ScheduledFuture<?> future;
 	private final Lock lock;
 	private final ScheduledExecutorService executor;
-	
+
 	public DataQueue(Consumer<String> flusher, ScheduledExecutorService executor)
 	{
 		this.flusher = flusher;
 		this.executor = executor;
-		
+
 		items = new ArrayList<>(100);
 		lock = new ReentrantLock();
-		
+
 		future = executor.scheduleAtFixedRate(this::flush, 5, 5, TimeUnit.SECONDS);
 	}
-	
+
 	public void add(DataPoint point)
 	{
 		lock.lock();
@@ -52,7 +52,7 @@ public class DataQueue
 			lock.unlock();
 		}
 	}
-	
+
 	private void send(String[] lines, int attempt)
 	{
 		try
@@ -62,7 +62,7 @@ public class DataQueue
 			{
 				builder.append(line).append("\n");
 			}
-			
+
 			flusher.accept(builder.toString());
 		}
 		catch(Exception e)
@@ -70,7 +70,7 @@ public class DataQueue
 			// TODO: Support retrying sending
 		}
 	}
-	
+
 	/**
 	 * Flush this queue.
 	 */
@@ -88,7 +88,7 @@ public class DataQueue
 			lock.unlock();
 		}
 	}
-	
+
 	public void close()
 	{
 		flush();

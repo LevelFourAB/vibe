@@ -22,7 +22,7 @@ public class ScopedVibe
 	private final VibeImpl vibe;
 	private final VibeBackend parent;
 	private final String scope;
-	
+
 	private final ScopedBackend backend;
 
 	public ScopedVibe(VibeImpl vibe, VibeBackend parent, String scope)
@@ -30,15 +30,15 @@ public class ScopedVibe
 		this.vibe = vibe;
 		this.parent = parent;
 		this.scope = scope;
-		
+
 		this.backend = new ScopedBackend();
 	}
-	
+
 	private String scopePath(String path)
 	{
 		return scope + '/' + path;
 	}
-	
+
 	@Override
 	public <T> ProbeBuilder<T> probe(Probe<T> probe)
 	{
@@ -105,31 +105,31 @@ public class ScopedVibe
 		public ScopedBackend()
 		{
 		}
-		
+
 		@Override
 		public void export(String path, Events<?> events)
 		{
 			parent.export(scopePath(path), events);
 		}
-		
+
 		@Override
 		public void export(String path, Probe<?> probe)
 		{
 			parent.export(scopePath(path), probe);
 		}
-		
+
 		@Override
 		public void export(String path, Sampler<?> series)
 		{
 			parent.export(scopePath(path), series);
 		}
-		
+
 		@Override
 		public void export(String path, Timer timer)
 		{
 			parent.export(scopePath(path), timer);
 		}
-		
+
 		@Override
 		public void close()
 		{

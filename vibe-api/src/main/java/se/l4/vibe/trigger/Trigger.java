@@ -6,7 +6,7 @@ import se.l4.vibe.probes.Sampler;
 /**
  * Trigger for automatic events. The trigger will create a probe that can
  * be used to check values.
- * 
+ *
  * @author Andreas Holstenson
  *
  * @param <Input>
@@ -16,7 +16,7 @@ public interface Trigger<Input, Output>
 {
 	/**
 	 * Create a probe suitable for use with the specified time series.
-	 * 
+	 *
 	 * @param series
 	 * @return
 	 */

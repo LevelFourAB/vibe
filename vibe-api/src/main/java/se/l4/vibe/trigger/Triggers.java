@@ -12,7 +12,7 @@ import se.l4.vibe.probes.Sampler;
 
 /**
  * Triggers that can be used together with monitoring.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -21,10 +21,10 @@ public class Triggers
 	private Triggers()
 	{
 	}
-	
+
 	/**
 	 * Get a trigger that will return the exact value of a probe.
-	 * 
+	 *
 	 * @return
 	 */
 	public static <T> Trigger<T, T> value()
@@ -36,7 +36,7 @@ public class Triggers
 			{
 				return series.getProbe();
 			}
-			
+
 			@Override
 			public String toString()
 			{
@@ -44,10 +44,10 @@ public class Triggers
 			}
 		};
 	}
-	
+
 	/**
 	 * Get a trigger that will return the exact value of a probe as a number.
-	 * 
+	 *
 	 * @return
 	 */
 	public static <T extends Number> Trigger<T, Number> numericValue()
@@ -59,7 +59,7 @@ public class Triggers
 			{
 				return (Probe) series.getProbe();
 			}
-			
+
 			@Override
 			public String toString()
 			{
@@ -67,11 +67,11 @@ public class Triggers
 			}
 		};
 	}
-	
+
 	/**
 	 * Calculate the average for a specific duration and check conditions
 	 * against the specified value.
-	 * 
+	 *
 	 * @param duration
 	 * @param unit
 	 * @return
@@ -85,13 +85,13 @@ public class Triggers
 			{
 				return (Probe) Average.forSampler(series, duration, unit);
 			}
-			
+
 			@Override
 			public long getDefaultRepeatTime()
 			{
 				return unit.toMillis(duration);
 			}
-			
+
 			@Override
 			public String toString()
 			{
@@ -99,10 +99,10 @@ public class Triggers
 			}
 		};
 	}
-	
+
 	/**
 	 * Calculate the minimum value over a specific duration.
-	 * 
+	 *
 	 * @param duration
 	 * @param unit
 	 * @return
@@ -116,13 +116,13 @@ public class Triggers
 			{
 				return (Probe) Range.minimum(series, duration, unit);
 			}
-			
+
 			@Override
 			public long getDefaultRepeatTime()
 			{
 				return unit.toMillis(duration);
 			}
-			
+
 			@Override
 			public String toString()
 			{
@@ -130,10 +130,10 @@ public class Triggers
 			}
 		};
 	}
-	
+
 	/**
 	 * Calculate the maximum value over a specific duration.
-	 * 
+	 *
 	 * @param duration
 	 * @param unit
 	 * @return
@@ -147,13 +147,13 @@ public class Triggers
 			{
 				return (Probe) Range.maximum(series, duration, unit);
 			}
-			
+
 			@Override
 			public long getDefaultRepeatTime()
 			{
 				return unit.toMillis(duration);
 			}
-			
+
 			@Override
 			public String toString()
 			{
@@ -161,10 +161,10 @@ public class Triggers
 			}
 		};
 	}
-	
+
 	/**
 	 * Calculate the change between sample values.
-	 * 
+	 *
 	 * @param duration
 	 * @param unit
 	 * @return
@@ -178,7 +178,7 @@ public class Triggers
 			{
 				return Change.forSampler(series);
 			}
-			
+
 			@Override
 			public String toString()
 			{
@@ -186,10 +186,10 @@ public class Triggers
 			}
 		};
 	}
-	
+
 	/**
 	 * Calculate the change between sample values and return it as a fraction.
-	 * 
+	 *
 	 * @param duration
 	 * @param unit
 	 * @return
@@ -203,7 +203,7 @@ public class Triggers
 			{
 				return (Probe) Change.asFraction(series);
 			}
-			
+
 			@Override
 			public String toString()
 			{
@@ -211,10 +211,10 @@ public class Triggers
 			}
 		};
 	}
-	
+
 	/**
 	 * Calculate the sum.
-	 * 
+	 *
 	 * @param duration
 	 * @param unit
 	 * @return
@@ -228,7 +228,7 @@ public class Triggers
 			{
 				return (Probe) Sum.forSamplerAsDouble(series);
 			}
-			
+
 			@Override
 			public String toString()
 			{
@@ -236,11 +236,11 @@ public class Triggers
 			}
 		};
 	}
-	
+
 	/**
 	 * Calculate the sum for a specific duration and check conditions
 	 * against the specified value.
-	 * 
+	 *
 	 * @param duration
 	 * @param unit
 	 * @return
@@ -254,13 +254,13 @@ public class Triggers
 			{
 				return (Probe) Sum.forSamplerAsDouble(series, duration, unit);
 			}
-			
+
 			@Override
 			public long getDefaultRepeatTime()
 			{
 				return unit.toMillis(duration);
 			}
-			
+
 			@Override
 			public String toString()
 			{
@@ -272,13 +272,13 @@ public class Triggers
 	/**
 	 * Create a middle value to perform triggering on. This allows one to
 	 * to create triggers on values returned by other triggers.
-	 * 
+	 *
 	 * <p>
 	 * Example:
 	 * <pre>
 	 * when(change(), on(sum()), above(0.8))
 	 * </pre>
-	 * 
+	 *
 	 * @param trigger
 	 * @return
 	 */
@@ -295,11 +295,11 @@ public class Triggers
 			}
 		};
 	}
-	
+
 	private static String toReadable(TimeUnit unit, long duration)
 	{
 		boolean one = duration == 1;
-		
+
 		switch(unit)
 		{
 			case DAYS:
@@ -317,7 +317,7 @@ public class Triggers
 			case SECONDS:
 				return one ? "second" : "seconds";
 		}
-		
+
 		return unit.toString();
 	}
 }

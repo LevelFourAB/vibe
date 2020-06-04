@@ -14,7 +14,7 @@ import se.l4.vibe.trigger.TriggerListener;
 
 /**
  * Actual builder for triggers, stores data in {@link TriggerHolder}.
- * 
+ *
  * @author Andreas Holstenson
  *
  * @param <T>
@@ -27,9 +27,9 @@ public class SamplerTriggerBuilder<T, Input, Output>
 	private final SamplerBuilderImpl<T> builder;
 	private final Trigger<Input, Output> trigger;
 	private final Condition<Output> condition;
-	
+
 	private final Events<TriggerEvent> events;
-	
+
 	private long maxTime;
 	private boolean whenNoLongerMet;
 
@@ -43,7 +43,7 @@ public class SamplerTriggerBuilder<T, Input, Output>
 		this.trigger = trigger;
 		this.condition = condition;
 		this.events = events;
-		
+
 		maxTime = trigger instanceof TimedTrigger
 			? ((TimedTrigger) trigger).getDefaultRepeatTime()
 			: 0;
@@ -53,58 +53,58 @@ public class SamplerTriggerBuilder<T, Input, Output>
 	public TriggerBuilder<SamplerBuilder<T>> andWhenNoLongerMet()
 	{
 		whenNoLongerMet = true;
-		
+
 		return this;
 	}
-	
+
 	@Override
 	public TriggerBuilder<SamplerBuilder<T>> onlyOnce()
 	{
 		maxTime = Long.MAX_VALUE;
-		
+
 		return this;
 	}
-	
+
 	@Override
 	public TriggerBuilder<SamplerBuilder<T>> atMostEvery(long duration, TimeUnit unit)
 	{
 		maxTime = unit.toMillis(duration);
-		
+
 		return this;
 	}
-	
+
 	@Override
 	public SamplerBuilder<T> sendEvent(EventSeverity severity)
 	{
 		return handleWith(new EventTriggerListener(events, severity));
 	}
-	
+
 	@Override
 	public SamplerBuilder<T> handleWith(TriggerListener listener)
 	{
 		builder.triggers.add(new TriggerHolder<Input, Output>(
-			trigger, 
-			condition, 
+			trigger,
+			condition,
 			maxTime,
 			whenNoLongerMet,
 			listener
 		));
-			
+
 		return builder;
 	}
-	
+
 	private static class EventTriggerListener
 		implements TriggerListener
 	{
 		private final Events<TriggerEvent> events;
 		private final EventSeverity severity;
-	
+
 		public EventTriggerListener(Events<TriggerEvent> events, EventSeverity severity)
 		{
 			this.events = events;
 			this.severity = severity;
 		}
-		
+
 		@Override
 		public void onEvent(TriggerEvent event)
 		{

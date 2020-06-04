@@ -12,7 +12,7 @@ import se.l4.vibe.timer.TimerSnapshot;
 
 /**
  * Implementation of {@link Timer}.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -20,27 +20,27 @@ public class TimerImpl
 	implements Timer
 {
 	private static final TimerListener[] EMPTY = new TimerListener[0];
-	
+
 	private final Lock listenerLock;
 	protected volatile TimerListener[] listeners;
-	
+
 	private final PercentileCounter counter;
 	private volatile TimerSnapshot lastSample;
 
 	private final AtomicLong min;
 	private final AtomicLong max;
-	
+
 	public TimerImpl(PercentileCounter counter)
 	{
 		this.counter = counter;
-		
+
 		listenerLock = new ReentrantLock();
 		listeners = EMPTY;
-		
+
 		min = new AtomicLong();
 		max = new AtomicLong();
 	}
-	
+
 	@Override
 	public void addListener(TimerListener listener)
 	{
@@ -51,7 +51,7 @@ public class TimerImpl
 			TimerListener[] newListeners = new TimerListener[listeners.length + 1];
 			System.arraycopy(listeners, 0, newListeners, 0, listeners.length);
 			newListeners[listeners.length] = listener;
-			
+
 			this.listeners = newListeners;
 		}
 		finally
@@ -59,7 +59,7 @@ public class TimerImpl
 			listenerLock.unlock();
 		}
 	}
-	
+
 	@Override
 	public void removeListener(TimerListener listener)
 	{
@@ -67,7 +67,7 @@ public class TimerImpl
 		try
 		{
 			TimerListener[] listeners = this.listeners;
-			
+
 			int index = -1;
 			for(int i=0, n=listeners.length; i<n; i++)
 			{
@@ -77,21 +77,21 @@ public class TimerImpl
 					break;
 				}
 			}
-			
+
 			if(index == -1)
 			{
 				// No such listener, just return
 				return;
 			}
-			
+
 			TimerListener[] newListeners = new TimerListener[listeners.length - 1];
-			
+
 			System.arraycopy(listeners, 0, newListeners, 0, index);
 			if(index < listeners.length - 1)
 	        {
 	        	System.arraycopy(listeners, index + 1, newListeners, index, listeners.length- index - 1);
 	        }
-	        
+
 			this.listeners = newListeners;
 		}
 		finally
@@ -99,12 +99,12 @@ public class TimerImpl
 			listenerLock.unlock();
 		}
 	}
-	
+
 	private long time()
 	{
 		return System.nanoTime();
 	}
-	
+
 	@Override
 	public Stopwatch start()
 	{
@@ -116,12 +116,12 @@ public class TimerImpl
 			{
 				long now = time();
 				long nowInMs = System.currentTimeMillis();
-				
+
 				long total = now - time;
 				counter.add(total);
 				min.updateAndGet(c -> c > total ? total : c);
 				max.updateAndGet(c -> c < total ? total : c);
-				
+
 				TimerListener[] listeners = TimerImpl.this.listeners;
 				if(listeners.length > 0)
 				{
@@ -133,7 +133,7 @@ public class TimerImpl
 			}
 		};
 	}
-	
+
 	private TimerSnapshot createSample()
 	{
 		return new TimerSnapshotImpl(counter.get(), min.get(), max.get());
@@ -144,13 +144,13 @@ public class TimerImpl
 	{
 		return createSample();
 	}
-	
+
 	@Override
 	public TimerSnapshot read()
 	{
 		return lastSample;
 	}
-	
+
 	@Override
 	public TimerSnapshot sample()
 	{

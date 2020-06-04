@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * Implementation of {@link Service} that uses reflection.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -23,11 +23,11 @@ public class ServiceImpl
 	public ServiceImpl(Object object)
 	{
 		this.object = object;
-		
+
 		attributes = new ConcurrentHashMap<String, Attribute>();
 		buildAttributes(attributes, object.getClass());
 	}
-	
+
 	private void buildAttributes(ConcurrentMap<String, Attribute> attributes, Class<?> type)
 	{
 		while(type != Object.class)
@@ -39,15 +39,15 @@ public class ServiceImpl
 					Attribute attr = new AttributeViaField(field);
 					if(attributes.containsKey(attr.getName()))
 					{
-						throw new IllegalArgumentException("Attribute named " 
-							+ attr.getName() + " already exists; Declared via " 
+						throw new IllegalArgumentException("Attribute named "
+							+ attr.getName() + " already exists; Declared via "
 							+ attributes.get(attr.getName()));
 					}
-					
+
 					attributes.put(attr.getName(), attr);
 				}
 			}
-			
+
 			for(Method method : type.getDeclaredMethods())
 			{
 				if(method.isAnnotationPresent(ExposeAsAttribute.class))
@@ -55,31 +55,31 @@ public class ServiceImpl
 					Attribute attr = new AttributeViaMethod(method);
 					if(attributes.containsKey(attr.getName()))
 					{
-						throw new IllegalArgumentException("Attribute named " 
-							+ attr.getName() + " already exists; Declared via " 
+						throw new IllegalArgumentException("Attribute named "
+							+ attr.getName() + " already exists; Declared via "
 							+ attributes.get(attr.getName()));
 					}
-					
+
 					attributes.put(attr.getName(), attr);
 				}
 			}
-			
+
 			type = type.getSuperclass();
 		}
 	}
-	
+
 	@Override
 	public Collection<Attribute> getAttributes()
 	{
 		return attributes.values();
 	}
-	
+
 	@Override
 	public Attribute getAttribute(String attribute)
 	{
 		return attributes.get(attribute);
 	}
-	
+
 	private class AttributeViaField
 		implements Attribute
 	{
@@ -90,23 +90,23 @@ public class ServiceImpl
 		{
 			this.field = field;
 			field.setAccessible(true);
-			
+
 			ExposeAsAttribute annotation = field.getAnnotation(ExposeAsAttribute.class);
 			this.name = annotation.value().equals("") ? field.getName() : annotation.value();
 		}
-		
+
 		@Override
 		public String getName()
 		{
 			return name;
 		}
-		
+
 		@Override
 		public Class<?> getType()
 		{
 			return field.getType();
 		}
-		
+
 		@Override
 		public Object getValue()
 		{
@@ -123,14 +123,14 @@ public class ServiceImpl
 				throw new RuntimeException("Unable to get value of field " + field + "; " + e.getMessage(), e);
 			}
 		}
-		
+
 		@Override
 		public String toString()
 		{
 			return "AttributeViaField[" + field + "]";
 		}
 	}
-	
+
 	private class AttributeViaMethod
 		implements Attribute
 	{
@@ -141,17 +141,17 @@ public class ServiceImpl
 		{
 			this.method = method;
 			method.setAccessible(true);
-			
+
 			if(method.getParameterTypes().length != 0)
 			{
 				throw new IllegalArgumentException("Method " + method + " must not have any parameters");
 			}
-			
+
 			if(method.getReturnType() == void.class)
 			{
 				throw new IllegalArgumentException("Method " + method + " must not have a non void return type");
 			}
-			
+
 			ExposeAsAttribute annotation = method.getAnnotation(ExposeAsAttribute.class);
 			this.name = annotation.value().equals("") ? method.getName() : annotation.value();
 		}
@@ -188,7 +188,7 @@ public class ServiceImpl
 				throw new RuntimeException("Unable to get value; " + e.getCause().getMessage(), e.getCause());
 			}
 		}
-		
+
 		@Override
 		public String toString()
 		{

@@ -22,7 +22,7 @@ import se.l4.vibe.trigger.TriggerEvent;
 
 /**
  * Builder for time series.
- * 
+ *
  * @author Andreas Holstenson
  *
  * @param <T>
@@ -34,39 +34,39 @@ public class SamplerBuilderImpl<T>
 	private final VibeBackend backend;
 	private final TimeSampler sampler;
 	private final SampledProbe<T> probe;
-	
+
 	final List<TriggerHolder> triggers;
 	private Events<TriggerEvent> triggerEvents;
-	
+
 	private long sampleInterval;
-	
-	public SamplerBuilderImpl(VibeBackend backend, 
+
+	public SamplerBuilderImpl(VibeBackend backend,
 			TimeSampler sampler,
 			SampledProbe<T> probe)
 	{
 		this.backend = backend;
 		this.sampler = sampler;
 		this.probe = probe;
-		
+
 		triggers = new ArrayList<TriggerHolder>();
-		
+
 		sampleInterval = sampler.getDefaultTime();
 	}
-	
+
 	@Override
 	public Sampler<T> build()
 	{
 		// Find or create a suitable sampler
 		Sampler<T> instance = sampler.sampleTimeSeries(sampleInterval, probe);
-		
+
 		// Create the triggers
-		List<Runnable> builtTriggers = new ArrayList<Runnable>(); 
+		List<Runnable> builtTriggers = new ArrayList<Runnable>();
 		for(TriggerHolder th : triggers)
 		{
 			Runnable r = th.create(instance, triggerEvents);
 			builtTriggers.add(r);
 		}
-		
+
 		// Create listener for triggers
 		final Runnable[] triggers = builtTriggers.toArray(new Runnable[builtTriggers.size()]);
 		instance.addListener(new SampleListener<T>()
@@ -80,47 +80,47 @@ public class SamplerBuilderImpl<T>
 				}
 			}
 		});
-		
+
 		return instance;
 	}
-	
+
 	@Override
 	public Sampler<T> export()
 	{
 		verify();
-		
+
 		Sampler<T> instance = build();
 		backend.export(path, instance);
 		return instance;
 	}
-	
+
 	@Override
 	public <Type> TriggerBuilder<SamplerBuilder<T>> when(
-			Trigger<? super T, Type> trigger, 
+			Trigger<? super T, Type> trigger,
 			Condition<Type> condition)
 	{
 		verify();
-		
+
 		if(triggerEvents == null)
 		{
 			triggerEvents = new EventsImpl<TriggerEvent>(EventSeverity.WARN);
 			backend.export(path + ':' + triggers.size(), triggerEvents);
 		}
-		
+
 		return new SamplerTriggerBuilder(this, trigger, condition, triggerEvents);
 	}
-	
+
 	@Override
 	public <Type, Middle> TriggerBuilder<SamplerBuilder<T>> when(
-			Trigger<Middle, Type> trigger, 
+			Trigger<Middle, Type> trigger,
 			On<? super T, Middle> on,
 			Condition<Type> condition)
 	{
 		Trigger<? super T, Type> newTrigger = on.build(trigger);
-		
+
 		return when(newTrigger, condition);
 	}
-	
+
 	@Override
 	public SamplerBuilder<T> withInterval(long time, TimeUnit unit)
 	{

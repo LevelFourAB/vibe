@@ -7,7 +7,7 @@ import se.l4.vibe.timer.TimerSnapshot;
 
 /**
  * Implementation of {@link TimerSnapshot}.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -24,7 +24,7 @@ public class TimerSnapshotImpl
 		this.min = min;
 		this.max = max;
 	}
-	
+
 	@Override
 	public long getTotalTimeInMs()
 	{
@@ -54,31 +54,31 @@ public class TimerSnapshotImpl
 	{
 		return snapshot.getTotal() / (double) snapshot.getSamples();
 	}
-	
+
 	@Override
 	public long getMinimumInNs()
 	{
 		return min;
 	}
-	
+
 	@Override
 	public long getMinimumInMs()
 	{
 		return min / 1000000;
 	}
-	
+
 	@Override
 	public long getMaximumInNs()
 	{
 		return max;
 	}
-	
+
 	@Override
 	public long getMaximumInMs()
 	{
 		return max / 1000000;
 	}
-	
+
 	@Override
 	public TimerSnapshot add(TimerSnapshot other)
 	{
@@ -88,7 +88,7 @@ public class TimerSnapshotImpl
 			Math.min(other.getMaximumInNs(), max)
 		);
 	}
-	
+
 	@Override
 	public TimerSnapshot remove(TimerSnapshot other)
 	{
@@ -98,7 +98,7 @@ public class TimerSnapshotImpl
 			Math.min(other.getMaximumInNs(), max)
 		);
 	}
-	
+
 	@Override
 	public void mapToKeyValues(KeyValueReceiver receiver)
 	{
@@ -108,7 +108,7 @@ public class TimerSnapshotImpl
 		receiver.add("min", getMinimumInMs());
 		receiver.add("max", getMaximumInMs());
 	}
-	
+
 	@Override
 	public String toString()
 	{

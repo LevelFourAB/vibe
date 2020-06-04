@@ -15,7 +15,7 @@ import se.l4.vibe.probes.JvmProbes;
 
 /**
  * A simple example that will log the current CPU usage every 5 seconds.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -28,7 +28,7 @@ public class SamplerExample
 			.setBackends(new LoggingBackend(), new JmxBackend())
 			.setSampleInterval(2, TimeUnit.SECONDS)
 			.build();
-		
+
 		/**
 		 * Export a sample over JVM CPU usage. Include a trigger
 		 * that will trigger if the average over 10 seconds is below 80%,
@@ -39,7 +39,7 @@ public class SamplerExample
 			.when(averageOver(10, TimeUnit.SECONDS), below(0.8))
 				.sendEvent(EventSeverity.CRITICAL)
 			.export();
-		
+
 		System.out.println("Press enter to exit");
 		System.in.read();
 	}

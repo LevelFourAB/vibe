@@ -15,10 +15,10 @@ import se.l4.vibe.probes.Probe;
 
 /**
  * Example showing how to track events.
- * 
+ *
  * This example will allow you to manually trigger events. It has a time series
  * that will output the number of events received during a 10 second interval.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -31,38 +31,38 @@ public class TrackEventsExample
 			.setBackends(new LoggingBackend(), new JmxBackend())
 			.setSampleInterval(10, TimeUnit.SECONDS)
 			.build();
-		
+
 		// The events object used to send the events
 		Events<AccessEvent> accessEvents = vibe.events(AccessEvent.class)
 			.at("auth/events")
 			.setSeverity(EventSeverity.INFO)
 			.export();
-		
+
 		// Sampling the number of events sent during 10 second interval
 		vibe.sample(accessEvents.getEventsProbe())
 			.at("auth/sampled")
 			.export();
-		
+
 		// Probe for the total number of events received
 		Probe<Long> total = vibe.probe(accessEvents.getTotalEventsProbe())
 			.at("auth/total")
 			.export();
-		
+
 		System.out.println("Press enter to send an event, type quit to quit");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		String line;
 		while((line = reader.readLine()) != null)
 		{
 			if("quit".equals(line)) System.exit(0);
-			
+
 			// Send an example event
 			accessEvents.register(new AccessEvent());
-			
+
 			// Print the total
 			System.out.println("Total number of events sent: " + total.read());
 		}
 	}
-	
+
 	private static class AccessEvent
 	{
 	}

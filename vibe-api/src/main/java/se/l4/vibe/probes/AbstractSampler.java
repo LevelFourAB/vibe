@@ -5,7 +5,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Abstract implementation of {@link Sampler}.
- * 
+ *
  * @author Andreas Holstenson
  *
  * @param <T>
@@ -14,16 +14,16 @@ public abstract class AbstractSampler<T>
 	implements Sampler<T>
 {
 	private static final SampleListener[] EMPTY = new SampleListener[0];
-	
+
 	private final Lock listenerLock;
 	protected volatile SampleListener<T>[] listeners;
-	
+
 	public AbstractSampler()
 	{
 		listenerLock = new ReentrantLock();
 		listeners = EMPTY;
 	}
-	
+
 	@Override
 	public void addListener(SampleListener<T> listener)
 	{
@@ -34,7 +34,7 @@ public abstract class AbstractSampler<T>
 			SampleListener<T>[] newListeners = new SampleListener[listeners.length + 1];
 			System.arraycopy(listeners, 0, newListeners, 0, listeners.length);
 			newListeners[listeners.length] = listener;
-			
+
 			this.listeners = newListeners;
 		}
 		finally
@@ -42,7 +42,7 @@ public abstract class AbstractSampler<T>
 			listenerLock.unlock();
 		}
 	}
-	
+
 	@Override
 	public void removeListener(SampleListener<T> listener)
 	{
@@ -50,7 +50,7 @@ public abstract class AbstractSampler<T>
 		try
 		{
 			SampleListener<T>[] listeners = this.listeners;
-			
+
 			int index = -1;
 			for(int i=0, n=listeners.length; i<n; i++)
 			{
@@ -60,21 +60,21 @@ public abstract class AbstractSampler<T>
 					break;
 				}
 			}
-			
+
 			if(index == -1)
 			{
 				// No such listener, just return
 				return;
 			}
-			
+
 			SampleListener<T>[] newListeners = new SampleListener[listeners.length - 1];
-			
+
 			System.arraycopy(listeners, 0, newListeners, 0, index);
 			if(index < listeners.length - 1)
 	        {
 	        	System.arraycopy(listeners, index + 1, newListeners, index, listeners.length- index - 1);
 	        }
-	        
+
 			this.listeners = newListeners;
 		}
 		finally
@@ -82,7 +82,7 @@ public abstract class AbstractSampler<T>
 			listenerLock.unlock();
 		}
 	}
-	
+
 	protected Entry<T> createEntry(long time, T value)
 	{
 		return new EntryImpl<T>(time, value);
@@ -93,25 +93,25 @@ public abstract class AbstractSampler<T>
 	{
 		private final long time;
 		private final T value;
-	
+
 		public EntryImpl(long time, T value)
 		{
 			this.time = time;
 			this.value = value;
 		}
-		
+
 		@Override
 		public long getTime()
 		{
 			return time;
 		}
-		
+
 		@Override
 		public T getValue()
 		{
 			return value;
 		}
-		
+
 		@Override
 		public String toString()
 		{

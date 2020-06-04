@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * A probe that counts upwards.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -18,7 +18,7 @@ public class CountingProbe
 	{
 		this(true);
 	}
-	
+
 	public CountingProbe(boolean resetOnSample)
 	{
 		this.resetOnSample = resetOnSample;
@@ -27,25 +27,25 @@ public class CountingProbe
 
 	/**
 	 * Increase the count with one.
-	 * 
+	 *
 	 */
 	public void increase()
 	{
 		counter.incrementAndGet();
 	}
-	
+
 	/**
 	 * Decrease the count with one.
-	 * 
+	 *
 	 */
 	public void decrease()
 	{
 		counter.decrementAndGet();
 	}
-	
+
 	/**
 	 * Add the given delta to the count.
-	 * 
+	 *
 	 * @param count
 	 */
 	public void add(long delta)

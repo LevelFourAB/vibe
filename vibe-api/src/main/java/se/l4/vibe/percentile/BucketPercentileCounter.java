@@ -8,18 +8,18 @@ import se.l4.vibe.VibeException;
 /**
  * A {@link PercentileCounter} that uses a fixed set of buckets that values are
  * sorted into.
- * 
+ *
  * <p>
- * Each bucket represent a range, the first value given in this array is the start 
+ * Each bucket represent a range, the first value given in this array is the start
  * of the first bucket and the last one is the upper bound for the <i>next to last</i>
  * bucket.
- * 
+ *
  * <p>
  * Example:
  * <pre>
  * [0, 100, 400, 500]
  * </pre>
- * 
+ *
  * Buckets created:
  * <ol>
  *   <li>0-100</li>
@@ -27,7 +27,7 @@ import se.l4.vibe.VibeException;
  *   <li>401-500</li>
  *   <li>501-*</li>
  * </ol>
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -47,7 +47,7 @@ public class BucketPercentileCounter
 				throw new VibeException("Limits must be in ascending order");
 			}
 		}
-		
+
 		this.limits = limits;
 		buckets = new AtomicLongArray(limits.length);
 		total = new AtomicLong();
@@ -58,7 +58,7 @@ public class BucketPercentileCounter
 	{
 		int i = getBucket((int) value);
 		if(i == -1) return;
-		
+
 		while(true)
 		{
 			long current = total.get();
@@ -74,7 +74,7 @@ public class BucketPercentileCounter
 	public void reset()
 	{
 		AtomicLongArray buckets = new AtomicLongArray(limits.length);
-		
+
 		while(true)
 		{
 			long current = total.get();
@@ -97,7 +97,7 @@ public class BucketPercentileCounter
 			samples += values[i];
 		}
 		long total = this.total.get();
-		
+
 		return new BucketSnapshot(samples, total, values, limits);
 	}
 
@@ -123,7 +123,7 @@ public class BucketPercentileCounter
 				return i;
 			}
 		}
-		
+
 		if(limits[i] >= time)
 		{
 			return i - 1;
@@ -175,10 +175,10 @@ public class BucketPercentileCounter
 					return limits[i+1];
 				}
 			}
-			
+
 			return -1;
 		}
-	
+
 		@Override
 		public PercentileSnapshot add(PercentileSnapshot other)
 		{
@@ -189,13 +189,13 @@ public class BucketPercentileCounter
 				newBuckets[i] = buckets[i] + s.buckets[i];
 			}
 			return new BucketSnapshot(
-				samples + s.samples, 
+				samples + s.samples,
 				total + s.total,
 				newBuckets,
 				limits
 			);
 		}
-		
+
 		@Override
 		public PercentileSnapshot remove(PercentileSnapshot other)
 		{
@@ -206,7 +206,7 @@ public class BucketPercentileCounter
 				newBuckets[i] = buckets[i] - s.buckets[i];
 			}
 			return new BucketSnapshot(
-				samples - s.samples, 
+				samples - s.samples,
 				total - s.total,
 				newBuckets,
 				limits

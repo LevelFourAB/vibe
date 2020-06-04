@@ -10,7 +10,7 @@ import se.l4.vibe.trigger.TriggerListener;
 
 /**
  * Holds information about a trigger on a time series.
- * 
+ *
  * @author Andreas Holstenson
  *
  * @param <Input>
@@ -25,7 +25,7 @@ public class TriggerHolder<Input, Output>
 	private final TriggerListener listener;
 
 	public TriggerHolder(
-			Trigger<Input, Output> trigger, 
+			Trigger<Input, Output> trigger,
 			Condition<Output> condition,
 			long maxEvery,
 			boolean sendOnNormal,
@@ -44,7 +44,7 @@ public class TriggerHolder<Input, Output>
 		return new Runnable()
 		{
 			private long lastEvent;
-			
+
 			@Override
 			public void run()
 			{
@@ -52,7 +52,7 @@ public class TriggerHolder<Input, Output>
 				if(condition.matches(value))
 				{
 					long now = System.currentTimeMillis();
-					
+
 					if(lastEvent > 0 && maxEvery > 0)
 					{
 						// Check if we should send an event or not
@@ -63,7 +63,7 @@ public class TriggerHolder<Input, Output>
 							return;
 						}
 					}
-					
+
 					lastEvent = now;
 					String desc = trigger.toString() + " " + condition.toString() + " (value is " + value + ")";
 					listener.onEvent(new TriggerEvent(desc, true));
@@ -72,7 +72,7 @@ public class TriggerHolder<Input, Output>
 				{
 					String desc = "value is now " + value + ", no longer matching: " + trigger.toString() + " " + condition.toString();
 					listener.onEvent(new TriggerEvent(desc, false));
-					
+
 					// Reset last event time
 					lastEvent = 0;
 				}

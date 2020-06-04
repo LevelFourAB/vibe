@@ -27,7 +27,7 @@ import se.l4.vibe.timer.Timer;
 
 /**
  * Implementation of {@link Vibe}.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -40,7 +40,7 @@ public class VibeImpl
 
 	/**
 	 * Create a new instance.
-	 * 
+	 *
 	 * @param backend
 	 * 		backend to send all built instances to
 	 * @param sampleInterval
@@ -51,19 +51,19 @@ public class VibeImpl
 	public VibeImpl(VibeBackend backend, long sampleInterval)
 	{
 		instances = new ConcurrentHashMap<String, Object>();
-		
+
 		this.backend = new BackendImpl();
 		if(backend != null)
 		{
 			this.backend.add(backend);
 		}
-		
+
 		sampler = new TimeSampler(sampleInterval);
 	}
-	
+
 	/**
 	 * Start building a new {@link Vibe}.
-	 * 
+	 *
 	 * @return
 	 */
 	public static VibeBuilder builder()
@@ -82,58 +82,58 @@ public class VibeImpl
 	{
 		return new SamplerBuilderImpl<T>(backend, sampler, probe);
 	}
-	
+
 	public TimeSampler sampler()
 	{
 		return sampler;
 	}
-	
+
 	@Override
 	public <T> EventsBuilder<T> events(Class<T> base)
 	{
 		return new EventsBuilderImpl<T>(backend);
 	}
-	
+
 	@Override
 	public TimerBuilder timer()
 	{
 		return new TimerBuilderImpl(backend);
 	}
-	
+
 	@Override
 	public <T> Events<T> getEvents(String path)
 	{
 		Object o = instances.get(path);
 		return o instanceof Events ? (Events) o : null;
 	}
-	
+
 	@Override
 	public <T> Probe<T> getProbe(String path)
 	{
 		Object o = instances.get(path);
 		return o instanceof Probe ? (Probe) o : null;
 	}
-	
+
 	@Override
 	public <T> Sampler<T> getTimeSeries(String path)
 	{
 		Object o = instances.get(path);
 		return o instanceof Sampler ? (Sampler) o : null;
 	}
-	
+
 	@Override
 	public Timer getTimer(String path)
 	{
 		Object o = instances.get(path);
 		return o instanceof Timer ? (Timer) o : null;
 	}
-	
+
 	@Override
 	public Vibe scope(String path)
 	{
 		return new ScopedVibe(this, backend, path);
 	}
-	
+
 	@Override
 	public void addBackend(VibeBackend backend)
 	{
@@ -145,30 +145,30 @@ public class VibeImpl
 	{
 		System.out.println("Shutting down");
 		sampler.destroy();
-		
-		this.backend.close();	
+
+		this.backend.close();
 	}
-	
+
 	private class BackendImpl
 		implements VibeBackend
 	{
 		private final List<VibeBackend> backends;
-		
+
 		public BackendImpl()
 		{
 			backends = new ArrayList<VibeBackend>();
 		}
-		
+
 		private void checkPathAndAdd(String path, Object o)
 		{
 			if(instances.containsKey(path))
 			{
 				throw new VibeException("Something has already been registered at " + path + ": " + instances.get(path));
 			}
-			
+
 			instances.put(path, o);
 		}
-		
+
 		@Override
 		public void export(String path, Events<?> events)
 		{
@@ -178,7 +178,7 @@ public class VibeImpl
 				vb.export(path, events);
 			}
 		}
-		
+
 		@Override
 		public void export(String path, Probe<?> probe)
 		{
@@ -188,7 +188,7 @@ public class VibeImpl
 				vb.export(path, probe);
 			}
 		}
-		
+
 		@Override
 		public void export(String path, Sampler<?> series)
 		{
@@ -198,7 +198,7 @@ public class VibeImpl
 				vb.export(path, series);
 			}
 		}
-		
+
 		@Override
 		public void export(String path, Timer timer)
 		{
@@ -208,7 +208,7 @@ public class VibeImpl
 				vb.export(path, timer);
 			}
 		}
-		
+
 		@Override
 		public void close()
 		{
@@ -217,7 +217,7 @@ public class VibeImpl
 				vb.close();
 			}
 		}
-		
+
 		public void add(VibeBackend backend)
 		{
 			backends.add(backend);

@@ -2,7 +2,7 @@ package se.l4.vibe.probes;
 
 /**
  * Probe similar to {@link CountingProbe} that averages its inputs.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -11,14 +11,14 @@ public class AveragingProbe
 {
 	private double value;
 	private int samples;
-	
+
 	public AveragingProbe()
 	{
 	}
-	
+
 	/**
 	 * Add a value to this probe.
-	 * 
+	 *
 	 * @param value
 	 */
 	public void add(double value)

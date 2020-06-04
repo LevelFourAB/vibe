@@ -37,7 +37,7 @@ import se.l4.vibe.timer.TimerListener;
 
 /**
  * {@link VibeBackend Backend} that sends data to InfluxDB.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -46,28 +46,28 @@ public class InfluxDBBackend
 {
 	private static final Logger logger = LoggerFactory.getLogger(InfluxDBBackend.class);
 	private static final MediaType MEDIA_TYPE = MediaType.parse("text/plain");
-	
+
 	private final String url;
 	private final String auth;
 	private final Map<String, String> tags;
-	
+
 	private final OkHttpClient client;
 	private final DataQueue queue;
-	
+
 	private final ScheduledExecutorService executor;
-	
+
 	private InfluxDBBackend(String url, String username, String password, String db, Map<String, String> tags)
 	{
 		this.tags = tags;
 		client = new OkHttpClient();
-		
+
 		this.url = HttpUrl.parse(url).newBuilder()
 			.addPathSegment("write")
 			.addQueryParameter("db", db)
 			.addQueryParameter("precision", "ms")
 			.build()
 			.toString();
-		
+
 		if(username != null)
 		{
 			auth = "Basic " + Base64.getMimeEncoder().encodeToString((username + ':' + password).getBytes(StandardCharsets.UTF_8));
@@ -76,7 +76,7 @@ public class InfluxDBBackend
 		{
 			auth = null;
 		}
-		
+
 		executor = Executors.newScheduledThreadPool(1, new ThreadFactory()
 		{
 			@Override
@@ -89,26 +89,26 @@ public class InfluxDBBackend
 		});
 		queue = new DataQueue(this::send, executor);
 	}
-	
+
 	private void send(String data)
 	{
 		Request.Builder builder = new Request.Builder()
 			.url(url)
 			.post(RequestBody.create(MEDIA_TYPE, data));
-		
+
 		if(auth != null)
 		{
 			builder.addHeader("Authorization", auth);
 		}
-		
+
 		Request request = builder.build();
 		try
 		{
 			Response response = client.newCall(request)
 				.execute();
-			
+
 			response.body().close();
-			
+
 			if(response.code() < 200 || response.code() >= 300)
 			{
 				logger.warn("Unable to store values; Got response code " + response.code());
@@ -146,14 +146,14 @@ public class InfluxDBBackend
 	{
 		timer.addListener(new TimerQueuer(path));
 	}
-	
+
 	@Override
 	public void close()
 	{
 		queue.close();
 
 		executor.shutdown();
-		
+
 		try
 		{
 			executor.awaitTermination(5, TimeUnit.SECONDS);
@@ -162,7 +162,7 @@ public class InfluxDBBackend
 		{
 		}
 	}
-	
+
 	private class SampleQueuer
 		implements SampleListener<Object>
 	{
@@ -185,10 +185,10 @@ public class InfluxDBBackend
 					// Skip NaN values
 					return;
 				}
-				
+
 				values.put(key, v);
 			};
-			
+
 			if(value instanceof KeyValueMappable)
 			{
 				((KeyValueMappable) value).mapToKeyValues(receiver);
@@ -197,15 +197,15 @@ public class InfluxDBBackend
 			{
 				receiver.add("value", value);
 			}
-			
+
 			// TODO: Can a probe provide extra tags?
-			
+
 			DataPoint point = new DataPoint(path, entry.getTime(), tags, values);
 			queue.add(point);
 		}
-		
+
 	}
-	
+
 	private class TimerQueuer
 		implements TimerListener
 	{
@@ -215,18 +215,18 @@ public class InfluxDBBackend
 		{
 			this.path = path;
 		}
-		
+
 		@Override
 		public void timerEvent(long now, long timeInNanoseconds)
 		{
 			HashMap<String, Object> map = new HashMap<>();
 			map.put("value", timeInNanoseconds);
-			
+
 			DataPoint point = new DataPoint(path, now, tags, map);
 			queue.add(point);
 		}
 	}
-	
+
 	private class EventQueuer
 		implements EventListener<Object>
 	{
@@ -236,7 +236,7 @@ public class InfluxDBBackend
 		{
 			this.path = path;
 		}
-		
+
 		@Override
 		public void eventRegistered(Events<Object> events, EventSeverity severity, Object event)
 		{
@@ -250,10 +250,10 @@ public class InfluxDBBackend
 					// Skip NaN values
 					return;
 				}
-				
+
 				values.put(key, v);
 			};
-			
+
 			if(event instanceof KeyValueMappable)
 			{
 				((KeyValueMappable) event).mapToKeyValues(receiver);
@@ -262,30 +262,30 @@ public class InfluxDBBackend
 			{
 				receiver.add("value", event);
 			}
-			
+
 			DataPoint point = new DataPoint(path, time, tags, values);
 			queue.add(point);
 		}
 	}
-	
+
 	public static class Builder
 	{
 		private final Map<String, String> tags;
-		
+
 		private String url;
 		private String username;
 		private String password;
-		
+
 		private String db;
-		
+
 		public Builder()
 		{
 			tags = new HashMap<>();
 		}
-		
+
 		/**
 		 * Set the URL of the the InfluxDB instance.
-		 * 
+		 *
 		 * @param url
 		 * @return
 		 */
@@ -294,10 +294,10 @@ public class InfluxDBBackend
 			this.url = url;
 			return this;
 		}
-		
+
 		/**
 		 * Set the authentication to use to connect to InfluxDB.
-		 * 
+		 *
 		 * @param username
 		 * @param password
 		 * @return
@@ -308,18 +308,18 @@ public class InfluxDBBackend
 			this.password = password;
 			return this;
 		}
-		
+
 		public Builder setDatabase(String db)
 		{
 			this.db = db;
 			return this;
 		}
-		
+
 		/**
 		 * Add a tag to this instance. This is useful to provide information
 		 * about the host or anything else that is shared by everything in
 		 * this Vibe instance.
-		 * 
+		 *
 		 * @param key
 		 * @param value
 		 * @return
@@ -329,10 +329,10 @@ public class InfluxDBBackend
 			tags.put(key, value);
 			return this;
 		}
-		
+
 		/**
 		 * Build the instance.
-		 * 
+		 *
 		 * @return
 		 */
 		public VibeBackend build()

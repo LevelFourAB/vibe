@@ -4,7 +4,7 @@ import org.hyperic.sigar.Mem;
 
 /**
  * Memory usage information, copy of data contained in {@link Mem}.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -12,13 +12,13 @@ public class MemoryUsage
 {
 	private final long actualFree;
 	private final long actualUsed;
-	
-	
+
+
 	private final long ram;
 	private final long total;
 	private final long free;
 	private final long used;
-	
+
 	private final double freePercent;
 	private final double usedPercent;
 
@@ -33,7 +33,7 @@ public class MemoryUsage
 		used = -1;
 		usedPercent = -1;
 	}
-	
+
 	public MemoryUsage(Mem mem)
 	{
 		actualFree = mem.getActualFree();
@@ -45,17 +45,17 @@ public class MemoryUsage
 		used = mem.getUsed();
 		usedPercent = mem.getUsedPercent();
 	}
-	
+
 	public long getActualFree()
 	{
 		return actualFree;
 	}
-	
+
 	public long getActualUsed()
 	{
 		return actualUsed;
 	}
-	
+
 	public long getRam()
 	{
 		return ram;
@@ -65,22 +65,22 @@ public class MemoryUsage
 	{
 		return total;
 	}
-	
+
 	public long getFree()
 	{
 		return free;
 	}
-	
+
 	public long getUsed()
 	{
 		return used;
 	}
-	
+
 	public double getFreePercent()
 	{
 		return freePercent;
 	}
-	
+
 	public double getUsedPercent()
 	{
 		return usedPercent;

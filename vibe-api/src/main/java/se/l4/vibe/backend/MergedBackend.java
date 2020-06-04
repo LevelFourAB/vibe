@@ -7,7 +7,7 @@ import se.l4.vibe.timer.Timer;
 
 /**
  * Collection of several backends that are triggered in order.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -47,7 +47,7 @@ public class MergedBackend
 			backend.export(path, events);
 		}
 	}
-	
+
 	@Override
 	public void export(String path, Timer timer)
 	{
@@ -56,7 +56,7 @@ public class MergedBackend
 			backend.export(path, timer);
 		}
 	}
-	
+
 	@Override
 	public void close()
 	{

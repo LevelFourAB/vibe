@@ -3,7 +3,7 @@ package se.l4.vibe.trigger;
 /**
  * Combination for running a {@link Trigger} on the output of another
  * one.
- * 
+ *
  * @author Andreas Holstenson
  *
  * @param <Input>
@@ -13,7 +13,7 @@ public interface On<Input, Output>
 {
 	/**
 	 * Build the actual trigger.
-	 * 
+	 *
 	 * @param second
 	 * @return
 	 */

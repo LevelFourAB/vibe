@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Probes for creating average values.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -14,10 +14,10 @@ public class Average
 	private Average()
 	{
 	}
-	
+
 	/**
 	 * Create an average for the entire time series.
-	 * 
+	 *
 	 * @param series
 	 * @return
 	 */
@@ -25,10 +25,10 @@ public class Average
 	{
 		return SamplerProbes.forSampler(series, Average.<T>newOperation());
 	}
-	
+
 	/**
 	 * Create an average for the entire time series.
-	 * 
+	 *
 	 * @param series
 	 * @param reader
 	 * @return
@@ -37,11 +37,11 @@ public class Average
 	{
 		return SamplerProbes.forSampler(series, Average.<I, T>newOperation(reader));
 	}
-	
+
 	/**
 	 * Create an average for a time series that will keep an average for the
 	 * specified duration.
-	 * 
+	 *
 	 * @param series
 	 * @param duration
 	 * @param unit
@@ -54,11 +54,11 @@ public class Average
 	{
 		return SamplerProbes.forSampler(series, duration, unit, Average.<T>newOperation());
 	}
-	
+
 	/**
 	 * Create an average for a time series that will keep an average for the
 	 * specified duration.
-	 * 
+	 *
 	 * @param series
 	 * @param duration
 	 * @param unit
@@ -72,11 +72,11 @@ public class Average
 	{
 		return SamplerProbes.forSampler(series, duration, unit, Average.<I, T>newOperation(reader));
 	}
-	
+
 	/**
 	 * Create a probe that will average another sampled probe. This type of
 	 * probe should be used as part of a {@link Sampler time series}.
-	 * 
+	 *
 	 * @param probe
 	 * @return
 	 */
@@ -85,40 +85,40 @@ public class Average
 	{
 		return new AveragingProbeProbe<T>(probe);
 	}
-	
+
 	/**
 	 * Create a probe that averages numeric values.
-	 * 
+	 *
 	 * @return
 	 */
 	public static AveragingProbe create()
 	{
 		return new AveragingProbe();
 	}
-	
+
 	/**
 	 * Create an operation that will calculate an average.
-	 * 
+	 *
 	 * @return
 	 */
 	public static <T extends Number> SampleOperation<T, Double> newOperation()
 	{
 		return new AverageOperation<T, T>(ValueReaders.<T>same());
 	}
-	
+
 	/**
 	 * Create an operation that will calculate an average.
-	 * 
+	 *
 	 * @return
 	 */
 	public static <I, T extends Number> SampleOperation<I, Double> newOperation(ValueReader<I, T> reader)
 	{
 		return new AverageOperation<I, T>(reader);
 	}
-	
+
 	/**
 	 * Operation that will calculate the average.
-	 * 
+	 *
 	 * @author Andreas Holstenson
 	 *
 	 * @param <T>
@@ -127,15 +127,15 @@ public class Average
 		implements SampleOperation<I, Double>
 	{
 		private final ValueReader<I, O> reader;
-		
+
 		private double totalSum;
 		private double totalEntries;
-		
+
 		public AverageOperation(ValueReader<I, O> reader)
 		{
 			this.reader = reader;
 		}
-		
+
 		@Override
 		public void add(I value, Collection<Sampler.Entry<I>> entries)
 		{
@@ -149,17 +149,17 @@ public class Average
 			totalSum -= reader.read(value).doubleValue();
 			totalEntries -= 1;
 		}
-		
+
 		@Override
 		public Double get()
 		{
 			return totalSum / totalEntries;
 		}
 	}
-	
+
 	/**
 	 * Probe that calculates the average of another probe.
-	 * 
+	 *
 	 * @author Andreas Holstenson
 	 *
 	 * @param <T>
@@ -186,7 +186,7 @@ public class Average
 		@Override
 		protected Double sample0()
 		{
-			accumulated += probe.read().longValue(); 
+			accumulated += probe.read().longValue();
 			samples++;
 			return accumulated / (double) samples;
 		}

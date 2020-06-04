@@ -2,7 +2,7 @@ package se.l4.vibe.trigger;
 
 /**
  * Conditions available for triggers.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -11,10 +11,10 @@ public class Conditions
 	private Conditions()
 	{
 	}
-	
+
 	/**
 	 * Check that the value is equal to the given instance.
-	 * 
+	 *
 	 * @param instance
 	 * @return
 	 */
@@ -39,10 +39,10 @@ public class Conditions
 			}
 		};
 	}
-	
+
 	/**
 	 * Check that a value is equal to the specified number.
-	 * 
+	 *
 	 * @param number
 	 * @return
 	 */
@@ -56,15 +56,15 @@ public class Conditions
 				{
 					return false;
 				}
-				
+
 				return value.doubleValue() == number;
 			}
 		};
 	}
-	
+
 	/**
 	 * Check that a value is equal to the specified number.
-	 * 
+	 *
 	 * @param number
 	 * @return
 	 */
@@ -78,15 +78,15 @@ public class Conditions
 				{
 					return false;
 				}
-				
+
 				return value.intValue() == number;
 			}
 		};
 	}
-	
+
 	/**
 	 * Check that a value is equal to the specified number.
-	 * 
+	 *
 	 * @param number
 	 * @return
 	 */
@@ -100,16 +100,16 @@ public class Conditions
 				{
 					return false;
 				}
-				
+
 				return value.longValue() == number;
 			}
 		};
 	}
-	
+
 	/**
 	 * Check that a value is within the given range. Lower is inclusive,
 	 * while upper is exclusive.
-	 * 
+	 *
 	 * @param number
 	 * @return
 	 */
@@ -123,17 +123,17 @@ public class Conditions
 				{
 					return false;
 				}
-				
+
 				double d = value.doubleValue();
 				return d >= lower && d < upper;
 			}
 		};
 	}
-	
+
 	/**
 	 * Get a condition that will match if a probed value is above the given
 	 * threshold.
-	 * 
+	 *
 	 * @param value
 	 * @return
 	 */
@@ -145,7 +145,7 @@ public class Conditions
 			{
 				return value.doubleValue() > threshold;
 			}
-			
+
 			@Override
 			public String toString()
 			{
@@ -153,11 +153,11 @@ public class Conditions
 			}
 		};
 	}
-	
+
 	/**
 	 * Get a condition that will match if a probed value is below the given
 	 * threshold.
-	 * 
+	 *
 	 * @param value
 	 * @return
 	 */
@@ -169,7 +169,7 @@ public class Conditions
 			{
 				return value.doubleValue() < threshold;
 			}
-			
+
 			@Override
 			public String toString()
 			{

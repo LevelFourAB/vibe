@@ -5,7 +5,7 @@ import se.l4.vibe.event.Events;
 
 /**
  * Builder for event registration.
- * 
+ *
  * @author Andreas Holstenson
  *
  * @param <T>
@@ -15,7 +15,7 @@ public interface EventsBuilder<T>
 {
 	/**
 	 * Set the severity of these events.
-	 * 
+	 *
 	 * @param severity
 	 * @return
 	 */
@@ -23,14 +23,14 @@ public interface EventsBuilder<T>
 
 	/**
 	 * Build the instance without exporting it.
-	 * 
+	 *
 	 * @return
 	 */
 	Events<T> build();
-	
+
 	/**
 	 * Create and export the events instance.
-	 * 
+	 *
 	 * @return
 	 */
 	Events<T> export();

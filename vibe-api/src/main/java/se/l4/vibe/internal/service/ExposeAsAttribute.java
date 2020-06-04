@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 /**
  * Expose a field or method as an attribute.
- * 
+ *
  * @author Andreas Holstenson
  *
  */

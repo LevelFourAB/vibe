@@ -10,7 +10,7 @@ import se.l4.vibe.probes.SampledProbe;
 
 /**
  * Utility for combining several probes into a single one.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -19,15 +19,15 @@ public class CombinedProbes
 	private CombinedProbes()
 	{
 	}
-	
+
 	public static <T> Builder<T> builder()
 	{
 		return new Builder<>();
 	}
-	
+
 	/**
 	 * Builder for probes.
-	 * 
+	 *
 	 * @author Andreas Holstenson
 	 *
 	 * @param <T>
@@ -35,27 +35,27 @@ public class CombinedProbes
 	public static class Builder<T>
 	{
 		private final Map<String, SampledProbe<T>> probes;
-		
+
 		private Builder()
 		{
 			probes = new HashMap<>();
 		}
-		
+
 		public Builder<T> add(String name, SampledProbe<T> probe)
 		{
 			probes.put(name, probe);
 			return this;
 		}
-		
+
 		public SampledProbe<CombinedData<T>> create()
 		{
 			return new CombinedProbe<>(probes);
 		}
 	}
-	
+
 	/**
 	 * Probe that takes values from other probes and returns a {@link CombinedData}.
-	 * 
+	 *
 	 * @author Andreas Holstenson
 	 *
 	 * @param <T>
@@ -64,12 +64,12 @@ public class CombinedProbes
 		extends AbstractSampledProbe<CombinedData<T>>
 	{
 		private final Map<String, SampledProbe<T>> probes;
-		
+
 		public CombinedProbe(Map<String, SampledProbe<T>> probes)
 		{
 			this.probes = probes;
 		}
-		
+
 		@Override
 		public CombinedData<T> peek()
 		{
@@ -80,7 +80,7 @@ public class CombinedProbes
 			}
 			return new CombinedData<>(values);
 		}
-		
+
 		@Override
 		protected CombinedData<T> sample0()
 		{
@@ -92,10 +92,10 @@ public class CombinedProbes
 			return new CombinedData<>(values);
 		}
 	}
-	
+
 	/**
 	 * Combination of data from several probes.
-	 * 
+	 *
 	 * @author Andreas Holstenson
 	 *
 	 * @param <T>
@@ -109,7 +109,7 @@ public class CombinedProbes
 		{
 			this.values = values;
 		}
-		
+
 		public T get(String id)
 		{
 			return values.get(id);

@@ -16,7 +16,7 @@ import se.l4.vibe.mapping.KeyValueToString;
 
 /**
  * Probes for the JVM runtime.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -25,76 +25,76 @@ public class JvmProbes
 	private JvmProbes()
 	{
 	}
-	
+
 	/**
 	 * Get a probe for measuring the CPU usage of this JVM process as factor
 	 * between 0 to 1.
-	 * 
+	 *
 	 * @return
 	 */
 	public static SampledProbe<Double> cpuUsage()
 	{
 		final com.sun.management.OperatingSystemMXBean os =
 			(com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-		
+
 		final RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
 		final Runtime rt = Runtime.getRuntime();
-		
+
 		return new AbstractSampledProbe<Double>()
 		{
 			private long lastUptime = runtime.getUptime();
 			private long lastCpu = os.getProcessCpuTime();
-			
+
 			@Override
 			public Double peek()
 			{
 				long uptime = runtime.getUptime();
 				long cpu = os.getProcessCpuTime();
-				
+
 				if(lastUptime == 0)
 				{
 					lastUptime = uptime;
 					lastCpu = cpu;
 					return Double.NaN;
 				}
-				
+
 				long elapsedCpu = cpu - lastCpu;
 				long elapsedTime = uptime - lastUptime;
-				
+
 				// Calculate and return, do not store new values
 				return Math.min(99, elapsedCpu / (elapsedTime * 10000.0 * rt.availableProcessors())) / 100;
 			}
-			
+
 			@Override
 			protected Double sample0()
 			{
 				long uptime = runtime.getUptime();
 				long cpu = os.getProcessCpuTime();
-				
+
 				if(lastUptime == 0)
 				{
 					lastUptime = uptime;
 					lastCpu = cpu;
 					return Double.NaN;
 				}
-				
+
 				long elapsedCpu = cpu - lastCpu;
 				long elapsedTime = uptime - lastUptime;
-				
+
 				double v = Math.min(99, elapsedCpu / (elapsedTime * 10000.0 * rt.availableProcessors())) / 100;
-				
+
 				lastUptime = uptime;
 				lastCpu = cpu;
-				
+
 				return v;
 			}
 		};
 	}
-	
+
 	public static SampledProbe<MemoryDetails> memoryUsage()
 	{
 		final MemoryMXBean b = ManagementFactory.getMemoryMXBean();
-		
+
 		return new AbstractSampledProbe<MemoryDetails>()
 		{
 			@Override
@@ -102,13 +102,13 @@ public class JvmProbes
 			{
 				MemoryUsage heap = b.getHeapMemoryUsage();
 				MemoryUsage nonHeap = b.getNonHeapMemoryUsage();
-				
+
 				return new MemoryDetails(
-					heap.getUsed(), heap.getCommitted(), heap.getMax(), 
+					heap.getUsed(), heap.getCommitted(), heap.getMax(),
 					nonHeap.getUsed(), nonHeap.getCommitted(), nonHeap.getMax()
 				);
 			}
-			
+
 			@Override
 			public MemoryDetails peek()
 			{
@@ -116,16 +116,16 @@ public class JvmProbes
 			}
 		};
 	}
-	
+
 	/**
 	 * Get a probe for monitoring heap memory usage within the JVM.
-	 * 
+	 *
 	 * @return
 	 */
 	public static SampledProbe<Long> heapMemoryUsage()
 	{
 		final MemoryMXBean b = ManagementFactory.getMemoryMXBean();
-		
+
 		return new AbstractSampledProbe<Long>()
 		{
 			@Override
@@ -133,7 +133,7 @@ public class JvmProbes
 			{
 				return b.getHeapMemoryUsage().getUsed();
 			}
-			
+
 			@Override
 			public Long peek()
 			{
@@ -141,16 +141,16 @@ public class JvmProbes
 			}
 		};
 	}
-	
+
 	/**
 	 * Get a probe for monitoring non heap memory usage within the JVM.
-	 * 
+	 *
 	 * @return
 	 */
 	public static SampledProbe<Long> nonHeapMemoryUsage()
 	{
 		final MemoryMXBean b = ManagementFactory.getMemoryMXBean();
-		
+
 		return new AbstractSampledProbe<Long>()
 		{
 			@Override
@@ -158,7 +158,7 @@ public class JvmProbes
 			{
 				return b.getNonHeapMemoryUsage().getUsed();
 			}
-			
+
 			@Override
 			public Long peek()
 			{
@@ -166,16 +166,16 @@ public class JvmProbes
 			}
 		};
 	}
-	
+
 	/**
 	 * Get a probe for memory usage within the JVM.
-	 * 
+	 *
 	 * @return
 	 */
 	public static SampledProbe<Long> totalUsedMemory()
 	{
 		final MemoryMXBean b = ManagementFactory.getMemoryMXBean();
-		
+
 		return new AbstractSampledProbe<Long>()
 		{
 			@Override
@@ -183,7 +183,7 @@ public class JvmProbes
 			{
 				return b.getHeapMemoryUsage().getUsed() + b.getNonHeapMemoryUsage().getUsed();
 			}
-			
+
 			@Override
 			public Long peek()
 			{
@@ -191,16 +191,16 @@ public class JvmProbes
 			}
 		};
 	}
-	
+
 	/**
 	 * Get a probe for heap memory usage within the JVM.
-	 * 
+	 *
 	 * @return
 	 */
 	public static SampledProbe<Double> heapMemoryAsFraction()
 	{
 		final MemoryMXBean b = ManagementFactory.getMemoryMXBean();
-		
+
 		return new AbstractSampledProbe<Double>()
 		{
 			@Override
@@ -209,7 +209,7 @@ public class JvmProbes
 				MemoryUsage heap = b.getHeapMemoryUsage();
 				return heap.getUsed() / (double) heap.getMax();
 			}
-			
+
 			@Override
 			public Double peek()
 			{
@@ -217,27 +217,27 @@ public class JvmProbes
 			}
 		};
 	}
-	
+
 	/**
 	 * Get details about the direct buffers allocated by the JVM.
-	 * 
+	 *
 	 * @return
 	 */
 	public static SampledProbe<BufferPoolDetails> directBufferPool()
 	{
 		return bufferPool("direct");
 	}
-	
+
 	/**
 	 * Get details about the mapped buffers allocated by the JVM.
-	 * 
+	 *
 	 * @return
 	 */
 	public static SampledProbe<BufferPoolDetails> mappedBufferPool()
 	{
 		return bufferPool("mapped");
 	}
-	
+
 	private static SampledProbe<BufferPoolDetails> bufferPool(String name)
 	{
 		for(BufferPoolMXBean b : ManagementFactory.getPlatformMXBeans(BufferPoolMXBean.class))
@@ -251,7 +251,7 @@ public class JvmProbes
 					{
 						return sample0();
 					}
-					
+
 					@Override
 					protected BufferPoolDetails sample0()
 					{
@@ -260,19 +260,19 @@ public class JvmProbes
 				};
 			}
 		}
-		
+
 		throw new VibeException("Unknown buffer pool: " + name);
 	}
 
 	/**
 	 * Probe that measures the uptime of the JVM in milliseconds.
-	 * 
+	 *
 	 * @return
 	 */
 	public static Probe<Long> uptime()
 	{
 		final RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
-		
+
 		return new Probe<Long>()
 		{
 			@Override
@@ -282,16 +282,16 @@ public class JvmProbes
 			}
 		};
 	}
-	
+
 	/**
 	 * Get a probe suitable for sampling the number of threads active.
-	 * 
+	 *
 	 * @return
 	 */
 	public static SampledProbe<Integer> threadCount()
 	{
 		final ThreadMXBean thread = ManagementFactory.getThreadMXBean();
-		
+
 		return new AbstractSampledProbe<Integer>()
 		{
 			@Override
@@ -299,7 +299,7 @@ public class JvmProbes
 			{
 				return sample0();
 			}
-			
+
 			@Override
 			protected Integer sample0()
 			{
@@ -307,16 +307,16 @@ public class JvmProbes
 			}
 		};
 	}
-	
+
 	/**
 	 * Get the number of classes that are currently loaded by the JVM.
-	 * 
+	 *
 	 * @return
 	 */
 	public static SampledProbe<Integer> loadedClassCount()
 	{
 		final ClassLoadingMXBean cl = ManagementFactory.getClassLoadingMXBean();
-		
+
 		return new AbstractSampledProbe<Integer>()
 		{
 			@Override
@@ -324,7 +324,7 @@ public class JvmProbes
 			{
 				return sample0();
 			}
-			
+
 			@Override
 			protected Integer sample0()
 			{
@@ -332,10 +332,10 @@ public class JvmProbes
 			}
 		};
 	}
-	
+
 	/**
 	 * Get the number of open file descriptors.
-	 * 
+	 *
 	 * @return
 	 */
 	public static SampledProbe<Long> openFileDescriptorCount()
@@ -352,7 +352,7 @@ public class JvmProbes
 				{
 					return sample0();
 				}
-				
+
 				@Override
 				protected Long sample0()
 				{
@@ -360,10 +360,10 @@ public class JvmProbes
 				}
 			};
 		}
-		
+
 		return new ConstantProbe<Long>(-1l);
 	}
-	
+
 	public static class MemoryDetails
 		implements KeyValueMappable
 	{
@@ -373,7 +373,7 @@ public class JvmProbes
 		private final long nonHeapUsed;
 		private final long nonHeapCommitted;
 		private final long nonHeapMax;
-		
+
 		public MemoryDetails(long heapUsed, long heapCommitted, long heapMax,
 				long nonHeapUsed, long nonHeapCommitted, long nonHeapMax)
 		{
@@ -384,42 +384,42 @@ public class JvmProbes
 			this.nonHeapCommitted = nonHeapCommitted;
 			this.nonHeapMax = nonHeapMax;
 		}
-		
+
 		public long getHeapUsed()
 		{
 			return heapUsed;
 		}
-		
+
 		public long getHeapCommitted()
 		{
 			return heapCommitted;
 		}
-		
+
 		public long getHeapMax()
 		{
 			return heapMax;
 		}
-		
+
 		public long getNonHeapUsed()
 		{
 			return nonHeapUsed;
 		}
-		
+
 		public long getNonHeapCommitted()
 		{
 			return nonHeapCommitted;
 		}
-		
+
 		public long getNonHeapMax()
 		{
 			return nonHeapMax;
 		}
-		
+
 		public double getHeapUsageAsFraction()
 		{
 			return heapUsed / (double) heapMax;
 		}
-		
+
 		@Override
 		public void mapToKeyValues(KeyValueReceiver receiver)
 		{
@@ -431,14 +431,14 @@ public class JvmProbes
 			receiver.add("nonHeapMax", nonHeapMax);
 			receiver.add("heapUsageAsFraction", getHeapUsageAsFraction());
 		}
-		
+
 		@Override
 		public String toString()
 		{
 			return KeyValueToString.toString(this);
 		}
 	}
-	
+
 	public static class BufferPoolDetails
 		implements KeyValueMappable
 	{
@@ -452,22 +452,22 @@ public class JvmProbes
 			this.totalCapacity = totalCapacity;
 			this.count = count;
 		}
-		
+
 		public long getMemoryUsed()
 		{
 			return memoryUsed;
 		}
-		
+
 		public long getTotalCapacity()
 		{
 			return totalCapacity;
 		}
-		
+
 		public long getCount()
 		{
 			return count;
 		}
-		
+
 		@Override
 		public void mapToKeyValues(KeyValueReceiver receiver)
 		{
@@ -475,7 +475,7 @@ public class JvmProbes
 			receiver.add("totalCapacity", totalCapacity);
 			receiver.add("count", count);
 		}
-		
+
 		@Override
 		public String toString()
 		{

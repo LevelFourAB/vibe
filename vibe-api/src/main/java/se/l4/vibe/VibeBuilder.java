@@ -6,7 +6,7 @@ import se.l4.vibe.backend.VibeBackend;
 
 /**
  * Builder for instances of {@link Vibe}.
- * 
+ *
  * @author Andreas Holstenson
  *
  */
@@ -14,15 +14,15 @@ public interface VibeBuilder
 {
 	/**
 	 * Set which backend to use.
-	 * 
+	 *
 	 * @param backend
 	 * @return
 	 */
 	VibeBuilder setBackend(VibeBackend backend);
-	
+
 	/**
 	 * Set that several backends should be used.
-	 * 
+	 *
 	 * @param backends
 	 * @return
 	 */
@@ -30,7 +30,7 @@ public interface VibeBuilder
 
 	/**
 	 * Set at which interval samples should be taken by default.
-	 * 
+	 *
 	 * @param time
 	 * @param unit
 	 * @return
@@ -39,7 +39,7 @@ public interface VibeBuilder
 
 	/**
 	 * Build the instance.
-	 * 
+	 *
 	 * @return
 	 */
 	Vibe build();
