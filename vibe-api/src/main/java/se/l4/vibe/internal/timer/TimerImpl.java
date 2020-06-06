@@ -1,9 +1,12 @@
 package se.l4.vibe.internal.timer;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
+import se.l4.vibe.ListenerHandle;
+import se.l4.vibe.Listeners;
+import se.l4.vibe.percentile.BucketPercentileCounter;
+import se.l4.vibe.percentile.FakePercentileCounter;
 import se.l4.vibe.percentile.PercentileCounter;
 import se.l4.vibe.timer.Stopwatch;
 import se.l4.vibe.timer.Timer;
@@ -19,10 +22,7 @@ import se.l4.vibe.timer.TimerSnapshot;
 public class TimerImpl
 	implements Timer
 {
-	private static final TimerListener[] EMPTY = new TimerListener[0];
-
-	private final Lock listenerLock;
-	protected volatile TimerListener[] listeners;
+	private final Listeners<TimerListener> listeners;
 
 	private final PercentileCounter counter;
 	private volatile TimerSnapshot lastSample;
@@ -34,70 +34,22 @@ public class TimerImpl
 	{
 		this.counter = counter;
 
-		listenerLock = new ReentrantLock();
-		listeners = EMPTY;
+		listeners = new Listeners<>();
 
 		min = new AtomicLong();
 		max = new AtomicLong();
 	}
 
 	@Override
-	public void addListener(TimerListener listener)
+	public ListenerHandle addListener(TimerListener listener)
 	{
-		listenerLock.lock();
-		try
-		{
-			TimerListener[] listeners = this.listeners;
-			TimerListener[] newListeners = new TimerListener[listeners.length + 1];
-			System.arraycopy(listeners, 0, newListeners, 0, listeners.length);
-			newListeners[listeners.length] = listener;
-
-			this.listeners = newListeners;
-		}
-		finally
-		{
-			listenerLock.unlock();
-		}
+		return listeners.add(listener);
 	}
 
 	@Override
 	public void removeListener(TimerListener listener)
 	{
-		listenerLock.lock();
-		try
-		{
-			TimerListener[] listeners = this.listeners;
-
-			int index = -1;
-			for(int i=0, n=listeners.length; i<n; i++)
-			{
-				if(listeners[i] == listener)
-				{
-					index = i;
-					break;
-				}
-			}
-
-			if(index == -1)
-			{
-				// No such listener, just return
-				return;
-			}
-
-			TimerListener[] newListeners = new TimerListener[listeners.length - 1];
-
-			System.arraycopy(listeners, 0, newListeners, 0, index);
-			if(index < listeners.length - 1)
-	        {
-	        	System.arraycopy(listeners, index + 1, newListeners, index, listeners.length- index - 1);
-	        }
-
-			this.listeners = newListeners;
-		}
-		finally
-		{
-			listenerLock.unlock();
-		}
+		listeners.remove(listener);
 	}
 
 	private long time()
@@ -122,14 +74,7 @@ public class TimerImpl
 				min.updateAndGet(c -> c > total ? total : c);
 				max.updateAndGet(c -> c < total ? total : c);
 
-				TimerListener[] listeners = TimerImpl.this.listeners;
-				if(listeners.length > 0)
-				{
-					for(TimerListener l : listeners)
-					{
-						l.timerEvent(nowInMs, total);
-					}
-				}
+				listeners.forEach(l -> l.timerEvent(nowInMs, total));
 			}
 		};
 	}
@@ -140,18 +85,6 @@ public class TimerImpl
 	}
 
 	@Override
-	public TimerSnapshot peek()
-	{
-		return createSample();
-	}
-
-	@Override
-	public TimerSnapshot read()
-	{
-		return lastSample;
-	}
-
-	@Override
 	public TimerSnapshot sample()
 	{
 		lastSample = createSample();
@@ -159,5 +92,42 @@ public class TimerImpl
 		min.set(Long.MAX_VALUE);
 		max.set(0);
 		return lastSample;
+	}
+
+	public static class BuilderImpl
+		implements Builder
+	{
+		private PercentileCounter percentileCounter;
+
+		public BuilderImpl()
+		{
+			percentileCounter = new FakePercentileCounter();
+		}
+
+		@Override
+		public Builder setBuckets(int... limits)
+		{
+			int[] msLimits = new int[limits.length];
+			for(int i=0, n=limits.length; i<n; i++)
+			{
+				msLimits[i] = limits[i] * 1000000;
+			}
+			return setPercentiles(new BucketPercentileCounter(msLimits));
+		}
+
+		@Override
+		public Builder setPercentiles(PercentileCounter counter)
+		{
+			Objects.requireNonNull(counter, "counter must be specified");
+
+			this.percentileCounter = counter;
+			return this;
+		}
+
+		@Override
+		public Timer build()
+		{
+			return new TimerImpl(percentileCounter);
+		}
 	}
 }

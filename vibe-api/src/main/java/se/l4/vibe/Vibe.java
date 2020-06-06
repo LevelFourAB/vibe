@@ -1,86 +1,22 @@
 package se.l4.vibe;
 
-
 import se.l4.vibe.backend.VibeBackend;
-import se.l4.vibe.builder.EventsBuilder;
-import se.l4.vibe.builder.ProbeBuilder;
-import se.l4.vibe.builder.SamplerBuilder;
-import se.l4.vibe.builder.TimerBuilder;
-import se.l4.vibe.event.Events;
-import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.SampledProbe;
-import se.l4.vibe.probes.Sampler;
-import se.l4.vibe.timer.Timer;
+import se.l4.vibe.internal.VibeImpl;
 
 /**
  * Main interface for statistics and events.
- *
- * @author Andreas Holstenson
  *
  */
 public interface Vibe
 {
 	/**
-	 * Export a new probe.
+	 * Export the given object.
 	 *
-	 * @param probe
+	 * @param <T>
+	 * @param type
 	 * @return
 	 */
-	<T> ProbeBuilder<T> probe(Probe<T> probe);
-
-	/**
-	 * Start creating a new time series.
-	 *
-	 * @return
-	 */
-	<T> SamplerBuilder<T> sample(SampledProbe<T> probe);
-
-	/**
-	 * Create a new events instance.
-	 *
-	 * @param base
-	 * @return
-	 */
-	<T> EventsBuilder<T> events(Class<T> base);
-
-	/**
-	 * Start creating a new timer.
-	 *
-	 * @return
-	 */
-	TimerBuilder timer();
-
-	/**
-	 * Get a {@link Probe} that has been registered at the given path.
-	 *
-	 * @param path
-	 * @return
-	 */
-	<T> Probe<T> getProbe(String path);
-
-	/**
-	 * Get a {@link Sampler} that has been registered at the given path.
-	 *
-	 * @param path
-	 * @return
-	 */
-	<T> Sampler<T> getTimeSeries(String path);
-
-	/**
-	 * Get a {@link Events} that has been registered at the given path.
-	 *
-	 * @param path
-	 * @return
-	 */
-	<T> Events<T> getEvents(String path);
-
-	/**
-	 * Get a {@link Timer} that has been registered at the given path.
-	 *
-	 * @param path
-	 * @return
-	 */
-	Timer getTimer(String path);
+	<T extends Metric> ExportBuilder<T> export(T object);
 
 	/**
 	 * Create a Vibe instance for the given sub path.
@@ -91,15 +27,40 @@ public interface Vibe
 	Vibe scope(String path);
 
 	/**
-	 * Register a new backend to this instance.
-	 *
-	 * @param backend
-	 */
-	void addBackend(VibeBackend backend);
-
-	/**
-	 * Destroy this Vibe instance. This will stop collection of metrics and
-	 * stop any backends that have been added.
+	 * Destroy this Vibe instance. For the top level instance this will stop
+	 * all backends, for scoped instances this will stop collection of any
+	 * metrics exported via the scoped instance.
 	 */
 	void destroy();
+
+	/**
+	 * Start building a new instance.
+	 *
+	 * @return
+	 */
+	static Builder builder()
+	{
+		return new VibeImpl.BuilderImpl();
+	}
+
+	/**
+	 * Builder for instances of {@link Vibe}.
+	 */
+	interface Builder
+	{
+		/**
+		 * Add a backend to use with the {@link Vibe} instance.
+		 *
+		 * @param backend
+		 * @return
+		 */
+		Builder withBackend(VibeBackend backend);
+
+		/**
+		 * Build the instance.
+		 *
+		 * @return
+		 */
+		Vibe build();
+	}
 }

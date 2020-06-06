@@ -17,12 +17,13 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import se.l4.vibe.ListenerHandle;
 import se.l4.vibe.backend.VibeBackend;
 import se.l4.vibe.event.EventListener;
 import se.l4.vibe.event.EventSeverity;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.Sampler;
+import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.timer.Timer;
 
 /**
@@ -153,28 +154,31 @@ public class MailBackend
 	}
 
 	@Override
-	public void export(String path, Sampler<?> series)
+	public Handle export(String path, Sampler<?> series)
 	{
 		// Do nothing, not supported by mailer
+		return Handle.empty();
 	}
 
 	@Override
-	public void export(String path, Probe<?> probe)
+	public Handle export(String path, Probe<?> probe)
 	{
 		// Do nothing, not supported by mailer
+		return Handle.empty();
 	}
 
 	@Override
-	public void export(String path, Timer timer)
+	public Handle export(String path, Timer timer)
 	{
 		// Do nothing, not supported by mailer
+		return Handle.empty();
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void export(final String path, Events<?> events)
+	public Handle export(final String path, Events<?> events)
 	{
-		events.addListener(new EventListener()
+		ListenerHandle handle = events.addListener(new EventListener()
 		{
 			@Override
 			public void eventRegistered(Events events,
@@ -205,6 +209,8 @@ public class MailBackend
 				});
 			}
 		});
+
+		return handle::remove;
 	}
 
 	@Override

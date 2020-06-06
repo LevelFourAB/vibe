@@ -3,7 +3,7 @@ package se.l4.vibe.backend;
 import se.l4.vibe.Vibe;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.Sampler;
+import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.timer.Timer;
 
 /**
@@ -20,7 +20,7 @@ public interface VibeBackend
 	 * @param path
 	 * @param series
 	 */
-	void export(String path, Sampler<?> series);
+	Handle export(String path, Sampler<?> series);
 
 	/**
 	 * Export a probe.
@@ -28,7 +28,7 @@ public interface VibeBackend
 	 * @param path
 	 * @param probe
 	 */
-	void export(String path, Probe<?> probe);
+	Handle export(String path, Probe<?> probe);
 
 	/**
 	 * Export a collection of events.
@@ -36,7 +36,7 @@ public interface VibeBackend
 	 * @param path
 	 * @param events
 	 */
-	void export(String path, Events<?> events);
+	Handle export(String path, Events<?> events);
 
 	/**
 	 * Export a timer.
@@ -44,10 +44,24 @@ public interface VibeBackend
 	 * @param path
 	 * @param timer
 	 */
-	void export(String path, Timer timer);
+	Handle export(String path, Timer timer);
 
 	/**
 	 * Release any resources held by this backend.
 	 */
 	void close();
+
+	/**
+	 * Handle used to remove something that has been exported.
+	 */
+	@FunctionalInterface
+	interface Handle
+	{
+		void remove();
+
+		static Handle empty()
+		{
+			return () -> {};
+		}
+	}
 }

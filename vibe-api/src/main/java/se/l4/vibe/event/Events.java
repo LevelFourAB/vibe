@@ -1,17 +1,19 @@
 package se.l4.vibe.event;
 
+import se.l4.vibe.ListenerHandle;
+import se.l4.vibe.Metric;
+import se.l4.vibe.internal.EventsImpl;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.SampledProbe;
+import se.l4.vibe.sampling.SampledProbe;
 
 
 /**
- * Abstraction for a collection of events.
- *
- * @author Andreas Holstenson
+ * Event registration, used to register events in a system.
  *
  * @param <T>
  */
 public interface Events<T>
+	extends Metric
 {
 	/**
 	 * Register a new event.
@@ -40,7 +42,7 @@ public interface Events<T>
 	 *
 	 * @param listener
 	 */
-	void addListener(EventListener<T> listener);
+	ListenerHandle addListener(EventListener<T> listener);
 
 	/**
 	 * Remove a listener that will receive events.
@@ -63,4 +65,37 @@ public interface Events<T>
 	 * @return
 	 */
 	SampledProbe<Long> getEventsProbe();
+
+	/**
+	 * Start building a new {@link Events}.
+	 *
+	 * @param <T>
+	 * @return
+	 */
+	static <T> Builder<T> builder()
+	{
+		return new EventsImpl.BuilderImpl<>();
+	}
+
+	/**
+	 * Builder for instances of {@link Events}.
+	 */
+	interface Builder<T>
+	{
+		/**
+		 * Set the severity of the events.
+		 *
+		 * @param severity
+		 * @return
+		 */
+		Builder<T> setSeverity(EventSeverity severity);
+
+		/**
+		 * Build the instance.
+		 *
+		 * @return
+		 *   instance of {@link Events}
+		 */
+		Events<T> build();
+	}
 }

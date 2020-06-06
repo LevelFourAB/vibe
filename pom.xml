@@ -23,7 +23,6 @@
 
 	<modules>
 		<module>vibe-api</module>
-		<module>vibe-sigar</module>
 		<module>vibe-backend-mail</module>
 		<module>vibe-backend-influxdb</module>
 	</modules>

@@ -1,15 +1,14 @@
 package se.l4.vibe.backend;
 
+import java.util.Arrays;
+
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.Sampler;
+import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.timer.Timer;
 
 /**
  * Collection of several backends that are triggered in order.
- *
- * @author Andreas Holstenson
- *
  */
 public class MergedBackend
 	implements VibeBackend
@@ -22,39 +21,43 @@ public class MergedBackend
 	}
 
 	@Override
-	public void export(String path, Sampler<?> series)
+	public Handle export(String path, Sampler<?> series)
 	{
-		for(VibeBackend backend : backends)
-		{
-			backend.export(path, series);
-		}
+		Handle[] handles = Arrays.stream(backends)
+			.map(b -> b.export(path, series))
+			.toArray(Handle[]::new);
+
+		return new MergedHandle(handles);
 	}
 
 	@Override
-	public void export(String path, Probe<?> probe)
+	public Handle export(String path, Probe<?> probe)
 	{
-		for(VibeBackend backend : backends)
-		{
-			backend.export(path, probe);
-		}
+		Handle[] handles = Arrays.stream(backends)
+			.map(b -> b.export(path, probe))
+			.toArray(Handle[]::new);
+
+		return new MergedHandle(handles);
 	}
 
 	@Override
-	public void export(String path, Events<?> events)
+	public Handle export(String path, Events<?> events)
 	{
-		for(VibeBackend backend : backends)
-		{
-			backend.export(path, events);
-		}
+		Handle[] handles = Arrays.stream(backends)
+			.map(b -> b.export(path, events))
+			.toArray(Handle[]::new);
+
+		return new MergedHandle(handles);
 	}
 
 	@Override
-	public void export(String path, Timer timer)
+	public Handle export(String path, Timer timer)
 	{
-		for(VibeBackend backend : backends)
-		{
-			backend.export(path, timer);
-		}
+		Handle[] handles = Arrays.stream(backends)
+			.map(b -> b.export(path, timer))
+			.toArray(Handle[]::new);
+
+		return new MergedHandle(handles);
 	}
 
 	@Override
@@ -63,6 +66,26 @@ public class MergedBackend
 		for(VibeBackend backend : backends)
 		{
 			backend.close();
+		}
+	}
+
+	private static class MergedHandle
+		implements Handle
+	{
+		private final Handle[] handles;
+
+		public MergedHandle(Handle[] handles)
+		{
+			this.handles = handles;
+		}
+
+		@Override
+		public void remove()
+		{
+			for(Handle h : handles)
+			{
+				h.remove();
+			}
 		}
 	}
 }

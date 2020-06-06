@@ -8,57 +8,128 @@ import se.l4.vibe.event.EventListener;
 import se.l4.vibe.event.EventSeverity;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.SampleListener;
-import se.l4.vibe.probes.SampledProbe;
-import se.l4.vibe.probes.Sampler;
+import se.l4.vibe.sampling.Sample;
+import se.l4.vibe.sampling.SampleListener;
+import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.timer.Timer;
 
 /**
- * Basic backend that will log a message every time something is sampled.
+ * Backed that can log events and samples to a {@link Logger}. Use
+ * {@link #builder()} to start building an instance of this backend.
  *
- * @author Andreas Holstenson
- *
+ * <p>
+ * <pre>
+ * LoggingBackend backend = LoggingBackend.builder()
+ *   .logEvents()
+ *   .build();
+ * </pre>
  */
 public class LoggingBackend
 	implements VibeBackend
 {
 	private final Logger logger;
+	private final boolean logSamples;
+	private final boolean logEvents;
 
-	public LoggingBackend()
+	private LoggingBackend(
+		Logger logger,
+		boolean logSamples,
+		boolean logEvents
+	)
 	{
-		this(Vibe.class);
-	}
-
-	public LoggingBackend(String root)
-	{
-		logger = LoggerFactory.getLogger(root);
-	}
-
-	public LoggingBackend(Class<?> root)
-	{
-		logger = LoggerFactory.getLogger(root);
-	}
-
-	@Override
-	public void export(String path, Sampler<?> series)
-	{
-		series.addListener(new PrintSampleListener(logger, path));
+		this.logger = logger;
+		this.logSamples = logSamples;
+		this.logEvents = logEvents;
 	}
 
 	@Override
-	public void export(String path, Probe<?> probe)
+	public Handle export(String path, Sampler<?> series)
 	{
+		if(! logSamples) return Handle.empty();
+
+		SampleListener listener = new PrintSampleListener(logger, path);
+		series.addListener(listener);
+
+		return () -> series.removeListener(listener);
 	}
 
 	@Override
-	public void export(String path, Events<?> events)
+	public Handle export(String path, Probe<?> probe)
 	{
-		events.addListener(new PrintEventListener(logger, path));
+		return Handle.empty();
 	}
 
 	@Override
-	public void export(String path, Timer timer)
+	public Handle export(String path, Events<?> events)
 	{
+		if(! logEvents) return Handle.empty();
+
+		EventListener listener = new PrintEventListener(logger, path);
+		events.addListener(listener);
+
+		return () -> events.removeListener(listener);
+	}
+
+	@Override
+	public Handle export(String path, Timer timer)
+	{
+		return Handle.empty();
+	}
+
+	public static Builder builder()
+	{
+		return new Builder();
+	}
+
+	public static class Builder
+	{
+		private Logger logger;
+		private boolean logEvents;
+		private boolean logSamples;
+
+		public Builder setLogger(Logger logger)
+		{
+			this.logger = logger;
+			return this;
+		}
+
+		public Builder setLogger(String name)
+		{
+			this.logger = LoggerFactory.getLogger(name);
+			return this;
+		}
+
+		public Builder setLogger(Class<?> type)
+		{
+			this.logger = LoggerFactory.getLogger(type);
+			return this;
+		}
+
+		public Builder logEvents()
+		{
+			this.logEvents = true;
+			return this;
+		}
+
+		public Builder logSamples()
+		{
+			this.logSamples = true;
+			return this;
+		}
+
+		public LoggingBackend build()
+		{
+			if(logger == null)
+			{
+				logger = LoggerFactory.getLogger(Vibe.class);
+			}
+
+			return new LoggingBackend(
+				logger,
+				logSamples,
+				logEvents
+			);
+		}
 	}
 
 	private static class PrintSampleListener
@@ -74,7 +145,7 @@ public class LoggingBackend
 		}
 
 		@Override
-		public void sampleAcquired(SampledProbe probe, Sampler.Entry entry)
+		public void sampleAcquired(Sample entry)
 		{
 			logger.info("{}: {}", path, entry.getValue());
 		}

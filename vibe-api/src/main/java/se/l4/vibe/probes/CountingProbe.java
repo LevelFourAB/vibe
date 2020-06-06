@@ -3,25 +3,15 @@ package se.l4.vibe.probes;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * A probe that counts upwards.
- *
- * @author Andreas Holstenson
- *
+ * Probe used for counting values.
  */
 public class CountingProbe
-	extends AbstractSampledProbe<Long>
+	implements Probe<Long>
 {
 	private final AtomicLong counter;
-	private final boolean resetOnSample;
 
 	public CountingProbe()
 	{
-		this(true);
-	}
-
-	public CountingProbe(boolean resetOnSample)
-	{
-		this.resetOnSample = resetOnSample;
 		counter = new AtomicLong();
 	}
 
@@ -54,15 +44,8 @@ public class CountingProbe
 	}
 
 	@Override
-	public Long peek()
+	public Long read()
 	{
 		return counter.get();
 	}
-
-	@Override
-	protected Long sample0()
-	{
-		return resetOnSample ? counter.getAndSet(0) : counter.get();
-	}
-
 }

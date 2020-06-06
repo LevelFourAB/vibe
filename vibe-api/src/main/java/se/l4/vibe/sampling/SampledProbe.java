@@ -1,40 +1,34 @@
-package se.l4.vibe.probes;
+package se.l4.vibe.sampling;
 
-import se.l4.vibe.Metric;
 import se.l4.vibe.internal.MergedProbes;
 import se.l4.vibe.mapping.KeyValueMap;
+import se.l4.vibe.probes.Probe;
 
 /**
- * Probe that can measure a certain value.
+ * Probe that measures a value that requires sampling to be read.
  *
  * @param <T>
  */
-public interface Probe<T>
-	extends Metric
+public interface SampledProbe<T>
 {
 	/**
-	 * Read the value.
+	 * Sample the current value and optionally reset the probe.
 	 *
 	 * @return
 	 */
-	T read();
+	T sample();
 
 	/**
-	 * Create a new probe that applies the given operation to the value of this
-	 * probe.
+	 * Create a {@link SampledProbe} by reading values from a {@link Probe}.
 	 *
-	 * @param <O>
-	 * @param operation
-	 *   operation to apply
+	 * @param probe
+	 *   the probe to convert
 	 * @return
-	 *   new probe
+	 *   converted probe
 	 */
-	default <O> Probe<O> apply(ProbeOperation<T, O> operation)
+	static <T> SampledProbe<T> over(Probe<T> probe)
 	{
-		return () -> {
-			T value = this.read();
-			return operation.apply(value);
-		};
+		return probe::read;
 	}
 
 	/**
@@ -55,12 +49,12 @@ public interface Probe<T>
 	 */
 	static MergedBuilder merged()
 	{
-		return new MergedProbes.ProbeBuilder();
+		return new MergedProbes.SampledProbeBuilder();
 	}
 
 	/**
-	 * Builder for creating a {@link Probe} that contains values from several
-	 * other probes.
+	 * Builder for creating a {@link SampledProbe} that contains values from
+	 * several other probes.
 	 */
 	interface MergedBuilder
 	{
@@ -75,13 +69,13 @@ public interface Probe<T>
 		 * @return
 		 *   builder
 		 */
-		MergedBuilder add(String name, Probe<?> probe);
+		MergedBuilder add(String name, SampledProbe<?> probe);
 
 		/**
 		 * Create the probe.
 		 *
 		 * @return
 		 */
-		Probe<KeyValueMap> build();
+		SampledProbe<KeyValueMap> build();
 	}
 }

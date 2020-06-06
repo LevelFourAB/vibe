@@ -3,50 +3,57 @@ package se.l4.vibe.examples;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.concurrent.TimeUnit;
 
-import se.l4.vibe.DefaultVibe;
 import se.l4.vibe.Vibe;
 import se.l4.vibe.backend.JmxBackend;
 import se.l4.vibe.backend.LoggingBackend;
 import se.l4.vibe.event.EventSeverity;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
+import se.l4.vibe.sampling.Sampler;
 
 /**
  * Example showing how to track events.
  *
  * This example will allow you to manually trigger events. It has a time series
  * that will output the number of events received during a 10 second interval.
- *
- * @author Andreas Holstenson
- *
  */
 public class TrackEventsExample
 {
 	public static void main(String[] args)
 		throws IOException
 	{
-		Vibe vibe = DefaultVibe.builder()
-			.setBackends(new LoggingBackend(), new JmxBackend())
-			.setSampleInterval(10, TimeUnit.SECONDS)
+		Vibe vibe = Vibe.builder()
+			.withBackend(LoggingBackend.builder()
+				.logSamples()
+				.logEvents()
+				.build()
+			)
+			.withBackend(new JmxBackend())
 			.build();
 
 		// The events object used to send the events
-		Events<AccessEvent> accessEvents = vibe.events(AccessEvent.class)
-			.at("auth/events")
+		Events<AccessEvent> accessEvents = Events.<AccessEvent>builder()
 			.setSeverity(EventSeverity.INFO)
-			.export();
+			.build();
+
+		vibe.export(accessEvents)
+			.at("auth", "events")
+			.done();
 
 		// Sampling the number of events sent during 10 second interval
-		vibe.sample(accessEvents.getEventsProbe())
-			.at("auth/sampled")
-			.export();
+		Sampler<Long> eventsSampler = Sampler.forProbe(accessEvents.getEventsProbe())
+			.build();
+
+		vibe.export(eventsSampler)
+			.at("auth", "sampled")
+			.done();
 
 		// Probe for the total number of events received
-		Probe<Long> total = vibe.probe(accessEvents.getTotalEventsProbe())
-			.at("auth/total")
-			.export();
+		Probe<Long> total = accessEvents.getTotalEventsProbe();
+		vibe.export(total)
+			.at("auth", "total")
+			.done();
 
 		System.out.println("Press enter to send an event, type quit to quit");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));

@@ -1,10 +1,7 @@
 package se.l4.vibe.trigger;
 
 /**
- * Conditions available for triggers.
- *
- * @author Andreas Holstenson
- *
+ * Conditions available for use with {@link Check checks}.
  */
 public class Conditions
 {

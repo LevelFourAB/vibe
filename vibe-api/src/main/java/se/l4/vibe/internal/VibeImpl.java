@@ -2,27 +2,22 @@ package se.l4.vibe.internal;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import se.l4.vibe.Export;
+import se.l4.vibe.ExportBuilder;
+import se.l4.vibe.Metric;
 import se.l4.vibe.Vibe;
-import se.l4.vibe.VibeBuilder;
-import se.l4.vibe.VibeException;
+import se.l4.vibe.backend.MergedBackend;
 import se.l4.vibe.backend.VibeBackend;
-import se.l4.vibe.builder.EventsBuilder;
-import se.l4.vibe.builder.ProbeBuilder;
-import se.l4.vibe.builder.SamplerBuilder;
-import se.l4.vibe.builder.TimerBuilder;
 import se.l4.vibe.event.Events;
-import se.l4.vibe.internal.builder.EventsBuilderImpl;
-import se.l4.vibe.internal.builder.ProbeBuilderImpl;
-import se.l4.vibe.internal.builder.SamplerBuilderImpl;
-import se.l4.vibe.internal.builder.TimerBuilderImpl;
-import se.l4.vibe.internal.time.TimeSampler;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.SampledProbe;
-import se.l4.vibe.probes.Sampler;
+import se.l4.vibe.sampling.SampledProbe;
+import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.timer.Timer;
 
 /**
@@ -34,98 +29,22 @@ import se.l4.vibe.timer.Timer;
 public class VibeImpl
 	implements Vibe
 {
-	private final Map<String, Object> instances;
-	private final BackendImpl backend;
-	private final TimeSampler sampler;
+	private final Set<String> activePaths;
+	private final VibeBackend backend;
 
 	/**
 	 * Create a new instance.
 	 *
-	 * @param backend
-	 * 		backend to send all built instances to
-	 * @param sampleInterval
-	 * 		sampling interval in ms
-	 * @param sampleRetention
-	 * 		sample retention in ms
+	 * @param backends
+	 * 	backends that should be used when exporting metrics
 	 */
-	public VibeImpl(VibeBackend backend, long sampleInterval)
+	public VibeImpl(
+		VibeBackend[] backends
+	)
 	{
-		instances = new ConcurrentHashMap<String, Object>();
+		activePaths = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-		this.backend = new BackendImpl();
-		if(backend != null)
-		{
-			this.backend.add(backend);
-		}
-
-		sampler = new TimeSampler(sampleInterval);
-	}
-
-	/**
-	 * Start building a new {@link Vibe}.
-	 *
-	 * @return
-	 */
-	public static VibeBuilder builder()
-	{
-		return new DefaultVibeBuilder();
-	}
-
-	@Override
-	public <T> ProbeBuilder<T> probe(Probe<T> probe)
-	{
-		return new ProbeBuilderImpl<T>(backend, probe);
-	}
-
-	@Override
-	public <T> SamplerBuilder<T> sample(SampledProbe<T> probe)
-	{
-		return new SamplerBuilderImpl<T>(backend, sampler, probe);
-	}
-
-	public TimeSampler sampler()
-	{
-		return sampler;
-	}
-
-	@Override
-	public <T> EventsBuilder<T> events(Class<T> base)
-	{
-		return new EventsBuilderImpl<T>(backend);
-	}
-
-	@Override
-	public TimerBuilder timer()
-	{
-		return new TimerBuilderImpl(backend);
-	}
-
-	@Override
-	public <T> Events<T> getEvents(String path)
-	{
-		Object o = instances.get(path);
-		return o instanceof Events ? (Events) o : null;
-	}
-
-	@Override
-	public <T> Probe<T> getProbe(String path)
-	{
-		Object o = instances.get(path);
-		return o instanceof Probe ? (Probe) o : null;
-	}
-
-	@Override
-	public <T> Sampler<T> getTimeSeries(String path)
-	{
-		Object o = instances.get(path);
-		return o instanceof Sampler ? (Sampler) o : null;
-	}
-
-	@Override
-	public Timer getTimer(String path)
-	{
-		Object o = instances.get(path);
-		return o instanceof Timer ? (Timer) o : null;
+		this.backend = new MergedBackend(backends);
 	}
 
 	@Override
@@ -135,109 +54,165 @@ public class VibeImpl
 	}
 
 	@Override
-	public void addBackend(VibeBackend backend)
+	public <T extends Metric> ExportBuilder<T> export(T object)
 	{
-		this.backend.add(backend);
+		return export(null, object);
+	}
+
+	public <T extends Metric> ExportBuilder<T> export(String path0, T object)
+	{
+		return new ExportBuilder<T>()
+		{
+			protected String path = path0;
+
+			protected String mergePath(String nextPath)
+			{
+				nextPath = nextPath.trim();
+				if(nextPath.isEmpty())
+				{
+					// Skip empty path segments
+					return path;
+				}
+
+				if(path == null)
+				{
+					return nextPath;
+				}
+				else
+				{
+					return path + '/' + nextPath;
+				}
+			}
+
+			@Override
+			public ExportBuilder<T> at(String path)
+			{
+				this.path = mergePath(path);
+				return this;
+			}
+
+			@Override
+			public ExportBuilder<T> at(String... hierarchy)
+			{
+				StringBuilder path = new StringBuilder();
+				for(int i=0, n=hierarchy.length; i<n; i++)
+				{
+					if(i > 0) path.append('/');
+
+					String segment = hierarchy[i];
+					if(segment.indexOf('/') != -1)
+					{
+						throw new IllegalArgumentException("Segments may not contain /; For " + segment);
+					}
+
+					path.append(segment);
+				}
+
+				this.path = mergePath(path.toString());
+				return this;
+			}
+
+			@Override
+			public ExportBuilder<T> at(Class<?> type)
+			{
+				Objects.requireNonNull(type, "type can not be null");
+
+				this.path = mergePath(type.getName().replace('.', '/'));
+				return this;
+			}
+
+			@Override
+			public Export<T> done()
+			{
+				return exportObject(path, object);
+			}
+		};
 	}
 
 	@Override
 	public void destroy()
 	{
-		System.out.println("Shutting down");
-		sampler.destroy();
-
 		this.backend.close();
 	}
 
-	private class BackendImpl
-		implements VibeBackend
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected <T extends Metric> Export<T> exportObject(String path, T object)
+	{
+		if(! activePaths.add(path))
+		{
+			throw new IllegalArgumentException("path is already registered: " + path);
+		}
+
+		VibeBackend.Handle handle;
+		if(object instanceof Sampler)
+		{
+			handle = backend.export(path, (Sampler) object);
+		}
+		else if(object instanceof Timer)
+		{
+			handle = backend.export(path, (Timer) object);
+		}
+		else if(object instanceof Events)
+		{
+			handle = backend.export(path, (Events) object);
+		}
+		else if(object instanceof SampledProbe)
+		{
+			Sampler<?> sampler = Sampler.forProbe((SampledProbe) object)
+				.build();
+
+			handle = backend.export(path, sampler);
+		}
+		else if(object instanceof Probe)
+		{
+			handle = backend.export(path, (Probe) object);
+		}
+		else
+		{
+			throw new IllegalArgumentException("Unsupported type of object: " + object.getClass().getName());
+		}
+
+		return new Export<T>()
+		{
+			@Override
+			public T get()
+			{
+				return object;
+			}
+
+			@Override
+			public void remove()
+			{
+				handle.remove();
+				activePaths.remove(path);
+			}
+		};
+	}
+
+	public static class BuilderImpl
+		implements Builder
 	{
 		private final List<VibeBackend> backends;
 
-		public BackendImpl()
+		public BuilderImpl()
 		{
-			backends = new ArrayList<VibeBackend>();
-		}
-
-		private void checkPathAndAdd(String path, Object o)
-		{
-			if(instances.containsKey(path))
-			{
-				throw new VibeException("Something has already been registered at " + path + ": " + instances.get(path));
-			}
-
-			instances.put(path, o);
+			backends = new ArrayList<>();
 		}
 
 		@Override
-		public void export(String path, Events<?> events)
+		public Builder withBackend(VibeBackend backend)
 		{
-			checkPathAndAdd(path, events);
-			for(VibeBackend vb : backends)
-			{
-				vb.export(path, events);
-			}
-		}
+			Objects.requireNonNull(backend, "backend must not be null");
 
-		@Override
-		public void export(String path, Probe<?> probe)
-		{
-			checkPathAndAdd(path, probe);
-			for(VibeBackend vb : backends)
-			{
-				vb.export(path, probe);
-			}
-		}
-
-		@Override
-		public void export(String path, Sampler<?> series)
-		{
-			checkPathAndAdd(path, series);
-			for(VibeBackend vb : backends)
-			{
-				vb.export(path, series);
-			}
-		}
-
-		@Override
-		public void export(String path, Timer timer)
-		{
-			checkPathAndAdd(path, timer);
-			for(VibeBackend vb : backends)
-			{
-				vb.export(path, timer);
-			}
-		}
-
-		@Override
-		public void close()
-		{
-			for(VibeBackend vb : backends)
-			{
-				vb.close();
-			}
-		}
-
-		public void add(VibeBackend backend)
-		{
 			backends.add(backend);
-			for(Map.Entry<String, Object> e : instances.entrySet())
-			{
-				String path = e.getKey();
-				Object o = e.getValue();
-				if(o instanceof Events)
-				{
-					backend.export(path, (Events) o);
-				}
-				else if(o instanceof Probe)
-				{
-					backend.export(path, (Probe) o);
-				}
-				else if(o instanceof Sampler)
-				{
-					backend.export(path, (Sampler) o);
-				}
-			}
+			return this;
+		}
+
+		public Vibe build()
+		{
+			return new VibeImpl(
+				backends.toArray(new VibeBackend[backends.size()])
+			);
 		}
 	}
 }

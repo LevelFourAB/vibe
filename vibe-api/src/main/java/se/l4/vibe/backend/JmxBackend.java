@@ -3,6 +3,7 @@ package se.l4.vibe.backend;
 import java.lang.management.ManagementFactory;
 
 import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
@@ -11,12 +12,12 @@ import javax.management.ObjectName;
 
 import se.l4.vibe.event.Events;
 import se.l4.vibe.internal.jmx.ProbeBean;
-import se.l4.vibe.internal.jmx.ServiceMBeanBridge;
 import se.l4.vibe.internal.jmx.SamplerBean;
+import se.l4.vibe.internal.jmx.ServiceMBeanBridge;
 import se.l4.vibe.internal.service.Service;
 import se.l4.vibe.internal.service.ServiceImpl;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.Sampler;
+import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.timer.Timer;
 
 /**
@@ -119,60 +120,64 @@ public class JmxBackend
 		return builder.toString();
 	}
 
-	private void export(String path, Service service)
+	private Handle export(String path, Service service)
 	{
 		String jmxLocation = toJmxLocation(path);
 		try
 		{
-			server.registerMBean(new ServiceMBeanBridge(jmxLocation, service), new ObjectName(jmxLocation));
+			server.registerMBean(
+				new ServiceMBeanBridge(jmxLocation, service),
+				new ObjectName(jmxLocation)
+			);
+
+			return () -> {
+				try
+				{
+					server.unregisterMBean(new ObjectName(jmxLocation));
+				}
+				catch(InstanceNotFoundException | MBeanRegistrationException | MalformedObjectNameException e)
+				{
+					// The object is probably no longer registered so ignore this
+				}
+			};
 		}
 		catch(InstanceAlreadyExistsException e)
 		{
 			throw new RuntimeException("Something has already been registered at " + path + " (JMX location: " + jmxLocation + ")");
 		}
-		catch(MBeanRegistrationException e)
-		{
-			throw new RuntimeException(e.getMessage(), e);
-		}
-		catch(NotCompliantMBeanException e)
-		{
-			throw new RuntimeException(e.getMessage(), e);
-		}
-		catch(MalformedObjectNameException e)
+		catch(MBeanRegistrationException | NotCompliantMBeanException | MalformedObjectNameException e)
 		{
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
-	public void export(String path, Object object)
+	public Handle export(String path, Object object)
 	{
-		export(path, new ServiceImpl(object));
+		return export(path, new ServiceImpl(object));
 	}
 
 	@Override
-	public void export(String path, Sampler<?> series)
+	public Handle export(String path, Sampler<?> series)
 	{
-		export(path, new SamplerBean(series));
+		return export(path, new SamplerBean(series));
 	}
 
 	@Override
-	public void export(String path, Probe<?> probe)
+	public Handle export(String path, Probe<?> probe)
 	{
-		export(path, new ProbeBean(probe));
+		return export(path, new ProbeBean(probe));
 	}
 
 	@Override
-	public void export(String path, Events<?> events)
+	public Handle export(String path, Events<?> events)
 	{
-		// TODO Auto-generated method stub
-
+		return Handle.empty();
 	}
 
 	@Override
-	public void export(String path, Timer timer)
+	public Handle export(String path, Timer timer)
 	{
-		// TODO Auto-generated method stub
-
+		return Handle.empty();
 	}
 
 	@Override

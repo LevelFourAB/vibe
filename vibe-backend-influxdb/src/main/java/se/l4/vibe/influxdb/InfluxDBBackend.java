@@ -20,6 +20,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import se.l4.vibe.ListenerHandle;
 import se.l4.vibe.backend.VibeBackend;
 import se.l4.vibe.event.EventListener;
 import se.l4.vibe.event.EventSeverity;
@@ -29,9 +30,9 @@ import se.l4.vibe.influxdb.internal.DataQueue;
 import se.l4.vibe.mapping.KeyValueMappable;
 import se.l4.vibe.mapping.KeyValueReceiver;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.SampleListener;
-import se.l4.vibe.probes.SampledProbe;
-import se.l4.vibe.probes.Sampler;
+import se.l4.vibe.sampling.Sample;
+import se.l4.vibe.sampling.SampleListener;
+import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.timer.Timer;
 import se.l4.vibe.timer.TimerListener;
 
@@ -124,27 +125,31 @@ public class InfluxDBBackend
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void export(String path, Sampler<?> sampler)
+	public Handle export(String path, Sampler<?> sampler)
 	{
-		((Sampler) sampler).addListener(new SampleQueuer(path));
+		ListenerHandle handle = ((Sampler) sampler).addListener(new SampleQueuer(path));
+		return handle::remove;
 	}
 
 	@Override
-	public void export(String path, Probe<?> probe)
+	public Handle export(String path, Probe<?> probe)
 	{
+		return Handle.empty();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void export(String path, Events<?> events)
+	public Handle export(String path, Events<?> events)
 	{
-		((Events) events).addListener(new EventQueuer(path));
+		ListenerHandle handle = ((Events) events).addListener(new EventQueuer(path));
+		return handle::remove;
 	}
 
 	@Override
-	public void export(String path, Timer timer)
+	public Handle export(String path, Timer timer)
 	{
-		timer.addListener(new TimerQueuer(path));
+		ListenerHandle handle = timer.addListener(new TimerQueuer(path));
+		return handle::remove;
 	}
 
 	@Override
@@ -174,9 +179,9 @@ public class InfluxDBBackend
 		}
 
 		@Override
-		public void sampleAcquired(SampledProbe<Object> probe, Sampler.Entry<Object> entry)
+		public void sampleAcquired(Sample<Object> sample)
 		{
-			Object value = entry.getValue();
+			Object value = sample.getValue();
 			Map<String, Object> values = new HashMap<>();
 			KeyValueReceiver receiver = (key, v) -> {
 				if((v instanceof Double && Double.isNaN((Double) v))
@@ -200,7 +205,7 @@ public class InfluxDBBackend
 
 			// TODO: Can a probe provide extra tags?
 
-			DataPoint point = new DataPoint(path, entry.getTime(), tags, values);
+			DataPoint point = new DataPoint(path, sample.getTime(), tags, values);
 			queue.add(point);
 		}
 
