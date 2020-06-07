@@ -23,15 +23,6 @@ public interface ExportBuilder<T extends Metric>
 	ExportBuilder<T> at(String path);
 
 	/**
-	 * Set the hierarchy by taking the full class name and replacing dots
-	 * with forward slashes.
-	 *
-	 * @param type
-	 * @return
-	 */
-	ExportBuilder<T> at(Class<?> type);
-
-	/**
 	 * Export the object.
 	 *
 	 * @return

@@ -7,6 +7,7 @@ import se.l4.vibe.Export;
 import se.l4.vibe.ExportBuilder;
 import se.l4.vibe.Metric;
 import se.l4.vibe.Vibe;
+import se.l4.vibe.VibePaths;
 import se.l4.vibe.backend.VibeBackend;
 
 /**
@@ -34,15 +35,14 @@ public class ScopedVibe
 		this.exports = new HashSet<>();
 	}
 
-	private String scopePath(String path)
-	{
-		return scope + '/' + path;
-	}
-
 	@Override
-	public Vibe scope(String path)
+	public Vibe scope(String... hierarchy)
 	{
-		return new ScopedVibe(vibe, parent, scopePath(path));
+		String path = VibePaths.merge(
+			scope,
+			VibePaths.hierarchy(hierarchy)
+		);
+		return new ScopedVibe(vibe, parent, path);
 	}
 
 	@Override

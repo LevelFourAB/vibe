@@ -19,12 +19,12 @@ public interface Vibe
 	<T extends Metric> ExportBuilder<T> export(T object);
 
 	/**
-	 * Create a Vibe instance for the given sub path.
+	 * Create a Vibe instance for the given sub hierarchy.
 	 *
-	 * @param path
+	 * @param hierarchy
 	 * @return
 	 */
-	Vibe scope(String path);
+	Vibe scope(String... hierarchy);
 
 	/**
 	 * Destroy this Vibe instance. For the top level instance this will stop
