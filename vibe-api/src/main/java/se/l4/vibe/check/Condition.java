@@ -1,4 +1,4 @@
-package se.l4.vibe.trigger;
+package se.l4.vibe.check;
 
 /**
  * Condition used together with {@link Triggers triggers}. Usually created

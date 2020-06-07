@@ -1,4 +1,4 @@
-package se.l4.vibe.trigger;
+package se.l4.vibe.check;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;

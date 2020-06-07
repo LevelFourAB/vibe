@@ -7,10 +7,10 @@ import se.l4.vibe.JvmProbes;
 import se.l4.vibe.Vibe;
 import se.l4.vibe.backend.JmxBackend;
 import se.l4.vibe.backend.LoggingBackend;
+import se.l4.vibe.check.Check;
+import se.l4.vibe.check.Conditions;
 import se.l4.vibe.operations.Average;
 import se.l4.vibe.sampling.Sampler;
-import se.l4.vibe.trigger.Check;
-import se.l4.vibe.trigger.Conditions;
 
 /**
  * A simple example that will log the current CPU usage every 5 seconds.

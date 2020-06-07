@@ -9,13 +9,13 @@ import java.util.function.BooleanSupplier;
 
 import se.l4.vibe.ListenerHandle;
 import se.l4.vibe.Listeners;
+import se.l4.vibe.check.Check;
+import se.l4.vibe.check.CheckEvent;
+import se.l4.vibe.check.CheckListener;
+import se.l4.vibe.check.Condition;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleOperation;
 import se.l4.vibe.sampling.Sampler;
-import se.l4.vibe.trigger.Check;
-import se.l4.vibe.trigger.CheckEvent;
-import se.l4.vibe.trigger.CheckListener;
-import se.l4.vibe.trigger.Condition;
 
 public class CheckImpl<Input>
 	implements Check

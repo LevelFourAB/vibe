@@ -1,4 +1,4 @@
-package se.l4.vibe.trigger;
+package se.l4.vibe.check;
 
 /**
  * Conditions available for use with {@link Check checks}.
