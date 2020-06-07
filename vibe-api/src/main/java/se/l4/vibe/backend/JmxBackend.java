@@ -1,6 +1,7 @@
 package se.l4.vibe.backend;
 
 import java.lang.management.ManagementFactory;
+import java.util.Objects;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
@@ -10,21 +11,15 @@ import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
-import se.l4.vibe.event.Events;
+import se.l4.vibe.ListenerHandle;
+import se.l4.vibe.internal.jmx.ExportMBeanBridge;
+import se.l4.vibe.internal.jmx.JmxExport;
 import se.l4.vibe.internal.jmx.ProbeBean;
-import se.l4.vibe.internal.jmx.SamplerBean;
-import se.l4.vibe.internal.jmx.ServiceMBeanBridge;
-import se.l4.vibe.internal.service.Service;
-import se.l4.vibe.internal.service.ServiceImpl;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.Sampler;
-import se.l4.vibe.timer.Timer;
 
 /**
- * JMX backend that will export everything via JMX.
- *
- * @author Andreas Holstenson
- *
+ * Backend that will probes and samplers over JMX.
  */
 public class JmxBackend
 	implements VibeBackend
@@ -32,22 +27,7 @@ public class JmxBackend
 	private final MBeanServer server;
 	private final String root;
 
-	public JmxBackend()
-	{
-		this("vibe");
-	}
-
-	public JmxBackend(String root)
-	{
-		this(root, ManagementFactory.getPlatformMBeanServer());
-	}
-
-	public JmxBackend(MBeanServer server)
-	{
-		this("vibe", server);
-	}
-
-	public JmxBackend(String root, MBeanServer server)
+	private JmxBackend(String root, MBeanServer server)
 	{
 		// Cut of last . if any
 		this.root = root.charAt(root.length() - 1) == '.'
@@ -120,13 +100,13 @@ public class JmxBackend
 		return builder.toString();
 	}
 
-	private Handle export(String path, Service service)
+	private Handle export0(String path, JmxExport object)
 	{
 		String jmxLocation = toJmxLocation(path);
 		try
 		{
 			server.registerMBean(
-				new ServiceMBeanBridge(jmxLocation, service),
+				new ExportMBeanBridge(jmxLocation, object),
 				new ObjectName(jmxLocation)
 			);
 
@@ -151,37 +131,73 @@ public class JmxBackend
 		}
 	}
 
-	public Handle export(String path, Object object)
-	{
-		return export(path, new ServiceImpl(object));
-	}
-
 	@Override
 	public Handle export(String path, Sampler<?> series)
 	{
-		return export(path, new SamplerBean(series));
+		/*
+		 * Add a listener - doesn't actually do anything other than to activate
+		 * sampling.
+		 */
+		ListenerHandle h1 = series.addListener(sample -> {});
+		Handle h2 = export0(path, new ProbeBean(series));
+
+		return () -> {
+			h1.remove();
+			h2.remove();
+		};
 	}
 
 	@Override
 	public Handle export(String path, Probe<?> probe)
 	{
-		return export(path, new ProbeBean(probe));
-	}
-
-	@Override
-	public Handle export(String path, Events<?> events)
-	{
-		return Handle.empty();
-	}
-
-	@Override
-	public Handle export(String path, Timer timer)
-	{
-		return Handle.empty();
+		return export0(path, new ProbeBean(probe));
 	}
 
 	@Override
 	public void close()
 	{
+	}
+
+	/**
+	 * Start building a new JMX backend.
+	 *
+	 * @return
+	 */
+	public static Builder builder()
+	{
+		return new Builder();
+	}
+
+	public static class Builder
+	{
+		private String name;
+		private MBeanServer server;
+
+		public Builder()
+		{
+			name = "vibe";
+			server = ManagementFactory.getPlatformMBeanServer();
+		}
+
+		public Builder setName(String name)
+		{
+			Objects.requireNonNull(name, "name can not be null");
+
+			this.name = name;
+			return this;
+		}
+
+		public Builder setServer(MBeanServer server)
+		{
+			Objects.requireNonNull(server, "server can not be null");
+
+			this.server = server;
+			return this;
+		}
+
+		public JmxBackend build()
+		{
+			return new JmxBackend(name, server);
+		}
 	}
 }

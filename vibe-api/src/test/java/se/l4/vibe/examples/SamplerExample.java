@@ -28,7 +28,7 @@ public class SamplerExample
 				.logSamples()
 				.build()
 			)
-			.withBackend(new JmxBackend())
+			.withBackend(JmxBackend.builder().build())
 			.build();
 
 		/*

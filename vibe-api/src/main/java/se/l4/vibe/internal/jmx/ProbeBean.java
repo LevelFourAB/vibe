@@ -1,6 +1,8 @@
 package se.l4.vibe.internal.jmx;
 
-import se.l4.vibe.internal.service.ExposeAsAttribute;
+import java.util.Collection;
+import java.util.Collections;
+
 import se.l4.vibe.probes.Probe;
 
 /**
@@ -10,6 +12,7 @@ import se.l4.vibe.probes.Probe;
  *
  */
 public class ProbeBean
+	implements JmxExport
 {
 	private final Probe<?> probe;
 
@@ -18,9 +21,23 @@ public class ProbeBean
 		this.probe = probe;
 	}
 
-	@ExposeAsAttribute
-	public Object get()
+	@Override
+	public Collection<Attribute> getAttributes()
 	{
-		return probe.read();
+		return Collections.singleton(
+			new Attribute("currentValue", Object.class)
+		);
+	}
+
+	@Override
+	public Object getAttribute(String attribute)
+	{
+		switch(attribute)
+		{
+			case "currentValue":
+				return probe.read();
+		}
+
+		return null;
 	}
 }

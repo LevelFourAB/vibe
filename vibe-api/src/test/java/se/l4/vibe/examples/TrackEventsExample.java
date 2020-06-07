@@ -29,7 +29,7 @@ public class TrackEventsExample
 				.logEvents()
 				.build()
 			)
-			.withBackend(new JmxBackend())
+			.withBackend(JmxBackend.builder().build())
 			.build();
 
 		// The events object used to send the events

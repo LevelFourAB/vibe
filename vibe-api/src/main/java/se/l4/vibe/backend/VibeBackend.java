@@ -8,19 +8,19 @@ import se.l4.vibe.timer.Timer;
 
 /**
  * Backend for a {@link Vibe} instance.
- *
- * @author Andreas Holstenson
- *
  */
 public interface VibeBackend
 {
 	/**
-	 * Export a time series.
+	 * Export a {@link Sampler}.
 	 *
 	 * @param path
 	 * @param series
 	 */
-	Handle export(String path, Sampler<?> series);
+	default Handle export(String path, Sampler<?> series)
+	{
+		return Handle.empty();
+	}
 
 	/**
 	 * Export a probe.
@@ -28,7 +28,10 @@ public interface VibeBackend
 	 * @param path
 	 * @param probe
 	 */
-	Handle export(String path, Probe<?> probe);
+	default Handle export(String path, Probe<?> probe)
+	{
+		return Handle.empty();
+	}
 
 	/**
 	 * Export a collection of events.
@@ -36,7 +39,10 @@ public interface VibeBackend
 	 * @param path
 	 * @param events
 	 */
-	Handle export(String path, Events<?> events);
+	default Handle export(String path, Events<?> events)
+	{
+		return Handle.empty();
+	}
 
 	/**
 	 * Export a timer.
@@ -44,7 +50,10 @@ public interface VibeBackend
 	 * @param path
 	 * @param timer
 	 */
-	Handle export(String path, Timer timer);
+	default Handle export(String path, Timer timer)
+	{
+		return Handle.empty();
+	}
 
 	/**
 	 * Release any resources held by this backend.

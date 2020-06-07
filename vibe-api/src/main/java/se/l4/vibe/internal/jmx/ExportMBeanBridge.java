@@ -16,26 +16,25 @@ import javax.management.MBeanNotificationInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.ReflectionException;
 
-import se.l4.vibe.internal.service.Service;
-
 /**
  * Wrapper that will turn a service into a MBean.
  *
- * @author Andreas Holstenson
- *
  */
-public class ServiceMBeanBridge
+public class ExportMBeanBridge
 	implements DynamicMBean
 {
-	private final Service service;
+	private final JmxExport object;
 	private final MBeanInfo info;
 
-	public ServiceMBeanBridge(String location, Service service)
+	public ExportMBeanBridge(
+		String location,
+		JmxExport object
+	)
 	{
-		this.service = service;
+		this.object = object;
 
 		List<MBeanAttributeInfo> attributes = new ArrayList<MBeanAttributeInfo>();
-		for(Service.Attribute attr : service.getAttributes())
+		for(JmxExport.Attribute attr : object.getAttributes())
 		{
 			attributes.add(new MBeanAttributeInfo(attr.getName(), "", toType(attr.getType()), true, false, false));
 		}
@@ -64,32 +63,24 @@ public class ServiceMBeanBridge
 	public Object getAttribute(String attribute)
 		throws AttributeNotFoundException, MBeanException, ReflectionException
 	{
-		Service.Attribute attr = service.getAttribute(attribute);
-		if(attr == null) throw new AttributeNotFoundException("Unable to find " + attribute);
-
-		return attr.getValue();
+		return object.getAttribute(attribute);
 	}
 
 	@Override
 	public void setAttribute(Attribute attribute)
-		throws AttributeNotFoundException, InvalidAttributeValueException,
-		MBeanException, ReflectionException
+		throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public AttributeList getAttributes(String[] attributes)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public AttributeList setAttributes(AttributeList attributes)
 	{
-
 		return null;
 	}
 
@@ -97,7 +88,6 @@ public class ServiceMBeanBridge
 	public Object invoke(String actionName, Object[] params, String[] signature)
 		throws MBeanException, ReflectionException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
