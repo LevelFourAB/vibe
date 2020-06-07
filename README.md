@@ -169,7 +169,7 @@ Sampler<Double> cpuUsage = Sampler.forProbe(JvmProbes.cpuUsage())
 
 Check check = Check.builder()
   .when(cpuUsage)
-    .apply(Modifiers.averageOver(5, TimeUnit.Minutes))
+    .apply(Average.averageOver(Duration.ofMinutes(5)))
     .is(Conditions.above(0.9))
   .build();
 ```
@@ -187,6 +187,23 @@ check.addListener(event -> {
   }
 });
 ```
+
+The default behavior of `Check` is to only trigger an event when the state
+of conditions being met changes, but checks can also repeat events:
+
+```java
+Check check = Check.builder()
+  .when(cpuUsage)
+    .apply(Average.averageOver(Duration.ofMinutes(5)))
+    .is(Conditions.above(0.9))
+  .whenMetRepeatEvery(Duration.ofMinutes(30))
+  .build();
+```
+
+The above example will repeat the event every 30 minutes as long as conditions
+are met, which is useful for scenarios where you might want to send reminders.
+`whenUnmetRepeatEvery` can be used to do the same for when conditions are not
+met.
 
 ## Timing calls
 
