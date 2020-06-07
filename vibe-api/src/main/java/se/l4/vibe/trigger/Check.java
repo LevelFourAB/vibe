@@ -1,5 +1,6 @@
 package se.l4.vibe.trigger;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 
@@ -41,6 +42,9 @@ public interface Check
 		return new CheckImpl.BuilderImpl();
 	}
 
+	/**
+	 * Builder for instances of {@link Check}.
+	 */
 	interface Builder
 	{
 		/**
@@ -61,6 +65,26 @@ public interface Check
 		 * @return
 		 */
 		ConditionWhenBuilder forSupplier(BooleanSupplier supplier);
+
+		/**
+		 * Request that the check triggers repeating events when conditions
+		 * are met. Can be used to implement things such as sending reminders
+		 * for health checks.
+		 *
+		 * @param duration
+		 * @return
+		 */
+		Builder whenMetRepeatEvery(Duration duration);
+
+		/**
+		 * Request that the check triggers repeating events when the the
+		 * conditions of the check are not met. Can be used to implement things
+		 * such as sending reminders for health checks.
+		 *
+		 * @param duration
+		 * @return
+		 */
+		Builder whenUnmetRepeatEvery(Duration duration);
 
 		/**
 		 * Build the trigger.

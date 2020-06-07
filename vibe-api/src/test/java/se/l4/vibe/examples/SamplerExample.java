@@ -35,6 +35,7 @@ public class SamplerExample
 		 * Sample and export JVM CPU usage.
 		 */
 		Sampler<Double> cpuUsage = Sampler.forProbe(JvmProbes.cpuUsage())
+			.setInterval(Duration.ofSeconds(1))
 			.build();
 
 		vibe.export(cpuUsage)
@@ -43,12 +44,14 @@ public class SamplerExample
 
 		/*
 		 * Create a check that meets its conditions when CPU usage is below
-		 * 80%.
+		 * 80% over a 10 second average. Repeat events every 5 seconds while
+		 * the check meets these conditions.
 		 */
 		Check check = Check.builder()
 			.forSampler(cpuUsage)
 				.apply(Average.averageOver(Duration.ofSeconds(10)))
 				.is(Conditions.below(0.8))
+			.whenMetRepeatEvery(Duration.ofSeconds(5))
 			.build();
 
 		check.addListener(event -> System.out.println("Check has conditions met: " + event.isConditionsMet()));

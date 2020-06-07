@@ -1,6 +1,7 @@
 package se.l4.vibe.internal;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
@@ -23,16 +24,25 @@ public class CheckImpl<Input>
 
 	private final Sampler<Input> sampler;
 	private final Condition<Input> condition;
+	private final RepetitionGuard metRepetitionGuard;
+	private final RepetitionGuard unmetRepetitionGuard;
 
 	private ListenerHandle listenerHandle;
 
+	private boolean isConditionsMet;
+	private Instant lastConditionsChange;
+
 	public CheckImpl(
 		Sampler<Input> sampler,
-		Condition<Input> condition
+		Condition<Input> condition,
+		RepetitionGuard metRepetitionGuard,
+		RepetitionGuard unmetRepetitionGuard
 	)
 	{
 		this.sampler = sampler;
 		this.condition = condition;
+		this.metRepetitionGuard = metRepetitionGuard;
+		this.unmetRepetitionGuard = unmetRepetitionGuard;
 
 		listeners = new Listeners<>(size -> {
 			if(size == 1)
@@ -67,18 +77,58 @@ public class CheckImpl<Input>
 
 	private void check(Sample<Input> sample)
 	{
-		CheckEvent event;
+		CheckEvent event = null;
 		if(condition.matches(sample.getValue()))
 		{
-			// TODO: Detect if repeat
-			event = new CheckEvent(true, false, null);
+			if(! isConditionsMet)
+			{
+				/*
+				 * Conditions are now being met, switch the state of this
+				 * check and start checking for repetitions.
+				 */
+				lastConditionsChange = Instant.ofEpochMilli(sample.getTime());
+				metRepetitionGuard.start(sample.getTime());
+
+				event = new CheckEvent(true, false, lastConditionsChange);
+				isConditionsMet = true;
+			}
+			else if(metRepetitionGuard.checkIfShouldRepeat(sample.getTime()))
+			{
+				/*
+				 * Repetition guard indicates this should repeat so create an
+				 * event to trigger.
+				 */
+				event = new CheckEvent(true, true, lastConditionsChange);
+			}
 		}
 		else
 		{
-			event = new CheckEvent(true, false, null);
+			if(isConditionsMet)
+			{
+				/*
+				 * Conditions are no longer being met.
+				 */
+				lastConditionsChange = Instant.ofEpochMilli(sample.getTime());
+				unmetRepetitionGuard.start(sample.getTime());
+
+				event = new CheckEvent(false, false, lastConditionsChange);
+				isConditionsMet = false;
+			}
+			else if(unmetRepetitionGuard.checkIfShouldRepeat(sample.getTime()))
+			{
+				/*
+				 * Repetition guard indicates this should repeat so create an
+				 * event to trigger.
+				 */
+				event = new CheckEvent(false, true, lastConditionsChange);
+			}
 		}
 
-		listeners.forEach(l -> l.checkStatus(event));
+		if(event != null)
+		{
+			CheckEvent event0 = event;
+			listeners.forEach(l -> l.checkStatus(event0));
+		}
 	}
 
 	public static class BuilderImpl
@@ -86,6 +136,8 @@ public class CheckImpl<Input>
 	{
 		private Sampler<?> sampler;
 		private Condition<?> condition;
+		private RepetitionGuard metRepetitionGuard = RepetitionGuard.once();
+		private RepetitionGuard unmetRepetitionGuard = RepetitionGuard.once();
 
 		@Override
 		public <I> SamplerWhenBuilder<I> forSampler(Sampler<I> sampler)
@@ -107,10 +159,35 @@ public class CheckImpl<Input>
 		}
 
 		@Override
+		public Builder whenMetRepeatEvery(Duration duration)
+		{
+			Objects.requireNonNull(duration, "duration must not be null");
+
+			metRepetitionGuard = RepetitionGuard.afterDuration(duration);
+			return this;
+		}
+
+		@Override
+		public Builder whenUnmetRepeatEvery(Duration duration)
+		{
+			Objects.requireNonNull(duration, "duration must not be null");
+
+			unmetRepetitionGuard = RepetitionGuard.afterDuration(duration);
+			return this;
+		}
+
+		@Override
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public Check build()
 		{
-			return new CheckImpl(sampler, condition);
+			Objects.requireNonNull(sampler, "Check requires a condition");
+
+			return new CheckImpl(
+				sampler,
+				condition,
+				metRepetitionGuard,
+				unmetRepetitionGuard
+			);
 		}
 	}
 
