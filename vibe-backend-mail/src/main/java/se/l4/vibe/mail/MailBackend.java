@@ -9,22 +9,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import se.l4.vibe.ListenerHandle;
 import se.l4.vibe.backend.VibeBackend;
 import se.l4.vibe.event.EventListener;
 import se.l4.vibe.event.EventSeverity;
 import se.l4.vibe.event.Events;
-import se.l4.vibe.probes.Probe;
-import se.l4.vibe.sampling.Sampler;
-import se.l4.vibe.timer.Timer;
 
 /**
  * Backend that will e-mail events.
@@ -51,15 +47,16 @@ public class MailBackend
 	private final boolean ssl;
 
 	public MailBackend(
-			EventSeverity minimumSeverity,
-			String smtpServer,
-			int smtpPort,
-			String from,
-			String[] receivers,
-			String subject,
-			boolean tls,
-			boolean ssl,
-			AuthenticatorImpl authenticator)
+		EventSeverity minimumSeverity,
+		String smtpServer,
+		int smtpPort,
+		String from,
+		String[] receivers,
+		String subject,
+		boolean tls,
+		boolean ssl,
+		AuthenticatorImpl authenticator
+	)
 	{
 		this.minimumSeverity = minimumSeverity;
 		this.smtpServer = smtpServer;
@@ -153,27 +150,6 @@ public class MailBackend
 		Transport.send(msg);
 	}
 
-	@Override
-	public Handle export(String path, Sampler<?> series)
-	{
-		// Do nothing, not supported by mailer
-		return Handle.empty();
-	}
-
-	@Override
-	public Handle export(String path, Probe<?> probe)
-	{
-		// Do nothing, not supported by mailer
-		return Handle.empty();
-	}
-
-	@Override
-	public Handle export(String path, Timer timer)
-	{
-		// Do nothing, not supported by mailer
-		return Handle.empty();
-	}
-
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public Handle export(final String path, Events<?> events)
@@ -230,7 +206,7 @@ public class MailBackend
 	}
 
 	private static class AuthenticatorImpl
-		extends javax.mail.Authenticator
+		extends jakarta.mail.Authenticator
 	{
 		private PasswordAuthentication authentication;
 
