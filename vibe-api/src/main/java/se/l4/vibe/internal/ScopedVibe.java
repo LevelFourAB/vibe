@@ -5,7 +5,7 @@ import java.util.Set;
 
 import se.l4.vibe.Export;
 import se.l4.vibe.ExportBuilder;
-import se.l4.vibe.Metric;
+import se.l4.vibe.Exportable;
 import se.l4.vibe.Vibe;
 import se.l4.vibe.VibePaths;
 import se.l4.vibe.backend.VibeBackend;
@@ -46,7 +46,7 @@ public class ScopedVibe
 	}
 
 	@Override
-	public <T extends Metric> ExportBuilder<T> export(T object)
+	public <T extends Exportable> ExportBuilder<T> export(T object)
 	{
 		return vibe.export(scope, object, this::mapExport);
 	}
@@ -60,7 +60,7 @@ public class ScopedVibe
 		}
 	}
 
-	private <T extends Metric> Export<T> mapExport(Export<T> export)
+	private <T extends Exportable> Export<T> mapExport(Export<T> export)
 	{
 		exports.add(export);
 

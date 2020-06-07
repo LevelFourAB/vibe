@@ -1,6 +1,6 @@
 package se.l4.vibe.probes;
 
-import se.l4.vibe.Metric;
+import se.l4.vibe.Exportable;
 import se.l4.vibe.internal.MergedProbes;
 import se.l4.vibe.mapping.KeyValueMap;
 
@@ -10,7 +10,7 @@ import se.l4.vibe.mapping.KeyValueMap;
  * @param <T>
  */
 public interface Probe<T>
-	extends Metric
+	extends Exportable
 {
 	/**
 	 * Read the value.

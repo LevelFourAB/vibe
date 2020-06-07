@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 import se.l4.vibe.Export;
 import se.l4.vibe.ExportBuilder;
-import se.l4.vibe.Metric;
+import se.l4.vibe.Exportable;
 import se.l4.vibe.Vibe;
 import se.l4.vibe.VibeException;
 import se.l4.vibe.VibePaths;
@@ -53,12 +53,12 @@ public class VibeImpl
 	}
 
 	@Override
-	public <T extends Metric> ExportBuilder<T> export(T object)
+	public <T extends Exportable> ExportBuilder<T> export(T object)
 	{
 		return export(null, object, null);
 	}
 
-	public <T extends Metric> ExportBuilder<T> export(
+	public <T extends Exportable> ExportBuilder<T> export(
 		String path0,
 		T object,
 		Function<Export<T>, Export<T>> exportMapper
@@ -119,7 +119,7 @@ public class VibeImpl
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected <T extends Metric> Export<T> exportObject(String path, T object)
+	protected <T extends Exportable> Export<T> exportObject(String path, T object)
 	{
 		if(exported.containsKey(path))
 		{

@@ -1,7 +1,7 @@
 package se.l4.vibe.event;
 
+import se.l4.vibe.Exportable;
 import se.l4.vibe.ListenerHandle;
-import se.l4.vibe.Metric;
 import se.l4.vibe.internal.EventsImpl;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
@@ -13,7 +13,7 @@ import se.l4.vibe.sampling.SampledProbe;
  * @param <T>
  */
 public interface Events<T>
-	extends Metric
+	extends Exportable
 {
 	/**
 	 * Register a new event.

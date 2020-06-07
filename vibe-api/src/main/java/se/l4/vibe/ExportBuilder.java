@@ -3,7 +3,7 @@ package se.l4.vibe;
 /**
  * Builder used for exporting objects.
  */
-public interface ExportBuilder<T extends Metric>
+public interface ExportBuilder<T extends Exportable>
 {
 	/**
 	 * Set the hierarchy where the feature is to be exported.

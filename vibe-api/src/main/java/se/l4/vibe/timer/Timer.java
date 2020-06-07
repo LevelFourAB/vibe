@@ -1,7 +1,7 @@
 package se.l4.vibe.timer;
 
+import se.l4.vibe.Exportable;
 import se.l4.vibe.ListenerHandle;
-import se.l4.vibe.Metric;
 import se.l4.vibe.internal.timer.TimerImpl;
 import se.l4.vibe.percentile.PercentileCounter;
 import se.l4.vibe.sampling.SampledProbe;
@@ -10,7 +10,7 @@ import se.l4.vibe.sampling.SampledProbe;
  * Timer for timing how long things take.
  */
 public interface Timer
-	extends SampledProbe<TimerSnapshot>, Metric
+	extends SampledProbe<TimerSnapshot>, Exportable
 {
 	/**
 	 * Start timing something.

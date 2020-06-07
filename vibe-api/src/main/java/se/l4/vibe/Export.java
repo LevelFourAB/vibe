@@ -5,7 +5,7 @@ package se.l4.vibe;
  *
  * @param <T>
  */
-public interface Export<T extends Metric>
+public interface Export<T extends Exportable>
 {
 	/**
 	 * Get the exported object.

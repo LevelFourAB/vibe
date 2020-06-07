@@ -16,7 +16,7 @@ public interface Vibe
 	 * @param type
 	 * @return
 	 */
-	<T extends Metric> ExportBuilder<T> export(T object);
+	<T extends Exportable> ExportBuilder<T> export(T object);
 
 	/**
 	 * Create a Vibe instance for the given sub hierarchy.
