@@ -14,7 +14,7 @@ Licensed under Apache 2.0.
  */
 Vibe vibe = Vibe.builder()
   .withBackend(LoggingBackend.logSamples().build())
-  .withBackend(new JmxBackend())
+  .withBackend(JmxBackend.builder().build())
   .build();
 
 /*
@@ -220,8 +220,8 @@ Create an instance of Vibe:
 
 ```java
 Vibe vibe = Vibe.builder()
-  .withBackend(new LoggingBackend())
-  .withBackend(new JmxBackend())
+  .withBackend(LoggingBackend.logSamples().build())
+  .withBackend(JmxBackend.builder().build())
   .build();
 ```
 
