@@ -1,5 +1,9 @@
 package se.l4.vibe.internal;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import se.l4.vibe.Export;
 import se.l4.vibe.ExportBuilder;
 import se.l4.vibe.Metric;
 import se.l4.vibe.Vibe;
@@ -15,11 +19,19 @@ public class ScopedVibe
 	private final VibeBackend parent;
 	private final String scope;
 
-	public ScopedVibe(VibeImpl vibe, VibeBackend parent, String scope)
+	private final Set<Export<?>> exports;
+
+	public ScopedVibe(
+		VibeImpl vibe,
+		VibeBackend parent,
+		String scope
+	)
 	{
 		this.vibe = vibe;
 		this.parent = parent;
 		this.scope = scope;
+
+		this.exports = new HashSet<>();
 	}
 
 	private String scopePath(String path)
@@ -36,12 +48,36 @@ public class ScopedVibe
 	@Override
 	public <T extends Metric> ExportBuilder<T> export(T object)
 	{
-		return vibe.export(scope, object);
+		return vibe.export(scope, object, this::mapExport);
 	}
 
 	@Override
 	public void destroy()
 	{
-		// Destroying the scoped instance does nothing
+		for(Export<?> export : exports)
+		{
+			export.remove();
+		}
+	}
+
+	private <T extends Metric> Export<T> mapExport(Export<T> export)
+	{
+		exports.add(export);
+
+		return new Export<T>()
+		{
+			@Override
+			public T get()
+			{
+				return export.get();
+			}
+
+			@Override
+			public void remove()
+			{
+				exports.remove(export);
+				export.remove();
+			}
+		};
 	}
 }

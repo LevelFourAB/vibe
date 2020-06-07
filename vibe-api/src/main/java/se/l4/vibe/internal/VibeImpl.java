@@ -2,16 +2,17 @@ package se.l4.vibe.internal;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import se.l4.vibe.Export;
 import se.l4.vibe.ExportBuilder;
 import se.l4.vibe.Metric;
 import se.l4.vibe.Vibe;
+import se.l4.vibe.VibeException;
 import se.l4.vibe.backend.MergedBackend;
 import se.l4.vibe.backend.VibeBackend;
 import se.l4.vibe.event.Events;
@@ -22,14 +23,11 @@ import se.l4.vibe.timer.Timer;
 
 /**
  * Implementation of {@link Vibe}.
- *
- * @author Andreas Holstenson
- *
  */
 public class VibeImpl
 	implements Vibe
 {
-	private final Set<String> activePaths;
+	private final Map<String, VibeBackend.Handle> exported;
 	private final VibeBackend backend;
 
 	/**
@@ -42,7 +40,7 @@ public class VibeImpl
 		VibeBackend[] backends
 	)
 	{
-		activePaths = Collections.newSetFromMap(new ConcurrentHashMap<>());
+		exported = new ConcurrentHashMap<>();
 
 		this.backend = new MergedBackend(backends);
 	}
@@ -56,10 +54,14 @@ public class VibeImpl
 	@Override
 	public <T extends Metric> ExportBuilder<T> export(T object)
 	{
-		return export(null, object);
+		return export(null, object, null);
 	}
 
-	public <T extends Metric> ExportBuilder<T> export(String path0, T object)
+	public <T extends Metric> ExportBuilder<T> export(
+		String path0,
+		T object,
+		Function<Export<T>, Export<T>> exportMapper
+	)
 	{
 		return new ExportBuilder<T>()
 		{
@@ -124,7 +126,16 @@ public class VibeImpl
 			@Override
 			public Export<T> done()
 			{
-				return exportObject(path, object);
+				Export<T> result = exportObject(path, object);
+
+				if(exportMapper != null)
+				{
+					return exportMapper.apply(result);
+				}
+				else
+				{
+					return result;
+				}
 			}
 		};
 	}
@@ -132,15 +143,25 @@ public class VibeImpl
 	@Override
 	public void destroy()
 	{
+		// Remove all of the handles
+		for(VibeBackend.Handle handle : exported.values())
+		{
+			handle.remove();
+		}
+
+		// Ask the backends to stop
 		this.backend.close();
+
+		// Clear the exported objects
+		exported.clear();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected <T extends Metric> Export<T> exportObject(String path, T object)
 	{
-		if(! activePaths.add(path))
+		if(exported.containsKey(path))
 		{
-			throw new IllegalArgumentException("path is already registered: " + path);
+			throw new VibeException("path is already registered: " + path);
 		}
 
 		VibeBackend.Handle handle;
@@ -169,8 +190,10 @@ public class VibeImpl
 		}
 		else
 		{
-			throw new IllegalArgumentException("Unsupported type of object: " + object.getClass().getName());
+			throw new VibeException("Unsupported type of object: " + object.getClass().getName());
 		}
+
+		exported.put(path, handle);
 
 		return new Export<T>()
 		{
@@ -184,7 +207,7 @@ public class VibeImpl
 			public void remove()
 			{
 				handle.remove();
-				activePaths.remove(path);
+				exported.remove(path);
 			}
 		};
 	}
