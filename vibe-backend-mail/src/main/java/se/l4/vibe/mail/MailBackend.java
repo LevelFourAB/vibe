@@ -292,7 +292,7 @@ public class MailBackend
 		 * @param email
 		 * @return
 		 */
-		public Builder addRecipient(String email)
+		public Builder withRecipient(String email)
 		{
 			receivers.add(email);
 
