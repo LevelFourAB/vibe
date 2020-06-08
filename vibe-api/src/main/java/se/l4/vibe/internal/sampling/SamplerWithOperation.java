@@ -1,7 +1,6 @@
 package se.l4.vibe.internal.sampling;
 
 import se.l4.vibe.Handle;
-import se.l4.vibe.sampling.AbstractSampler;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleOperation;
 import se.l4.vibe.sampling.Sampler;

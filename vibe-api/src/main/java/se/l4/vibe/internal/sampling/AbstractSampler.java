@@ -1,8 +1,10 @@
-package se.l4.vibe.sampling;
+package se.l4.vibe.internal.sampling;
 
 import se.l4.vibe.Handle;
 import se.l4.vibe.internal.Listeners;
-import se.l4.vibe.internal.sampling.SampleImpl;
+import se.l4.vibe.sampling.Sample;
+import se.l4.vibe.sampling.SampleListener;
+import se.l4.vibe.sampling.Sampler;
 
 /**
  * Abstract implementation of {@link Sampler}.
@@ -40,6 +42,12 @@ public abstract class AbstractSampler<T>
 	public Sample<T> getLastSample()
 	{
 		return lastSample;
+	}
+
+	@Override
+	public Handle start()
+	{
+		return addListener(sample -> {});
 	}
 
 	@Override

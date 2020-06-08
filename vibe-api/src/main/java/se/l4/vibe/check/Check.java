@@ -17,7 +17,23 @@ public interface Check
 	boolean isConditionsMet();
 
 	/**
-	 * Add a listener that will be notified when the status of the trigger
+	 * Explicitly start this check. This allows checks to be active even
+	 * if there are no listeners attached to them.
+	 *
+	 * <p>
+	 * <pre>
+	 * Handle handle = check.start();
+	 *
+	 * // When you're done with the sampler release the handle
+	 * handle.release();
+	 * </pre>
+	 *
+	 * @return
+	 */
+	Handle start();
+
+	/**
+	 * Add a listener that will be notified when the status of the check
 	 * changes.
 	 *
 	 * @param listener
@@ -26,7 +42,7 @@ public interface Check
 	Handle addListener(CheckListener listener);
 
 	/**
-	 * Remove a listener from the trigger.
+	 * Remove a listener from the check.
 	 *
 	 * @param listener
 	 */
@@ -48,7 +64,7 @@ public interface Check
 	interface Builder
 	{
 		/**
-		 * Set the condition for when the trigger based on the value of
+		 * Set the condition for when the check based on the value of
 		 * something being sampled.
 		 *
 		 * @param <I>
@@ -58,7 +74,7 @@ public interface Check
 		<I> SamplerWhenBuilder<I> forSampler(Sampler<I> sampler);
 
 		/**
-		 * Set the condition for when to trigger based on a {@link BooleanSupplier}
+		 * Set the condition for when to check based on a {@link BooleanSupplier}
 		 * that is checked at a certain interval.
 		 *
 		 * @param supplier

@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 import se.l4.vibe.Handle;
 import se.l4.vibe.internal.Scheduling;
-import se.l4.vibe.sampling.AbstractSampler;
 import se.l4.vibe.sampling.SampleOperation;
 import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.sampling.Sampler;

@@ -63,6 +63,12 @@ public class CheckImpl<Input>
 	}
 
 	@Override
+	public Handle start()
+	{
+		return addListener(event -> {});
+	}
+
+	@Override
 	public Handle addListener(CheckListener listener)
 	{
 		return listeners.add(listener);

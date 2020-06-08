@@ -22,6 +22,22 @@ public interface Sampler<T>
 	Sample<T> getLastSample();
 
 	/**
+	 * Explicitly start this sampler. This allows samplers to be active even
+	 * if there are no listeners attached to them.
+	 *
+	 * <p>
+	 * <pre>
+	 * Handle handle = sampler.start();
+	 *
+	 * // When you're done with the sampler release the handle
+	 * handle.release();
+	 * </pre>
+	 *
+	 * @return
+	 */
+	Handle start();
+
+	/**
 	 * Add a listener to this series.
 	 *
 	 * @param listener
