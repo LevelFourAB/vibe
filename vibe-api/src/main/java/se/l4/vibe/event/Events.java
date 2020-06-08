@@ -1,7 +1,7 @@
 package se.l4.vibe.event;
 
 import se.l4.vibe.Exportable;
-import se.l4.vibe.ListenerHandle;
+import se.l4.vibe.Handle;
 import se.l4.vibe.internal.EventsImpl;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
@@ -42,7 +42,7 @@ public interface Events<T>
 	 *
 	 * @param listener
 	 */
-	ListenerHandle addListener(EventListener<T> listener);
+	Handle addListener(EventListener<T> listener);
 
 	/**
 	 * Remove a listener that will receive events.

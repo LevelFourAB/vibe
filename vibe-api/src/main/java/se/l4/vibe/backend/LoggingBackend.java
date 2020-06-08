@@ -3,15 +3,14 @@ package se.l4.vibe.backend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import se.l4.vibe.Handle;
 import se.l4.vibe.Vibe;
 import se.l4.vibe.event.EventListener;
 import se.l4.vibe.event.EventSeverity;
 import se.l4.vibe.event.Events;
-import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListener;
 import se.l4.vibe.sampling.Sampler;
-import se.l4.vibe.timer.Timer;
 
 /**
  * Backed that can log events and samples to a {@link Logger}. Use
@@ -48,15 +47,7 @@ public class LoggingBackend
 		if(! logSamples) return Handle.empty();
 
 		SampleListener listener = new PrintSampleListener(logger, path);
-		series.addListener(listener);
-
-		return () -> series.removeListener(listener);
-	}
-
-	@Override
-	public Handle export(String path, Probe<?> probe)
-	{
-		return Handle.empty();
+		return series.addListener(listener);
 	}
 
 	@Override
@@ -65,15 +56,7 @@ public class LoggingBackend
 		if(! logEvents) return Handle.empty();
 
 		EventListener listener = new PrintEventListener(logger, path);
-		events.addListener(listener);
-
-		return () -> events.removeListener(listener);
-	}
-
-	@Override
-	public Handle export(String path, Timer timer)
-	{
-		return Handle.empty();
+		return events.addListener(listener);
 	}
 
 	public static Builder builder()

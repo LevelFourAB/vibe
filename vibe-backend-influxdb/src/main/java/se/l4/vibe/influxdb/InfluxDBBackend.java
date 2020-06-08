@@ -20,7 +20,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import se.l4.vibe.ListenerHandle;
+import se.l4.vibe.Handle;
 import se.l4.vibe.backend.VibeBackend;
 import se.l4.vibe.event.EventListener;
 import se.l4.vibe.event.EventSeverity;
@@ -29,7 +29,6 @@ import se.l4.vibe.influxdb.internal.DataPoint;
 import se.l4.vibe.influxdb.internal.DataQueue;
 import se.l4.vibe.mapping.KeyValueMappable;
 import se.l4.vibe.mapping.KeyValueReceiver;
-import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListener;
 import se.l4.vibe.sampling.Sampler;
@@ -127,29 +126,20 @@ public class InfluxDBBackend
 	@Override
 	public Handle export(String path, Sampler<?> sampler)
 	{
-		ListenerHandle handle = ((Sampler) sampler).addListener(new SampleQueuer(path));
-		return handle::remove;
-	}
-
-	@Override
-	public Handle export(String path, Probe<?> probe)
-	{
-		return Handle.empty();
+		return ((Sampler) sampler).addListener(new SampleQueuer(path));
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Handle export(String path, Events<?> events)
 	{
-		ListenerHandle handle = ((Events) events).addListener(new EventQueuer(path));
-		return handle::remove;
+		return ((Events) events).addListener(new EventQueuer(path));
 	}
 
 	@Override
 	public Handle export(String path, Timer timer)
 	{
-		ListenerHandle handle = timer.addListener(new TimerQueuer(path));
-		return handle::remove;
+		return timer.addListener(new TimerQueuer(path));
 	}
 
 	@Override

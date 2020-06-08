@@ -3,7 +3,7 @@ package se.l4.vibe.sampling;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-import se.l4.vibe.ListenerHandle;
+import se.l4.vibe.Handle;
 import se.l4.vibe.internal.sampling.SamplerImpl;
 import se.l4.vibe.internal.sampling.SamplerWithOperation;
 import se.l4.vibe.probes.Probe;
@@ -26,7 +26,7 @@ public interface Sampler<T>
 	 *
 	 * @param listener
 	 */
-	ListenerHandle addListener(SampleListener<T> listener);
+	Handle addListener(SampleListener<T> listener);
 
 	/**
 	 * Remove a listener from this series.

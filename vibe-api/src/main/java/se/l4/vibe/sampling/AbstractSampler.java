@@ -1,7 +1,7 @@
 package se.l4.vibe.sampling;
 
-import se.l4.vibe.ListenerHandle;
-import se.l4.vibe.Listeners;
+import se.l4.vibe.Handle;
+import se.l4.vibe.internal.Listeners;
 import se.l4.vibe.internal.sampling.SampleImpl;
 
 /**
@@ -43,7 +43,7 @@ public abstract class AbstractSampler<T>
 	}
 
 	@Override
-	public ListenerHandle addListener(SampleListener<T> listener)
+	public Handle addListener(SampleListener<T> listener)
 	{
 		return listeners.add(listener);
 	}

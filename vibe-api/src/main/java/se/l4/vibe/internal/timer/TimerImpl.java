@@ -3,8 +3,8 @@ package se.l4.vibe.internal.timer;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
-import se.l4.vibe.ListenerHandle;
-import se.l4.vibe.Listeners;
+import se.l4.vibe.Handle;
+import se.l4.vibe.internal.Listeners;
 import se.l4.vibe.percentile.BucketPercentileCounter;
 import se.l4.vibe.percentile.FakePercentileCounter;
 import se.l4.vibe.percentile.PercentileCounter;
@@ -41,7 +41,7 @@ public class TimerImpl
 	}
 
 	@Override
-	public ListenerHandle addListener(TimerListener listener)
+	public Handle addListener(TimerListener listener)
 	{
 		return listeners.add(listener);
 	}

@@ -1,6 +1,6 @@
 package se.l4.vibe.internal.sampling;
 
-import se.l4.vibe.ListenerHandle;
+import se.l4.vibe.Handle;
 import se.l4.vibe.sampling.AbstractSampler;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleOperation;
@@ -18,7 +18,7 @@ public class SamplerWithOperation<I, O>
 	private final Sampler<I> input;
 	private final SampleOperation<I, O> modifier;
 
-	private ListenerHandle listenerHandle;
+	private Handle listenerHandle;
 
 	public SamplerWithOperation(
 		Sampler<I> input,
@@ -50,6 +50,6 @@ public class SamplerWithOperation<I, O>
 	@Override
 	protected void stopSampling()
 	{
-		listenerHandle.remove();
+		listenerHandle.release();
 	}
 }

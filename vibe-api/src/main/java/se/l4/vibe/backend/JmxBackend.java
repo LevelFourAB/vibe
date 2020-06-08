@@ -11,7 +11,7 @@ import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
-import se.l4.vibe.ListenerHandle;
+import se.l4.vibe.Handle;
 import se.l4.vibe.internal.jmx.ExportMBeanBridge;
 import se.l4.vibe.internal.jmx.JmxExport;
 import se.l4.vibe.internal.jmx.ProbeBean;
@@ -138,12 +138,12 @@ public class JmxBackend
 		 * Add a listener - doesn't actually do anything other than to activate
 		 * sampling.
 		 */
-		ListenerHandle h1 = series.addListener(sample -> {});
+		Handle h1 = series.addListener(sample -> {});
 		Handle h2 = export0(path, new ProbeBean(series));
 
 		return () -> {
-			h1.remove();
-			h2.remove();
+			h1.release();
+			h2.release();
 		};
 	}
 

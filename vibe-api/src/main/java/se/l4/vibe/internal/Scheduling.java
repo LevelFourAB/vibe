@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import se.l4.vibe.ListenerHandle;
+import se.l4.vibe.Handle;
 
 /**
  * Internal class for scheduling things in Vibe. Will manage a small executor
@@ -53,7 +53,7 @@ public class Scheduling
 		executor = null;
 	}
 
-	public static ListenerHandle scheduleSampling(long sampleIntervalInMs, Runnable action)
+	public static Handle scheduleSampling(long sampleIntervalInMs, Runnable action)
 	{
 		if(executor == null)
 		{

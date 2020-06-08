@@ -3,8 +3,7 @@ package se.l4.vibe.internal;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
-import se.l4.vibe.ListenerHandle;
-import se.l4.vibe.Listeners;
+import se.l4.vibe.Handle;
 import se.l4.vibe.event.EventListener;
 import se.l4.vibe.event.EventSeverity;
 import se.l4.vibe.event.Events;
@@ -52,7 +51,7 @@ public class EventsImpl<T>
 	}
 
 	@Override
-	public ListenerHandle addListener(EventListener<T> listener)
+	public Handle addListener(EventListener<T> listener)
 	{
 		return listeners.add(listener);
 	}

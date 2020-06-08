@@ -11,6 +11,7 @@ import java.util.function.Function;
 import se.l4.vibe.Export;
 import se.l4.vibe.ExportBuilder;
 import se.l4.vibe.Exportable;
+import se.l4.vibe.Handle;
 import se.l4.vibe.Vibe;
 import se.l4.vibe.VibeException;
 import se.l4.vibe.VibePaths;
@@ -28,7 +29,7 @@ import se.l4.vibe.timer.Timer;
 public class VibeImpl
 	implements Vibe
 {
-	private final Map<String, VibeBackend.Handle> exported;
+	private final Map<String, Handle> exported;
 	private final VibeBackend backend;
 
 	/**
@@ -106,9 +107,9 @@ public class VibeImpl
 	public void destroy()
 	{
 		// Remove all of the handles
-		for(VibeBackend.Handle handle : exported.values())
+		for(Handle handle : exported.values())
 		{
-			handle.remove();
+			handle.release();
 		}
 
 		// Ask the backends to stop
@@ -126,7 +127,7 @@ public class VibeImpl
 			throw new VibeException("path is already registered: " + path);
 		}
 
-		VibeBackend.Handle handle;
+		Handle handle;
 		if(object instanceof Sampler)
 		{
 			handle = backend.export(path, (Sampler) object);
@@ -168,7 +169,7 @@ public class VibeImpl
 			@Override
 			public void remove()
 			{
-				handle.remove();
+				handle.release();
 				exported.remove(path);
 			}
 		};

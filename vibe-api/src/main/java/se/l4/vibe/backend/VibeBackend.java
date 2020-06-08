@@ -1,5 +1,6 @@
 package se.l4.vibe.backend;
 
+import se.l4.vibe.Handle;
 import se.l4.vibe.Vibe;
 import se.l4.vibe.event.Events;
 import se.l4.vibe.probes.Probe;
@@ -59,18 +60,4 @@ public interface VibeBackend
 	 * Release any resources held by this backend.
 	 */
 	void close();
-
-	/**
-	 * Handle used to remove something that has been exported.
-	 */
-	@FunctionalInterface
-	interface Handle
-	{
-		void remove();
-
-		static Handle empty()
-		{
-			return () -> {};
-		}
-	}
 }

@@ -1,7 +1,7 @@
 package se.l4.vibe.timer;
 
 import se.l4.vibe.Exportable;
-import se.l4.vibe.ListenerHandle;
+import se.l4.vibe.Handle;
 import se.l4.vibe.internal.timer.TimerImpl;
 import se.l4.vibe.percentile.PercentileCounter;
 import se.l4.vibe.sampling.SampledProbe;
@@ -22,7 +22,7 @@ public interface Timer
 	 *
 	 * @param listener
 	 */
-	ListenerHandle addListener(TimerListener listener);
+	Handle addListener(TimerListener listener);
 
 	/**
 	 * Remove a previously added listener.

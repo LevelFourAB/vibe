@@ -1,8 +1,10 @@
-package se.l4.vibe;
+package se.l4.vibe.internal;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
+
+import se.l4.vibe.Handle;
 
 public class Listeners<T>
 {
@@ -31,7 +33,7 @@ public class Listeners<T>
 		return listeners.length;
 	}
 
-	public ListenerHandle add(T listener)
+	public Handle add(T listener)
 	{
 		listenersLock.lock();
 		try

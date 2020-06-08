@@ -7,8 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 
-import se.l4.vibe.ListenerHandle;
-import se.l4.vibe.Listeners;
+import se.l4.vibe.Handle;
 import se.l4.vibe.check.Check;
 import se.l4.vibe.check.CheckEvent;
 import se.l4.vibe.check.CheckListener;
@@ -27,7 +26,7 @@ public class CheckImpl<Input>
 	private final RepetitionGuard metRepetitionGuard;
 	private final RepetitionGuard unmetRepetitionGuard;
 
-	private ListenerHandle listenerHandle;
+	private Handle listenerHandle;
 
 	private boolean isConditionsMet;
 	private Instant lastConditionsChange;
@@ -51,7 +50,7 @@ public class CheckImpl<Input>
 			}
 			else if(size == 0)
 			{
-				listenerHandle.remove();
+				listenerHandle.release();
 			}
 		});
 	}
@@ -64,7 +63,7 @@ public class CheckImpl<Input>
 	}
 
 	@Override
-	public ListenerHandle addListener(CheckListener listener)
+	public Handle addListener(CheckListener listener)
 	{
 		return listeners.add(listener);
 	}

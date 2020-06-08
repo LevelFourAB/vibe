@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import se.l4.vibe.ListenerHandle;
+import se.l4.vibe.Handle;
 import se.l4.vibe.internal.Scheduling;
 import se.l4.vibe.sampling.AbstractSampler;
 import se.l4.vibe.sampling.SampleOperation;
@@ -18,7 +18,7 @@ public class SamplerImpl<T>
 	private final long intervalTime;
 	private final SampledProbe<T> probe;
 
-	private ListenerHandle handle;
+	private Handle handle;
 
 	public SamplerImpl(
 		SampledProbe<T> probe,
@@ -50,7 +50,7 @@ public class SamplerImpl<T>
 	@Override
 	protected void stopSampling()
 	{
-		handle.remove();
+		handle.release();
 	}
 
 	public static class BuilderImpl<T>

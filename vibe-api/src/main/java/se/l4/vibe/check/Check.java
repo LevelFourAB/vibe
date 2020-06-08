@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 
-import se.l4.vibe.ListenerHandle;
+import se.l4.vibe.Handle;
 import se.l4.vibe.internal.CheckImpl;
 import se.l4.vibe.sampling.SampleOperation;
 import se.l4.vibe.sampling.Sampler;
@@ -23,7 +23,7 @@ public interface Check
 	 * @param listener
 	 * @return
 	 */
-	ListenerHandle addListener(CheckListener listener);
+	Handle addListener(CheckListener listener);
 
 	/**
 	 * Remove a listener from the trigger.

@@ -9,6 +9,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.PasswordAuthentication;
@@ -16,7 +19,7 @@ import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import se.l4.vibe.ListenerHandle;
+import se.l4.vibe.Handle;
 import se.l4.vibe.backend.VibeBackend;
 import se.l4.vibe.event.EventListener;
 import se.l4.vibe.event.EventSeverity;
@@ -31,6 +34,8 @@ import se.l4.vibe.event.Events;
 public class MailBackend
 	implements VibeBackend
 {
+	private static final Logger LOG = LoggerFactory.getLogger(MailBackend.class);
+
 	private final EventSeverity minimumSeverity;
 
 	private final ExecutorService executor;
@@ -154,7 +159,7 @@ public class MailBackend
 	@Override
 	public Handle export(final String path, Events<?> events)
 	{
-		ListenerHandle handle = events.addListener(new EventListener()
+		return events.addListener(new EventListener()
 		{
 			@Override
 			public void eventRegistered(Events events,
@@ -178,15 +183,12 @@ public class MailBackend
 						}
 						catch(MessagingException e)
 						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							LOG.warn("Could not send e-mail for event; " + e.getMessage(), e);
 						}
 					}
 				});
 			}
 		});
-
-		return handle::remove;
 	}
 
 	@Override
