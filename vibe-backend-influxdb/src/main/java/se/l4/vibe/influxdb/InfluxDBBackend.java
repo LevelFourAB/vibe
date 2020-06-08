@@ -3,6 +3,7 @@ package se.l4.vibe.influxdb;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,14 +58,27 @@ public class InfluxDBBackend
 
 	private final ScheduledExecutorService executor;
 
-	private InfluxDBBackend(String url, String username, String password, String db, Map<String, String> tags)
+	private InfluxDBBackend(
+		String url,
+		String username,
+		String password,
+		Map<String, String> params,
+		Map<String, String> tags
+	)
 	{
 		this.tags = tags;
 		client = new OkHttpClient();
 
-		this.url = HttpUrl.parse(url).newBuilder()
-			.addPathSegment("write")
-			.addQueryParameter("db", db)
+		HttpUrl.Builder builder = HttpUrl.parse(url)
+			.newBuilder()
+			.addPathSegment("write");
+
+		for(Map.Entry<String, String> e : params.entrySet())
+		{
+			builder = builder.addQueryParameter(e.getKey(), e.getValue());
+		}
+
+		this.url = builder
 			.addQueryParameter("precision", "ms")
 			.build()
 			.toString();
@@ -263,6 +278,11 @@ public class InfluxDBBackend
 		}
 	}
 
+	public static Builder builder()
+	{
+		return new Builder();
+	}
+
 	public static class Builder
 	{
 		private final Map<String, String> tags;
@@ -271,7 +291,7 @@ public class InfluxDBBackend
 		private String username;
 		private String password;
 
-		private String db;
+		private Map<String, String> queryParams;
 
 		public Builder()
 		{
@@ -304,9 +324,29 @@ public class InfluxDBBackend
 			return this;
 		}
 
-		public Builder setDatabase(String db)
+		/**
+		 * Setup this backend for use with the InfluxDB 1.x series.
+		 *
+		 * @return
+		 */
+		public InfluxDB1 v1()
 		{
-			this.db = db;
+			return new InfluxDB1(this::receiveParams);
+		}
+
+		/**
+		 * Setup this backend for use with the InfluxDB 2.x series.
+		 *
+		 * @return
+		 */
+		public InfluxDB2 v2()
+		{
+			return new InfluxDB2(this::receiveParams);
+		}
+
+		protected Builder receiveParams(Map<String, String> params)
+		{
+			this.queryParams = params;
 			return this;
 		}
 
@@ -319,7 +359,7 @@ public class InfluxDBBackend
 		 * @param value
 		 * @return
 		 */
-		public Builder addTag(String key, String value)
+		public Builder withTag(String key, String value)
 		{
 			tags.put(key, value);
 			return this;
@@ -333,13 +373,73 @@ public class InfluxDBBackend
 		public VibeBackend build()
 		{
 			Objects.requireNonNull(url, "URL to InfluxDB is required");
-			Objects.requireNonNull(db, "Database to use is required");
-			return new InfluxDBBackend(url, username, password, db, tags);
+			Objects.requireNonNull(queryParams, "V1 or V2 must be selected");
+			return new InfluxDBBackend(url, username, password, queryParams, tags);
 		}
 	}
 
-	public static Builder builder()
+	public static class InfluxDB1
 	{
-		return new Builder();
+		private final Function<Map<String, String>, Builder> resultReceiver;
+
+		private String database;
+
+		public InfluxDB1(
+			Function<Map<String, String>, Builder> resultReceiver
+		)
+		{
+			this.resultReceiver = resultReceiver;
+		}
+
+		public InfluxDB1 setDatabase(String database)
+		{
+			this.database = database;
+			return this;
+		}
+
+		public Builder build()
+		{
+			Objects.requireNonNull(database, "database must be set");
+
+			return resultReceiver.apply(Collections.singletonMap("db", database));
+		}
+	}
+
+	public static class InfluxDB2
+	{
+		private final Function<Map<String, String>, Builder> resultReceiver;
+
+		private String bucket;
+		private String organization;
+
+		public InfluxDB2(
+			Function<Map<String, String>, Builder> resultReceiver
+		)
+		{
+			this.resultReceiver = resultReceiver;
+		}
+
+		public InfluxDB2 setBucket(String bucket)
+		{
+			this.bucket = bucket;
+			return this;
+		}
+
+		public InfluxDB2 setOrganization(String organization)
+		{
+			this.organization = organization;
+			return this;
+		}
+
+		public Builder build()
+		{
+			Objects.requireNonNull(bucket, "bucket must be set");
+			Objects.requireNonNull(organization, "organization must be set");
+
+			return resultReceiver.apply(Map.of(
+				"bucket", bucket,
+				"org", organization
+			));
+		}
 	}
 }
