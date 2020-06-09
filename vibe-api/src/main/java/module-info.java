@@ -3,7 +3,6 @@ module se.l4.vibe {
 	requires transitive org.slf4j;
 
 	exports se.l4.vibe;
-	exports se.l4.vibe.backend;
 
 	exports se.l4.vibe.checks;
 	exports se.l4.vibe.events;
