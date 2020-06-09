@@ -178,7 +178,7 @@ public class JmxBackend
 			server = ManagementFactory.getPlatformMBeanServer();
 		}
 
-		public Builder setName(String name)
+		public Builder withName(String name)
 		{
 			Objects.requireNonNull(name, "name can not be null");
 
@@ -186,7 +186,7 @@ public class JmxBackend
 			return this;
 		}
 
-		public Builder setServer(MBeanServer server)
+		public Builder withServer(MBeanServer server)
 		{
 			Objects.requireNonNull(server, "server can not be null");
 
