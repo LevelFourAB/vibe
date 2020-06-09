@@ -185,7 +185,7 @@ public class VibeImpl
 		}
 
 		@Override
-		public Builder withBackend(VibeBackend backend)
+		public Builder addBackend(VibeBackend backend)
 		{
 			Objects.requireNonNull(backend, "backend must not be null");
 

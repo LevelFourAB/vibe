@@ -21,11 +21,11 @@ public class SamplerExample
 		throws IOException
 	{
 		Vibe vibe = Vibe.builder()
-			.withBackend(LoggingBackend.builder()
+			.addBackend(LoggingBackend.builder()
 				.logSamples()
 				.build()
 			)
-			.withBackend(JmxBackend.builder().build())
+			.addBackend(JmxBackend.builder().build())
 			.build();
 
 		/*

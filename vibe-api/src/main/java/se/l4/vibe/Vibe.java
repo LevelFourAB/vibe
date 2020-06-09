@@ -53,7 +53,7 @@ public interface Vibe
 		 * @param backend
 		 * @return
 		 */
-		Builder withBackend(VibeBackend backend);
+		Builder addBackend(VibeBackend backend);
 
 		/**
 		 * Build the instance.

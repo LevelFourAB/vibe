@@ -24,12 +24,12 @@ public class TrackEventsExample
 		throws IOException
 	{
 		Vibe vibe = Vibe.builder()
-			.withBackend(LoggingBackend.builder()
+			.addBackend(LoggingBackend.builder()
 				.logSamples()
 				.logEvents()
 				.build()
 			)
-			.withBackend(JmxBackend.builder().build())
+			.addBackend(JmxBackend.builder().build())
 			.build();
 
 		// The events object used to send the events

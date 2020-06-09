@@ -27,7 +27,7 @@ public class VibeTest
 	{
 		backend = new TestBackend();
 		vibe = Vibe.builder()
-			.withBackend(backend)
+			.addBackend(backend)
 			.build();
 	}
 
