@@ -17,7 +17,7 @@ import se.l4.vibe.VibeException;
 import se.l4.vibe.VibePaths;
 import se.l4.vibe.backend.MergedBackend;
 import se.l4.vibe.backend.VibeBackend;
-import se.l4.vibe.event.Events;
+import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.sampling.Sampler;

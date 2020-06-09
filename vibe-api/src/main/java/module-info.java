@@ -6,7 +6,7 @@ module se.l4.vibe {
 	exports se.l4.vibe.backend;
 
 	exports se.l4.vibe.check;
-	exports se.l4.vibe.event;
+	exports se.l4.vibe.events;
 	exports se.l4.vibe.mapping;
 	exports se.l4.vibe.operations;
 	exports se.l4.vibe.percentile;

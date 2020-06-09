@@ -1,4 +1,4 @@
-package se.l4.vibe.event;
+package se.l4.vibe.events;
 
 /**
  * Different levels of severity for events.

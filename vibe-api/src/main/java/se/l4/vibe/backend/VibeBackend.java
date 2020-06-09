@@ -2,7 +2,7 @@ package se.l4.vibe.backend;
 
 import se.l4.vibe.Handle;
 import se.l4.vibe.Vibe;
-import se.l4.vibe.event.Events;
+import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.timer.Timer;

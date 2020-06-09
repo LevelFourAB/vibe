@@ -1,4 +1,4 @@
-package se.l4.vibe.event;
+package se.l4.vibe.events;
 
 import se.l4.vibe.Exportable;
 import se.l4.vibe.Handle;

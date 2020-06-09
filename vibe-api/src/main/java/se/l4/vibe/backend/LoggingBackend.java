@@ -5,9 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import se.l4.vibe.Handle;
 import se.l4.vibe.Vibe;
-import se.l4.vibe.event.EventListener;
-import se.l4.vibe.event.EventSeverity;
-import se.l4.vibe.event.Events;
+import se.l4.vibe.events.EventListener;
+import se.l4.vibe.events.EventSeverity;
+import se.l4.vibe.events.Events;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListener;
 import se.l4.vibe.sampling.Sampler;

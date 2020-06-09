@@ -7,8 +7,8 @@ import java.io.InputStreamReader;
 import se.l4.vibe.Vibe;
 import se.l4.vibe.backend.JmxBackend;
 import se.l4.vibe.backend.LoggingBackend;
-import se.l4.vibe.event.EventSeverity;
-import se.l4.vibe.event.Events;
+import se.l4.vibe.events.EventSeverity;
+import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.Sampler;
 

@@ -3,7 +3,7 @@ package se.l4.vibe.backend;
 import java.util.Arrays;
 
 import se.l4.vibe.Handle;
-import se.l4.vibe.event.Events;
+import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.timer.Timer;

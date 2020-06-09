@@ -4,9 +4,9 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 import se.l4.vibe.Handle;
-import se.l4.vibe.event.EventListener;
-import se.l4.vibe.event.EventSeverity;
-import se.l4.vibe.event.Events;
+import se.l4.vibe.events.EventListener;
+import se.l4.vibe.events.EventSeverity;
+import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
 
