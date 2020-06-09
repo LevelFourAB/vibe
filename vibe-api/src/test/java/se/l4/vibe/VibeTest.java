@@ -1,5 +1,6 @@
 package se.l4.vibe;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -14,6 +15,7 @@ import org.junit.Test;
 
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
+import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.timers.Timer;
 
@@ -64,6 +66,22 @@ public class VibeTest
 			.done();
 
 		assertThat(backend.get("sampler"), is(sampler));
+
+		export.remove();
+
+		assertThat(backend.get("sampler"), is(nullValue()));
+	}
+
+	@Test
+	public void testExportSampledProbe()
+	{
+		SampledProbe<Double> probe = () -> ThreadLocalRandom.current().nextDouble();
+
+		Export<?> export = vibe.export(probe)
+			.at("sampler")
+			.done();
+
+		assertThat(backend.get("sampler"), is(instanceOf(Sampler.class)));
 
 		export.remove();
 

@@ -1,5 +1,6 @@
 package se.l4.vibe.sampling;
 
+import se.l4.vibe.Exportable;
 import se.l4.vibe.internal.MergedProbes;
 import se.l4.vibe.mapping.KeyValueMap;
 import se.l4.vibe.probes.Probe;
@@ -10,6 +11,7 @@ import se.l4.vibe.probes.Probe;
  * @param <T>
  */
 public interface SampledProbe<T>
+	extends Exportable
 {
 	/**
 	 * Sample the current value and optionally reset the probe.
