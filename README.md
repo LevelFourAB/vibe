@@ -113,7 +113,7 @@ Example:
 
 ```java
 Sampler<?> sampler = Sampler.forProbe(sampledProbe)
-  .setInterval(Duration.ofMinutes(1))
+  .withInterval(Duration.ofMinutes(1))
   .build();
 ```
 
@@ -151,7 +151,7 @@ InfluxDB server.
 
 ```java
 Events<UnauthorizedAccess> events = Events.<UnauthorizedAccess>builder()
-  .setSeverity(EventSeverity.WARN)
+  .withSeverity(EventSeverity.WARN)
   .create();
 
 events.register(new UnauthorizedAccess(someImportantInfo));
@@ -207,13 +207,14 @@ met.
 
 ## Timing calls
 
-Vibe supports timing of actions, such as monitoring the time it takes for your application to handle a request.
+Vibe supports timing of actions, such as monitoring the time it takes for your
+application to handle a request.
 
 To create a timer:
 
 ```java
 Timer timer = Timer.builder()
-  .setBuckets(0, 50, 100, 200, 500, 1000) // for calculating percentiles
+  .withBuckets(0, 50, 100, 200, 500, 1000) // for calculating percentiles
   .export();
 ```
 
@@ -276,10 +277,10 @@ Build a backend with the builder:
 
 ```java
 MailBackend backend = MailBackend.builder()
-  .setSender("system@example.org")
-  .setSmtpServer("smtp.example.org")
-  .setSubject("{severity} event for {path}")
-  .setMinimumSeverity(EventSeverity.WARN)
+  .withSender("system@example.org")
+  .withSmtpServer("smtp.example.org")
+  .withSubject("{severity} event for {path}")
+  .withMinimumSeverity(EventSeverity.WARN)
   .addRecipient("sysadmin@example.org")
   .build();
 ```
@@ -298,12 +299,30 @@ Dependency:
 </dependency>
 ``` 
 
+For InfluxDB 1.x:
+
 ```java
 VibeBackend backed = InfluxDBBackend.builder()
-  .setUrl("http://localhost:8086")
-  .setDatabase("metrics")
-  .setAuthentication("user", "password")
+  .withUrl("http://localhost:8086")
+  .withAuthentication("user", "password")
   .addTag("host", "server-1")
+  .v1()
+    .withDatabase("metrics")
+    .done()
+  .build();
+```
+
+For InfluxDB 2.x:
+
+```java
+VibeBackend backed = InfluxDBBackend.builder()
+  .withUrl("http://localhost:9999")
+  .withAuthentication("user", "password")
+  .addTag("host", "server-1")
+  .v2()
+    .withBucket("metrics")
+    .withOrganization("org")
+    .done()
   .build();
 ```
 
