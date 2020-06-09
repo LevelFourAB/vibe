@@ -4,6 +4,7 @@ import se.l4.vibe.Exportable;
 import se.l4.vibe.internal.MergedProbes;
 import se.l4.vibe.mapping.KeyValueMap;
 import se.l4.vibe.probes.Probe;
+import se.l4.vibe.probes.ProbeOperation;
 
 /**
  * Probe that measures a value that requires sampling to be read.
@@ -19,6 +20,24 @@ public interface SampledProbe<T>
 	 * @return
 	 */
 	T sample();
+
+	/**
+	 * Create a new probe that applies the given operation to the value of this
+	 * probe.
+	 *
+	 * @param <O>
+	 * @param operation
+	 *   operation to apply
+	 * @return
+	 *   new probe
+	 */
+	default <O> SampledProbe<O> apply(ProbeOperation<T, O> operation)
+	{
+		return () -> {
+			T value = this.sample();
+			return operation.apply(value);
+		};
+	}
 
 	/**
 	 * Create a {@link SampledProbe} by reading values from a {@link Probe}.
