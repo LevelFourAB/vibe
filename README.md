@@ -13,8 +13,12 @@ Licensed under Apache 2.0.
  * JMX.
  */
 Vibe vibe = Vibe.builder()
-  .withBackend(LoggingBackend.logSamples().build())
-  .withBackend(JmxBackend.builder().build())
+  .withBackend(
+    LoggingBackend.builder().logSamples().build()
+  )
+  .withBackend(
+    JmxBackend.builder().build()
+  )
   .build();
 
 /*
@@ -22,8 +26,7 @@ Vibe vibe = Vibe.builder()
  * The logging backend will log the value every minute and it will be available
  * over JMX.
  */
-vibe
-  .export(JvmProbes.cpuUsage())
+vibe.export(JvmProbes.cpuUsage())
   .at("jvm", "cpu")
   .done();
 ```
@@ -238,8 +241,12 @@ Create an instance of Vibe:
 
 ```java
 Vibe vibe = Vibe.builder()
-  .withBackend(LoggingBackend.logSamples().build())
-  .withBackend(JmxBackend.builder().build())
+  .withBackend(
+    LoggingBackend.builder().logSamples().build()
+  )
+  .withBackend(
+    JmxBackend.builder().build()
+  )
   .build();
 ```
 
