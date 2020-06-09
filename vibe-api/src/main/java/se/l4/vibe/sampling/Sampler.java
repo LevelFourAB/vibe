@@ -85,7 +85,7 @@ public interface Sampler<T>
 		 * @param unit
 		 * @return
 		 */
-		Builder<T> setInterval(long time, TimeUnit unit);
+		Builder<T> withInterval(long time, TimeUnit unit);
 
 		/**
 		 * Set how often the probe should be sampled.
@@ -93,7 +93,7 @@ public interface Sampler<T>
 		 * @param time
 		 * @return
 		 */
-		Builder<T> setInterval(Duration time);
+		Builder<T> withInterval(Duration time);
 
 		/**
 		 * Apply the given operation to the probe.

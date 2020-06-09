@@ -257,7 +257,7 @@ public class CheckImpl<Input>
 		public Builder done()
 		{
 			Sampler<Boolean> sampler = Sampler.forProbe(supplier::getAsBoolean)
-				.setInterval(checkInterval)
+				.withInterval(checkInterval)
 				.build();
 
 			Condition<Boolean> condition = v -> v;

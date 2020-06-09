@@ -32,7 +32,7 @@ public class SamplerExample
 		 * Sample and export JVM CPU usage.
 		 */
 		Sampler<Double> cpuUsage = Sampler.forProbe(JvmProbes.cpuUsage())
-			.setInterval(Duration.ofSeconds(1))
+			.withInterval(Duration.ofSeconds(1))
 			.build();
 
 		vibe.export(cpuUsage)

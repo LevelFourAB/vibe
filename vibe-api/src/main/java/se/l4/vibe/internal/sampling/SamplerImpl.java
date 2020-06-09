@@ -68,14 +68,14 @@ public class SamplerImpl<T>
 		}
 
 		@Override
-		public Builder<T> setInterval(long time, TimeUnit unit)
+		public Builder<T> withInterval(long time, TimeUnit unit)
 		{
 			this.interval = unit.toMillis(time);
 			return this;
 		}
 
 		@Override
-		public Builder<T> setInterval(Duration time)
+		public Builder<T> withInterval(Duration time)
 		{
 			this.interval = time.toMillis();
 			return this;
