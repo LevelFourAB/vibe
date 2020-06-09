@@ -39,6 +39,17 @@ import se.l4.vibe.timers.TimerListener;
 
 /**
  * {@link VibeBackend Backend} that sends data to InfluxDB.
+ *
+ * <pre>
+ * VibeBackend backed = InfluxDBBackend.builder()
+ *   .setUrl("http://localhost:8086")
+ *   .setAuthentication("user", "password")
+ *   .withTag("host", "server-1")
+ *   .v1()
+ *     .setDatabase("metrics")
+ *     .done()
+ *   .build();
+ * </pre>
  */
 public class InfluxDBBackend
 	implements VibeBackend
@@ -298,7 +309,7 @@ public class InfluxDBBackend
 		 * @param url
 		 * @return
 		 */
-		public Builder setUrl(String url)
+		public Builder withUrl(String url)
 		{
 			this.url = url;
 			return this;
@@ -311,7 +322,7 @@ public class InfluxDBBackend
 		 * @param password
 		 * @return
 		 */
-		public Builder setAuthentication(String username, String password)
+		public Builder withAuthentication(String username, String password)
 		{
 			this.username = username;
 			this.password = password;
@@ -353,7 +364,7 @@ public class InfluxDBBackend
 		 * @param value
 		 * @return
 		 */
-		public Builder withTag(String key, String value)
+		public Builder addTag(String key, String value)
 		{
 			tags.put(key, value);
 			return this;
@@ -385,7 +396,7 @@ public class InfluxDBBackend
 			this.resultReceiver = resultReceiver;
 		}
 
-		public InfluxDB1 setDatabase(String database)
+		public InfluxDB1 withDatabase(String database)
 		{
 			this.database = database;
 			return this;
@@ -413,13 +424,13 @@ public class InfluxDBBackend
 			this.resultReceiver = resultReceiver;
 		}
 
-		public InfluxDB2 setBucket(String bucket)
+		public InfluxDB2 withBucket(String bucket)
 		{
 			this.bucket = bucket;
 			return this;
 		}
 
-		public InfluxDB2 setOrganization(String organization)
+		public InfluxDB2 withOrganization(String organization)
 		{
 			this.organization = organization;
 			return this;
