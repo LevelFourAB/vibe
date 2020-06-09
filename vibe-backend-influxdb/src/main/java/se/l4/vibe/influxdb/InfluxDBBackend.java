@@ -188,16 +188,7 @@ public class InfluxDBBackend
 		{
 			Object value = sample.getValue();
 			Map<String, Object> values = new HashMap<>();
-			KeyValueReceiver receiver = (key, v) -> {
-				if((v instanceof Double && Double.isNaN((Double) v))
-					|| (v instanceof Float && Float.isNaN((Float) v)))
-				{
-					// Skip NaN values
-					return;
-				}
-
-				values.put(key, v);
-			};
+			KeyValueReceiver receiver = createReceiver(values);
 
 			if(value instanceof KeyValueMappable)
 			{
@@ -253,16 +244,8 @@ public class InfluxDBBackend
 			long time = System.currentTimeMillis();
 			Map<String, Object> values = new HashMap<>();
 			values.put("severity", severity);
-			KeyValueReceiver receiver = (key, v) -> {
-				if((v instanceof Double && Double.isNaN((Double) v))
-					|| (v instanceof Float && Float.isNaN((Float) v)))
-				{
-					// Skip NaN values
-					return;
-				}
 
-				values.put(key, v);
-			};
+			KeyValueReceiver receiver = createReceiver(values);
 
 			if(event instanceof KeyValueMappable)
 			{
@@ -276,6 +259,20 @@ public class InfluxDBBackend
 			DataPoint point = new DataPoint(path, time, tags, values);
 			queue.add(point);
 		}
+	}
+
+	protected KeyValueReceiver createReceiver(Map<String, Object> values)
+	{
+		return (key, v) -> {
+			if((v instanceof Double && Double.isNaN((Double) v))
+				|| (v instanceof Float && Float.isNaN((Float) v)))
+			{
+				// Skip NaN values
+				return;
+			}
+
+			values.put(key, v);
+		};
 	}
 
 	public static Builder builder()
