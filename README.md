@@ -224,11 +224,8 @@ Timer timer = Timer.builder()
 To use a timer:
 
 ```java
-Stopwatch stopwatch = timer.start();
-try {
+try(Stopwatch stopwatch = timer.start()) {
   // Code to measure here
-} finally {
-  stopwatch.stop();
 }
 ```
 

@@ -57,22 +57,17 @@ public class TimerImpl
 	@Override
 	public Stopwatch start()
 	{
-		final long time = time();
-		return new Stopwatch()
-		{
-			@Override
-			public void stop()
-			{
-				long now = time();
-				long nowInMs = System.currentTimeMillis();
+		long time = time();
+		return () -> {
+			long now = time();
+			long nowInMs = System.currentTimeMillis();
 
-				long total = now - time;
-				counter.add(total);
-				min.updateAndGet(c -> c > total ? total : c);
-				max.updateAndGet(c -> c < total ? total : c);
+			long total = now - time;
+			counter.add(total);
+			min.updateAndGet(c -> c > total ? total : c);
+			max.updateAndGet(c -> c < total ? total : c);
 
-				listeners.forEach(l -> l.timerEvent(nowInMs, total));
-			}
+			listeners.forEach(l -> l.timerEvent(nowInMs, total));
 		};
 	}
 
