@@ -27,9 +27,6 @@ import se.l4.vibe.VibeException;
  *   <li>401-500</li>
  *   <li>501-*</li>
  * </ol>
- *
- * @author Andreas Holstenson
- *
  */
 public class BucketPercentileCounter
 	implements PercentileCounter

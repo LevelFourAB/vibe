@@ -2,9 +2,6 @@ package se.l4.vibe.probes;
 
 /**
  * Data that can be modified, such as removing or adding values.
- *
- * @author Andreas Holstenson
- *
  */
 public interface ModifiableData<Self extends ModifiableData<Self>>
 {

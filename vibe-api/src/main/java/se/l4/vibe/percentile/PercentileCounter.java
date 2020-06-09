@@ -2,9 +2,6 @@ package se.l4.vibe.percentile;
 
 /**
  * Counter for helping with calculating percentiles.
- *
- * @author Andreas Holstenson
- *
  */
 public interface PercentileCounter
 {

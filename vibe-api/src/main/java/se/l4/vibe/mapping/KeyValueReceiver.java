@@ -2,9 +2,6 @@ package se.l4.vibe.mapping;
 
 /**
  * Receiver of key value pairs.
- *
- * @author Andreas Holstenson
- *
  */
 public interface KeyValueReceiver
 {

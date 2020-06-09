@@ -4,9 +4,6 @@ import java.util.Map;
 
 /**
  * Data point to be sent to InfluxDB.
- *
- * @author Andreas Holstenson
- *
  */
 public class DataPoint
 {

@@ -15,9 +15,6 @@ import se.l4.vibe.timer.TimerSnapshot;
 
 /**
  * Implementation of {@link Timer}.
- *
- * @author Andreas Holstenson
- *
  */
 public class TimerImpl
 	implements Timer

@@ -4,10 +4,9 @@ package se.l4.vibe.check;
  * Condition used together with {@link Triggers triggers}. Usually created
  * via {@link Conditions}.
  *
- * @author Andreas Holstenson
- *
  * @param <T>
  */
+@FunctionalInterface
 public interface Condition<T>
 {
 	/**

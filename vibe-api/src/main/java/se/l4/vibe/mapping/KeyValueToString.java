@@ -3,9 +3,6 @@ package se.l4.vibe.mapping;
 /**
  * Utility for creating a {@link #toString()} for something that is a
  * {@link KeyValueMappable}.
- *
- * @author Andreas Holstenson
- *
  */
 public class KeyValueToString
 {

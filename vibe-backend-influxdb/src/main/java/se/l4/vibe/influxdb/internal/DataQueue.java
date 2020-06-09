@@ -11,9 +11,6 @@ import java.util.function.Consumer;
 
 /**
  * Queue for data points that are going to be sent to InfluxDB.
- *
- * @author Andreas Holstenson
- *
  */
 public class DataQueue
 {

@@ -2,9 +2,6 @@ package se.l4.vibe.timer;
 
 /**
  * Listener for timers.
- *
- * @author Andreas Holstenson
- *
  */
 public interface TimerListener
 {

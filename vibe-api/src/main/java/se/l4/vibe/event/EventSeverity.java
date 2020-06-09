@@ -2,9 +2,6 @@ package se.l4.vibe.event;
 
 /**
  * Different levels of severity for events.
- *
- * @author Andreas Holstenson
- *
  */
 public enum EventSeverity
 {

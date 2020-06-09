@@ -27,9 +27,6 @@ import se.l4.vibe.event.Events;
 
 /**
  * Backend that will e-mail events.
- *
- * @author Andreas Holstenson
- *
  */
 public class MailBackend
 	implements VibeBackend

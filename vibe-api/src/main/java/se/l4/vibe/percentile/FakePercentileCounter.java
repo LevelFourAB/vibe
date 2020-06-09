@@ -4,9 +4,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * A {@link PercentileCounter} that only counts samples and the total value.
- *
- * @author Andreas Holstenson
- *
  */
 public class FakePercentileCounter
 	implements PercentileCounter

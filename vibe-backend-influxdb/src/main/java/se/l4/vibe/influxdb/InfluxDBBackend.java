@@ -39,9 +39,6 @@ import se.l4.vibe.timer.TimerListener;
 
 /**
  * {@link VibeBackend Backend} that sends data to InfluxDB.
- *
- * @author Andreas Holstenson
- *
  */
 public class InfluxDBBackend
 	implements VibeBackend

@@ -7,9 +7,6 @@ import se.l4.vibe.probes.Probe;
 
 /**
  * Wrapper for {@link Probe} to treat it as a service.
- *
- * @author Andreas Holstenson
- *
  */
 public class ProbeBean
 	implements JmxExport

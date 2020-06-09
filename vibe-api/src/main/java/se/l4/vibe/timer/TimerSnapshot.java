@@ -4,9 +4,6 @@ import se.l4.vibe.probes.ModifiableData;
 
 /**
  * A sample of the state of a {@link Timer}.
- *
- * @author Andreas Holstenson
- *
  */
 public interface TimerSnapshot
 	extends ModifiableData<TimerSnapshot>

@@ -4,9 +4,6 @@ import se.l4.vibe.probes.ModifiableData;
 
 /**
  * Snapshot of the state of a {@link PercentileCounter}.
- *
- * @author Andreas Holstenson
- *
  */
 public interface PercentileSnapshot
 	extends ModifiableData<PercentileSnapshot>

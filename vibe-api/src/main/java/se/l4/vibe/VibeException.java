@@ -2,9 +2,6 @@ package se.l4.vibe;
 
 /**
  * Exception for monitoring errors.
- *
- * @author Andreas Holstenson
- *
  */
 public class VibeException
 	extends RuntimeException

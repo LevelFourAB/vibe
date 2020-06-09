@@ -7,9 +7,6 @@ import se.l4.vibe.timer.TimerSnapshot;
 
 /**
  * Implementation of {@link TimerSnapshot}.
- *
- * @author Andreas Holstenson
- *
  */
 public class TimerSnapshotImpl
 	implements TimerSnapshot, KeyValueMappable

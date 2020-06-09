@@ -14,9 +14,6 @@ import se.l4.vibe.sampling.Sampler;
 
 /**
  * A simple example that will log the current CPU usage every 5 seconds.
- *
- * @author Andreas Holstenson
- *
  */
 public class SamplerExample
 {
