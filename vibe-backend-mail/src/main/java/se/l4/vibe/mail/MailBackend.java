@@ -251,7 +251,7 @@ public class MailBackend
 		 * @param subject
 		 * @return
 		 */
-		public Builder setSubject(String subject)
+		public Builder withSubject(String subject)
 		{
 			this.subject = subject;
 
@@ -263,7 +263,7 @@ public class MailBackend
 		 *
 		 * @param minimumSeverity
 		 */
-		public Builder setMinimumSeverity(EventSeverity minimumSeverity)
+		public Builder withMinimumSeverity(EventSeverity minimumSeverity)
 		{
 			this.minimumSeverity = minimumSeverity;
 
@@ -276,7 +276,7 @@ public class MailBackend
 		 * @param from
 		 * @return
 		 */
-		public Builder setSender(String from)
+		public Builder withSender(String from)
 		{
 			this.from = from;
 
@@ -289,7 +289,7 @@ public class MailBackend
 		 * @param email
 		 * @return
 		 */
-		public Builder withRecipient(String email)
+		public Builder addRecipient(String email)
 		{
 			receivers.add(email);
 
@@ -302,7 +302,7 @@ public class MailBackend
 		 * @param server
 		 * @return
 		 */
-		public Builder setSmtpServer(String server)
+		public Builder withSmtpServer(String server)
 		{
 			this.smtpServer = server;
 
@@ -315,7 +315,7 @@ public class MailBackend
 		 * @param port
 		 * @return
 		 */
-		public Builder setSmtpPort(int port)
+		public Builder withSmtpPort(int port)
 		{
 			this.smtpPort = port;
 
@@ -328,7 +328,7 @@ public class MailBackend
 		 * @param tls
 		 * @return
 		 */
-		public Builder setSmtpTls(boolean tls)
+		public Builder withSmtpTls(boolean tls)
 		{
 			this.smtpTls = tls;
 
@@ -341,7 +341,7 @@ public class MailBackend
 		 * @param ssl
 		 * @return
 		 */
-		public Builder setSmtpSsl(boolean ssl)
+		public Builder withSmtpSsl(boolean ssl)
 		{
 			this.smtpSsl = ssl;
 
@@ -355,7 +355,7 @@ public class MailBackend
 		 * @param password
 		 * @return
 		 */
-		public Builder setAuthentication(String username, String password)
+		public Builder withAuthentication(String username, String password)
 		{
 			authenticator = new AuthenticatorImpl(username, password);
 
