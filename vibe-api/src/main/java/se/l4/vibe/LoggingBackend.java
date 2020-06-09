@@ -68,19 +68,19 @@ public class LoggingBackend
 		private boolean logEvents;
 		private boolean logSamples;
 
-		public Builder setLogger(Logger logger)
+		public Builder withLogger(Logger logger)
 		{
 			this.logger = logger;
 			return this;
 		}
 
-		public Builder setLogger(String name)
+		public Builder withLogger(String name)
 		{
 			this.logger = LoggerFactory.getLogger(name);
 			return this;
 		}
 
-		public Builder setLogger(Class<?> type)
+		public Builder withLogger(Class<?> type)
 		{
 			this.logger = LoggerFactory.getLogger(type);
 			return this;
