@@ -8,10 +8,10 @@ import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 
 import se.l4.vibe.Handle;
-import se.l4.vibe.check.Check;
-import se.l4.vibe.check.CheckEvent;
-import se.l4.vibe.check.CheckListener;
-import se.l4.vibe.check.Condition;
+import se.l4.vibe.checks.Check;
+import se.l4.vibe.checks.CheckEvent;
+import se.l4.vibe.checks.CheckListener;
+import se.l4.vibe.checks.Condition;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleOperation;
 import se.l4.vibe.sampling.Sampler;

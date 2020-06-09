@@ -1,4 +1,4 @@
-package se.l4.vibe.check;
+package se.l4.vibe.checks;
 
 import java.time.Instant;
 
