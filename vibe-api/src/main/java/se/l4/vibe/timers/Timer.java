@@ -3,7 +3,7 @@ package se.l4.vibe.timers;
 import se.l4.vibe.Exportable;
 import se.l4.vibe.Handle;
 import se.l4.vibe.internal.timer.TimerImpl;
-import se.l4.vibe.percentile.PercentileCounter;
+import se.l4.vibe.percentiles.PercentileCounter;
 import se.l4.vibe.sampling.SampledProbe;
 
 /**

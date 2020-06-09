@@ -2,7 +2,7 @@ package se.l4.vibe.internal.timer;
 
 import se.l4.vibe.mapping.KeyValueMappable;
 import se.l4.vibe.mapping.KeyValueReceiver;
-import se.l4.vibe.percentile.PercentileSnapshot;
+import se.l4.vibe.percentiles.PercentileSnapshot;
 import se.l4.vibe.timers.TimerSnapshot;
 
 /**

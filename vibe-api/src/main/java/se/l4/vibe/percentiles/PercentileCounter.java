@@ -1,4 +1,4 @@
-package se.l4.vibe.percentile;
+package se.l4.vibe.percentiles;
 
 /**
  * Counter for helping with calculating percentiles.

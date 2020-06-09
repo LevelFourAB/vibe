@@ -1,7 +1,7 @@
-package se.l4.vibe.percentile;
+package se.l4.vibe.percentiles;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.Test;
 

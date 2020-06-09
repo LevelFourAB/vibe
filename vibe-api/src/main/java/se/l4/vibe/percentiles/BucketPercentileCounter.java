@@ -1,4 +1,4 @@
-package se.l4.vibe.percentile;
+package se.l4.vibe.percentiles;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongArray;

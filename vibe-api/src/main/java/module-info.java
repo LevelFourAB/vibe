@@ -8,7 +8,7 @@ module se.l4.vibe {
 	exports se.l4.vibe.events;
 	exports se.l4.vibe.mapping;
 	exports se.l4.vibe.operations;
-	exports se.l4.vibe.percentile;
+	exports se.l4.vibe.percentiles;
 	exports se.l4.vibe.probes;
 	exports se.l4.vibe.sampling;
 	exports se.l4.vibe.timers;

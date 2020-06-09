@@ -5,9 +5,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import se.l4.vibe.Handle;
 import se.l4.vibe.internal.Listeners;
-import se.l4.vibe.percentile.BucketPercentileCounter;
-import se.l4.vibe.percentile.FakePercentileCounter;
-import se.l4.vibe.percentile.PercentileCounter;
+import se.l4.vibe.percentiles.BucketPercentileCounter;
+import se.l4.vibe.percentiles.FakePercentileCounter;
+import se.l4.vibe.percentiles.PercentileCounter;
 import se.l4.vibe.timers.Stopwatch;
 import se.l4.vibe.timers.Timer;
 import se.l4.vibe.timers.TimerListener;
