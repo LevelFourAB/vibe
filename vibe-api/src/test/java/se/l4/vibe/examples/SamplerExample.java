@@ -3,10 +3,10 @@ package se.l4.vibe.examples;
 import java.io.IOException;
 import java.time.Duration;
 
+import se.l4.vibe.JmxBackend;
 import se.l4.vibe.JvmProbes;
+import se.l4.vibe.LoggingBackend;
 import se.l4.vibe.Vibe;
-import se.l4.vibe.backend.JmxBackend;
-import se.l4.vibe.backend.LoggingBackend;
 import se.l4.vibe.checks.Check;
 import se.l4.vibe.checks.Conditions;
 import se.l4.vibe.operations.Average;

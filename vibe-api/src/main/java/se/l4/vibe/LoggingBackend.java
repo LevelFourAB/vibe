@@ -1,10 +1,8 @@
-package se.l4.vibe.backend;
+package se.l4.vibe;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import se.l4.vibe.Handle;
-import se.l4.vibe.Vibe;
 import se.l4.vibe.events.EventListener;
 import se.l4.vibe.events.EventSeverity;
 import se.l4.vibe.events.Events;

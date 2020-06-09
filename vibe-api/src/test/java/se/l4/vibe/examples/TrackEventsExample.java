@@ -4,9 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import se.l4.vibe.JmxBackend;
+import se.l4.vibe.LoggingBackend;
 import se.l4.vibe.Vibe;
-import se.l4.vibe.backend.JmxBackend;
-import se.l4.vibe.backend.LoggingBackend;
 import se.l4.vibe.events.EventSeverity;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;

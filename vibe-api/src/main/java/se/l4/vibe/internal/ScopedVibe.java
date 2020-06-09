@@ -7,8 +7,8 @@ import se.l4.vibe.Export;
 import se.l4.vibe.ExportBuilder;
 import se.l4.vibe.Exportable;
 import se.l4.vibe.Vibe;
+import se.l4.vibe.VibeBackend;
 import se.l4.vibe.VibePaths;
-import se.l4.vibe.backend.VibeBackend;
 
 /**
  * Instance of {@link Vibe} that is scoped to a certain path.

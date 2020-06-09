@@ -1,4 +1,4 @@
-package se.l4.vibe.backend;
+package se.l4.vibe;
 
 import java.lang.management.ManagementFactory;
 import java.util.Objects;
@@ -11,7 +11,6 @@ import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
-import se.l4.vibe.Handle;
 import se.l4.vibe.internal.jmx.ExportMBeanBridge;
 import se.l4.vibe.internal.jmx.JmxExport;
 import se.l4.vibe.internal.jmx.ProbeBean;

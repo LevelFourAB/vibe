@@ -1,7 +1,5 @@
-package se.l4.vibe.backend;
+package se.l4.vibe;
 
-import se.l4.vibe.Handle;
-import se.l4.vibe.Vibe;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.Sampler;

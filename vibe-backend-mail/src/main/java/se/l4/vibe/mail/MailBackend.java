@@ -20,7 +20,7 @@ import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import se.l4.vibe.Handle;
-import se.l4.vibe.backend.VibeBackend;
+import se.l4.vibe.VibeBackend;
 import se.l4.vibe.events.EventListener;
 import se.l4.vibe.events.EventSeverity;
 import se.l4.vibe.events.Events;

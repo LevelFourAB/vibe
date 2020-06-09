@@ -1,6 +1,5 @@
 package se.l4.vibe;
 
-import se.l4.vibe.backend.VibeBackend;
 import se.l4.vibe.internal.VibeImpl;
 
 /**

@@ -1,7 +1,5 @@
 package se.l4.vibe;
 
-import se.l4.vibe.backend.VibeBackend;
-
 /**
  * Handle representing something that can be released, such as a listener or
  * something exported by a {@link VibeBackend backend}.

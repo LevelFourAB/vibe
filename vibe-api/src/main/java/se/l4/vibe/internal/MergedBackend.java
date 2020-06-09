@@ -1,8 +1,9 @@
-package se.l4.vibe.backend;
+package se.l4.vibe.internal;
 
 import java.util.Arrays;
 
 import se.l4.vibe.Handle;
+import se.l4.vibe.VibeBackend;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.Sampler;

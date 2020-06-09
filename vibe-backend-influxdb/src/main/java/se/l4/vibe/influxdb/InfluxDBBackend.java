@@ -23,7 +23,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import se.l4.vibe.Handle;
-import se.l4.vibe.backend.VibeBackend;
+import se.l4.vibe.VibeBackend;
 import se.l4.vibe.events.EventListener;
 import se.l4.vibe.events.EventSeverity;
 import se.l4.vibe.events.Events;
