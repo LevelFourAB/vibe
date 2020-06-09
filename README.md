@@ -56,7 +56,7 @@ Vibe comes with a few standard probes, such as JVM probes via the class
 
 ```java
 SampledProbe<Double> cpuUsage = JvmProbes.cpuUsage();
-Probe<Double> heapUsage = JvmProbes.heapUsageAsFraction();
+Probe<Double> heapUsage = JvmProbes.heapMemoryAsFraction();
 ```
 
 ### Implementing a probe
@@ -90,7 +90,7 @@ ThreadPoolExecutor executor = ...;
 Probe<Integer> probe = executor::getActiveCount;
 ```
 
-For probes that read several values `Probe.merged()` and `SampleProbe.merge()`
+For probes that read several values `Probe.merged()` and `SampleProbe.merged()`
 can be used to create probes that read several values:
 
 ```java
