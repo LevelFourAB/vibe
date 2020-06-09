@@ -102,18 +102,18 @@ public class TimerImpl
 		}
 
 		@Override
-		public Builder setBuckets(int... limits)
+		public Builder withBuckets(int... limits)
 		{
 			int[] msLimits = new int[limits.length];
 			for(int i=0, n=limits.length; i<n; i++)
 			{
 				msLimits[i] = limits[i] * 1000000;
 			}
-			return setPercentiles(new BucketPercentileCounter(msLimits));
+			return withPercentiles(new BucketPercentileCounter(msLimits));
 		}
 
 		@Override
-		public Builder setPercentiles(PercentileCounter counter)
+		public Builder withPercentiles(PercentileCounter counter)
 		{
 			Objects.requireNonNull(counter, "counter must be specified");
 

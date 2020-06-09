@@ -74,7 +74,7 @@ public interface Timer
 		 * @param limits
 		 * @return
 		 */
-		Builder setBuckets(int... limits);
+		Builder withBuckets(int... limits);
 
 		/**
 		 * Set the percentile counter to use for this timer. The counter should
@@ -83,7 +83,7 @@ public interface Timer
 		 * @param counter
 		 * @return
 		 */
-		Builder setPercentiles(PercentileCounter counter);
+		Builder withPercentiles(PercentileCounter counter);
 
 		/**
 		 * Build the timer.
