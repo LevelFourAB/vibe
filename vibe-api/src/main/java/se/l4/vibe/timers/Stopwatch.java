@@ -1,4 +1,4 @@
-package se.l4.vibe.timer;
+package se.l4.vibe.timers;
 
 public interface Stopwatch
 {

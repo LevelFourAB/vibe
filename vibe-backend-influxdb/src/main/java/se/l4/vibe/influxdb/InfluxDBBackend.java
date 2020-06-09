@@ -34,8 +34,8 @@ import se.l4.vibe.mapping.KeyValueReceiver;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListener;
 import se.l4.vibe.sampling.Sampler;
-import se.l4.vibe.timer.Timer;
-import se.l4.vibe.timer.TimerListener;
+import se.l4.vibe.timers.Timer;
+import se.l4.vibe.timers.TimerListener;
 
 /**
  * {@link VibeBackend Backend} that sends data to InfluxDB.

@@ -21,7 +21,7 @@ import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.sampling.Sampler;
-import se.l4.vibe.timer.Timer;
+import se.l4.vibe.timers.Timer;
 
 /**
  * Implementation of {@link Vibe}.

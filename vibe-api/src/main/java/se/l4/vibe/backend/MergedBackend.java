@@ -6,7 +6,7 @@ import se.l4.vibe.Handle;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.Sampler;
-import se.l4.vibe.timer.Timer;
+import se.l4.vibe.timers.Timer;
 
 /**
  * Collection of several backends that are triggered in order.

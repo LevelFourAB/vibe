@@ -8,10 +8,10 @@ import se.l4.vibe.internal.Listeners;
 import se.l4.vibe.percentile.BucketPercentileCounter;
 import se.l4.vibe.percentile.FakePercentileCounter;
 import se.l4.vibe.percentile.PercentileCounter;
-import se.l4.vibe.timer.Stopwatch;
-import se.l4.vibe.timer.Timer;
-import se.l4.vibe.timer.TimerListener;
-import se.l4.vibe.timer.TimerSnapshot;
+import se.l4.vibe.timers.Stopwatch;
+import se.l4.vibe.timers.Timer;
+import se.l4.vibe.timers.TimerListener;
+import se.l4.vibe.timers.TimerSnapshot;
 
 /**
  * Implementation of {@link Timer}.

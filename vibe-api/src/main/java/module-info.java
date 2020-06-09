@@ -12,5 +12,5 @@ module se.l4.vibe {
 	exports se.l4.vibe.percentile;
 	exports se.l4.vibe.probes;
 	exports se.l4.vibe.sampling;
-	exports se.l4.vibe.timer;
+	exports se.l4.vibe.timers;
 }

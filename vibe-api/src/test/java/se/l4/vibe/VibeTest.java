@@ -16,7 +16,7 @@ import se.l4.vibe.backend.VibeBackend;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.Sampler;
-import se.l4.vibe.timer.Timer;
+import se.l4.vibe.timers.Timer;
 
 public class VibeTest
 {
