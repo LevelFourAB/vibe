@@ -34,7 +34,7 @@ public class TrackEventsExample
 
 		// The events object used to send the events
 		Events<AccessEvent> accessEvents = Events.<AccessEvent>builder()
-			.setSeverity(EventSeverity.INFO)
+			.withSeverity(EventSeverity.INFO)
 			.build();
 
 		vibe.export(accessEvents)

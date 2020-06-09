@@ -88,7 +88,7 @@ public interface Events<T>
 		 * @param severity
 		 * @return
 		 */
-		Builder<T> setSeverity(EventSeverity severity);
+		Builder<T> withSeverity(EventSeverity severity);
 
 		/**
 		 * Build the instance.

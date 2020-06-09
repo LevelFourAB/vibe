@@ -105,7 +105,7 @@ public class EventsImpl<T>
 		}
 
 		@Override
-		public Builder<T> setSeverity(EventSeverity severity)
+		public Builder<T> withSeverity(EventSeverity severity)
 		{
 			Objects.requireNonNull(severity);
 
