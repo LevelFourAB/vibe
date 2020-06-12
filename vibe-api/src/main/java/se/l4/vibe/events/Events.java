@@ -6,7 +6,6 @@ import se.l4.vibe.internal.EventsImpl;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
 
-
 /**
  * Event registration, used to register events in a system. The events object
  * is created using a {@link Builder} created via {@link #builder()}.
@@ -18,6 +17,22 @@ import se.l4.vibe.sampling.SampledProbe;
  *   .build();
  * </pre>
  *
+ * <h2>Register and listen to events</h2>
+ *
+ * Events can be registered with {@link #register(EventData)} to be emitted
+ * with the default severity. {@link #register(EventSeverity, EventData)} can
+ * be used to emit events with a different severity.
+ *
+ * <p>
+ * Use {@link #addListener(EventListener)} to listen for events being emitted.
+ *
+ * <h2>Probes</h2>
+ *
+ * Instances contain two probes, one for total events via {@link #getTotalEventsProbe()}
+ * and one sampled probe via {@link #getEventsProbe()}. These probes can be
+ * {@link se.l4.vibe.Vibe#export(Exportable) exported}, used with a
+ * {@link se.l4.vibe.sampling.Sampler} or {@link se.l4.vibe.checks.Check}.
+ *
  * @param <T>
  */
 public interface Events<T extends EventData>
@@ -27,6 +42,7 @@ public interface Events<T extends EventData>
 	 * Register a new event using the default severity.
 	 *
 	 * @param eventData
+	 *   data of the event
 	 */
 	void register(T eventData);
 
@@ -34,7 +50,9 @@ public interface Events<T extends EventData>
 	 * Register a new event with the specified severity.
 	 *
 	 * @param severity
+	 *   severity to use
 	 * @param eventData
+	 *   data of the event
 	 */
 	void register(EventSeverity severity, T eventData);
 
