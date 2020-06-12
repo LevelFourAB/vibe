@@ -17,19 +17,19 @@ public class Change
 	 *
 	 * @return
 	 */
-	public static <T extends Number> SampleOperation<T, Double> changeAsDouble()
+	public static <T extends Number> SampleAndProbeOperation<T, Double> changeAsDouble()
 	{
-		return new SampleOperation<T, Double>()
+		return new SampleAndProbeOperation<T, Double>()
 		{
 			private double lastValue = 0;
 
 			@Override
-			public Sample<Double> handleSample(Sample<T> sample)
+			public Double apply(T input)
 			{
-				double current = sample.getValue().doubleValue();
+				double current = input.doubleValue();
 				double change = current - lastValue;
 				lastValue = current;
-				return Sample.create(sample.getTime(), change);
+				return change;
 			}
 		};
 	}
@@ -39,19 +39,19 @@ public class Change
 	 *
 	 * @return
 	 */
-	public static <T extends Number> SampleOperation<T, Long> changeAsLong()
+	public static <T extends Number> SampleAndProbeOperation<T, Long> changeAsLong()
 	{
-		return new SampleOperation<T, Long>()
+		return new SampleAndProbeOperation<T, Long>()
 		{
 			private long lastValue = 0;
 
 			@Override
-			public Sample<Long> handleSample(Sample<T> sample)
+			public Long apply(T input)
 			{
-				long current = sample.getValue().longValue();
+				long current = input.longValue();
 				long change = current - lastValue;
 				lastValue = current;
-				return Sample.create(sample.getTime(), change);
+				return change;
 			}
 		};
 	}
