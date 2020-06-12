@@ -3,6 +3,7 @@ package se.l4.vibe;
 import se.l4.vibe.checks.Check;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
+import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.timers.Timer;
 
@@ -29,6 +30,17 @@ public interface VibeBackend
 	 * @param probe
 	 */
 	default Handle export(String path, Probe<?> probe)
+	{
+		return Handle.empty();
+	}
+
+	/**
+	 * Export a probe that requires sampling.
+	 *
+	 * @param path
+	 * @param probe
+	 */
+	default Handle export(String path, SampledProbe<?> probe)
 	{
 		return Handle.empty();
 	}

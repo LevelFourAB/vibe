@@ -119,7 +119,7 @@ public class VibeImpl
 		exported.clear();
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "rawtypes" })
 	protected <T extends Exportable> Export<T> exportObject(String path, T object)
 	{
 		if(exported.containsKey(path))
@@ -146,10 +146,7 @@ public class VibeImpl
 		}
 		else if(object instanceof SampledProbe)
 		{
-			Sampler<?> sampler = Sampler.forProbe((SampledProbe) object)
-				.build();
-
-			handle = backend.export(path, sampler);
+			handle = backend.export(path, (SampledProbe) object);
 		}
 		else if(object instanceof Probe)
 		{
