@@ -3,7 +3,11 @@ package se.l4.vibe.checks;
 import java.time.Instant;
 
 /**
- * Event used with {@link Check} to carry information about the check.
+ * Event used with {@link Check} to carry information about the check. This
+ * type of class is passed to {@link CheckListener}s.
+ *
+ * @see Check
+ * @see CheckListener
  */
 public class CheckEvent
 {

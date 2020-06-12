@@ -3,16 +3,60 @@ package se.l4.vibe.checks;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 
 import se.l4.vibe.Handle;
+import se.l4.vibe.Vibe;
 import se.l4.vibe.internal.CheckImpl;
 import se.l4.vibe.sampling.SampleOperation;
 import se.l4.vibe.sampling.Sampler;
 
+/**
+ * Check is an object used to verify if certain conditions are met. Checks
+ * are created using a {@link Builder} created via {@link #builder()}.
+ *
+ * <p>
+ * <pre>
+ * Sampler<Double> cpuUsage = Sampler.forProbe(JvmProbes.cpuUsage())
+ *  .build();
+ *
+ * Check check = Check.builder()
+ *   .whenSampler(cpuUsage)
+ *     .apply(Average.averageOver(Duration.ofMinutes(5)))
+ *     .is(Conditions.above(0.9))
+ *   .build();
+ * </pre>
+ *
+ * <h2>Using</h2>
+ *
+ * <p>
+ * Checks are active if they have {@link #addListener(CheckListener) listeners},
+ * if they have been {@link Vibe#export(se.l4.vibe.Exportable) exported} or
+ * {@link #start() manually started}.
+ *
+ * <p>
+ * It's possible to verify the conditions of a check by calling {@link #isConditionsMet()}
+ * at any time. For events when the conditions change add a listener
+ * via {@link #addListener(CheckListener)}.
+ *
+ * <pre>
+ * check.addListener(event -> {
+ *   if(event.isConditionsMet()) {
+ *     // Conditions are currently met
+ *   } else {
+ *     // Conditions are not met
+ *   }
+ * });
+ * </pre>
+ */
 public interface Check
 {
 	/**
-	 * Get if this check is currently matching.
+	 * Get if this check is currently matching. Use {@link #addListener(CheckListener)}
+	 * to listen for changes to this value.
+	 *
+	 * @return
+	 *   {@code true} if conditions are met, {@code false} otherwise
 	 */
 	boolean isConditionsMet();
 
@@ -24,11 +68,13 @@ public interface Check
 	 * <pre>
 	 * Handle handle = check.start();
 	 *
-	 * // When you're done with the sampler release the handle
+	 * // When you're done with the check release the handle
 	 * handle.release();
 	 * </pre>
 	 *
 	 * @return
+	 *   handle that can be released when the code that called this method
+	 *   no longer needs the check
 	 */
 	Handle start();
 
@@ -37,7 +83,9 @@ public interface Check
 	 * changes.
 	 *
 	 * @param listener
+	 *   listener to add
 	 * @return
+	 *   handle that can be used to remove the listener
 	 */
 	Handle addListener(CheckListener listener);
 
@@ -45,13 +93,15 @@ public interface Check
 	 * Remove a listener from the check.
 	 *
 	 * @param listener
+	 *   listener to remove
 	 */
 	void removeListener(CheckListener listener);
 
 	/**
-	 * Start building a new check.
+	 * Start building a new instance.
 	 *
 	 * @return
+	 *   builder for instance
 	 */
 	static Builder builder()
 	{
@@ -110,6 +160,9 @@ public interface Check
 		Check build();
 	}
 
+	/**
+	 * Builder for a condition on top of a {@link Sampler}.
+	 */
 	interface SamplerWhenBuilder<I>
 	{
 		/**
@@ -123,7 +176,8 @@ public interface Check
 		<O> SamplerWhenBuilder<O> apply(SampleOperation<I, O> operation);
 
 		/**
-		 * Set the condition that must be met for the trigger to execute.
+		 * Set the predicate that checks if the value is meets the desired
+		 * condition.
 		 *
 		 * @param condition
 		 * @return
@@ -131,6 +185,9 @@ public interface Check
 		Builder is(Predicate<I> condition);
 	}
 
+	/**
+	 * Builder for a condition on top of something that returns a boolean.
+	 */
 	interface BooleanSupplierWhenBuilder
 	{
 		/**
@@ -142,6 +199,11 @@ public interface Check
 		 */
 		BooleanSupplierWhenBuilder setCheckInterval(long time, TimeUnit unit);
 
+		/**
+		 * Indicate that the supplier is done and continue building the check.
+		 *
+		 * @return
+		 */
 		Builder done();
 	}
 }

@@ -2,6 +2,8 @@ package se.l4.vibe.checks;
 
 /**
  * Listener for status of a {@link Check}.
+ *
+ * @see Check
  */
 public interface CheckListener
 {
