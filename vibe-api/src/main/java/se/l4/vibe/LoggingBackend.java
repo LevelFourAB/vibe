@@ -3,8 +3,8 @@ package se.l4.vibe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import se.l4.vibe.events.Event;
 import se.l4.vibe.events.EventListener;
-import se.l4.vibe.events.EventSeverity;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListener;
@@ -145,24 +145,25 @@ public class LoggingBackend
 		}
 
 		@Override
-		public void eventRegistered(Events events, EventSeverity severity, Object event)
+		public void eventRegistered(Event event)
 		{
-			switch(severity)
+			String message = event.getData().toHumanReadable();
+			switch(event.getSeverity())
 			{
 				case DEBUG:
-					logger.debug("{}: {}", path, event);
+					logger.debug("{}: {}", path, message);
 					break;
 				case INFO:
-					logger.info("{}: {}", path, event);
+					logger.info("{}: {}", path, message);
 					break;
 				case WARN:
-					logger.warn("{}: {}", path, event);
+					logger.warn("{}: {}", path, message);
 					break;
 				case ERROR:
-					logger.error("{}: {}", path, event);
+					logger.error("{}: {}", path, message);
 					break;
 				case CRITICAL:
-					logger.error("CRITICAL: {}: {}", path, event);
+					logger.error("CRITICAL: {}: {}", path, message);
 					break;
 			}
 		}

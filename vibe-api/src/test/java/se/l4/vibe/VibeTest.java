@@ -13,6 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import se.l4.vibe.events.EventData;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
@@ -108,7 +109,15 @@ public class VibeTest
 	@Test
 	public void testExportEvents()
 	{
-		Events<String> events = Events.<String>builder()
+		class Test implements EventData
+		{
+			@Override
+			public String toHumanReadable()
+			{
+				return "";
+			}
+		}
+		Events<Test> events = Events.<Test>builder()
 			.build();
 
 		Export<?> export = vibe.export(events)

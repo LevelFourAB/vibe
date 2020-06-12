@@ -8,27 +8,35 @@ import se.l4.vibe.sampling.SampledProbe;
 
 
 /**
- * Event registration, used to register events in a system.
+ * Event registration, used to register events in a system. The events object
+ * is created using a {@link Builder} created via {@link #builder()}.
+ *
+ * <p>
+ * <pre>
+ * Events<E> events = Events.builder()
+ *   .withSeverity(EventSeverity.INFO)
+ *   .build();
+ * </pre>
  *
  * @param <T>
  */
-public interface Events<T>
+public interface Events<T extends EventData>
 	extends Exportable
 {
 	/**
-	 * Register a new event.
+	 * Register a new event using the default severity.
 	 *
-	 * @param event
+	 * @param eventData
 	 */
-	void register(T event);
+	void register(T eventData);
 
 	/**
 	 * Register a new event with the specified severity.
 	 *
 	 * @param severity
-	 * @param event
+	 * @param eventData
 	 */
-	void register(EventSeverity severity, T event);
+	void register(EventSeverity severity, T eventData);
 
 	/**
 	 * Get the default severity for this object.
@@ -72,7 +80,7 @@ public interface Events<T>
 	 * @param <T>
 	 * @return
 	 */
-	static <T> Builder<T> builder()
+	static <T extends EventData> Builder<T> builder()
 	{
 		return new EventsImpl.BuilderImpl<>();
 	}
@@ -80,7 +88,7 @@ public interface Events<T>
 	/**
 	 * Builder for instances of {@link Events}.
 	 */
-	interface Builder<T>
+	interface Builder<T extends EventData>
 	{
 		/**
 		 * Set the severity of the events.

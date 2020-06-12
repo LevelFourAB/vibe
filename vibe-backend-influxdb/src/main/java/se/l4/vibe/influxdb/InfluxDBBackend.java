@@ -24,8 +24,9 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import se.l4.vibe.Handle;
 import se.l4.vibe.VibeBackend;
+import se.l4.vibe.events.Event;
+import se.l4.vibe.events.EventData;
 import se.l4.vibe.events.EventListener;
-import se.l4.vibe.events.EventSeverity;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.influxdb.internal.DataPoint;
 import se.l4.vibe.influxdb.internal.DataQueue;
@@ -237,7 +238,7 @@ public class InfluxDBBackend
 	}
 
 	private class EventQueuer
-		implements EventListener<Object>
+		implements EventListener<EventData>
 	{
 		private final String path;
 
@@ -247,21 +248,22 @@ public class InfluxDBBackend
 		}
 
 		@Override
-		public void eventRegistered(Events<Object> events, EventSeverity severity, Object event)
+		public void eventRegistered(Event<EventData> event)
 		{
 			long time = System.currentTimeMillis();
 			Map<String, Object> values = new HashMap<>();
-			values.put("severity", severity);
+			values.put("severity", event.getSeverity());
 
 			KeyValueReceiver receiver = createReceiver(values);
 
-			if(event instanceof KeyValueMappable)
+			EventData data = event.getData();
+			if(data instanceof KeyValueMappable)
 			{
-				((KeyValueMappable) event).mapToKeyValues(receiver);
+				((KeyValueMappable) data).mapToKeyValues(receiver);
 			}
 			else
 			{
-				receiver.add("value", event);
+				receiver.add("value", data.toHumanReadable());
 			}
 
 			DataPoint point = new DataPoint(path, time, tags, values);

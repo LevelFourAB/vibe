@@ -4,6 +4,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 import se.l4.vibe.Handle;
+import se.l4.vibe.events.Event;
+import se.l4.vibe.events.EventData;
 import se.l4.vibe.events.EventListener;
 import se.l4.vibe.events.EventSeverity;
 import se.l4.vibe.events.Events;
@@ -15,7 +17,7 @@ import se.l4.vibe.sampling.SampledProbe;
  *
  * @param <T>
  */
-public class EventsImpl<T>
+public class EventsImpl<T extends EventData>
 	implements Events<T>
 {
 	private final Listeners<EventListener<T>> listeners;
@@ -32,16 +34,17 @@ public class EventsImpl<T>
 		totalEvents = new AtomicLong();
 	}
 
-	public void register(T event)
+	public void register(T eventData)
 	{
-		register(severity, event);
+		register(severity, eventData);
 	}
 
-	public void register(EventSeverity severity, T event)
+	public void register(EventSeverity severity, T eventData)
 	{
 		totalEvents.incrementAndGet();
 
-		listeners.forEach(l -> l.eventRegistered(this, severity, event));
+		Event<T> event = new Event<>(severity, eventData);
+		listeners.forEach(l -> l.eventRegistered(event));
 	}
 
 	@Override
@@ -94,7 +97,7 @@ public class EventsImpl<T>
 		};
 	}
 
-	public static class BuilderImpl<T>
+	public static class BuilderImpl<T extends EventData>
 		implements Builder<T>
 	{
 		private EventSeverity severity;

@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import se.l4.vibe.JmxBackend;
 import se.l4.vibe.LoggingBackend;
 import se.l4.vibe.Vibe;
+import se.l4.vibe.events.EventData;
 import se.l4.vibe.events.EventSeverity;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
@@ -71,6 +72,12 @@ public class TrackEventsExample
 	}
 
 	private static class AccessEvent
+		implements EventData
 	{
+		@Override
+		public String toHumanReadable()
+		{
+			return "Access Event";
+		}
 	}
 }

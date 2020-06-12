@@ -21,6 +21,8 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import se.l4.vibe.Handle;
 import se.l4.vibe.VibeBackend;
+import se.l4.vibe.events.Event;
+import se.l4.vibe.events.EventData;
 import se.l4.vibe.events.EventListener;
 import se.l4.vibe.events.EventSeverity;
 import se.l4.vibe.events.Events;
@@ -88,7 +90,7 @@ public class MailBackend
 		executor.shutdown();
 	}
 
-	private void send(String path, long time, EventSeverity severity, Object event)
+	private void send(String path, long time, EventSeverity severity, EventData event)
 		throws MessagingException
 	{
 		Properties props = System.getProperties();
@@ -140,7 +142,7 @@ public class MailBackend
 			.append(" event was received at ")
 			.append(sdf.format(new Date(time)))
 			.append(":\n\n")
-			.append(event);
+			.append(event.toHumanReadable());
 
 		msg.setText(body.toString());
 
@@ -159,16 +161,14 @@ public class MailBackend
 		return events.addListener(new EventListener()
 		{
 			@Override
-			public void eventRegistered(Events events,
-					final EventSeverity severity,
-					final Object event)
+			public void eventRegistered(Event event)
 			{
-				if(severity.ordinal() < minimumSeverity.ordinal())
+				if(event.getSeverity().ordinal() < minimumSeverity.ordinal())
 				{
 					return;
 				}
 
-				final long time = System.currentTimeMillis();
+				long time = System.currentTimeMillis();
 				executor.submit(new Runnable()
 				{
 					@Override
@@ -176,7 +176,7 @@ public class MailBackend
 					{
 						try
 						{
-							send(path, time, severity, event);
+							send(path, time, event.getSeverity(), event.getData());
 						}
 						catch(MessagingException e)
 						{
