@@ -3,9 +3,9 @@ package se.l4.vibe.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.l4.vibe.mapping.KeyValueMap;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
+import se.l4.vibe.snapshots.MapSnapshot;
 
 public class MergedProbes
 {
@@ -27,7 +27,7 @@ public class MergedProbes
 		}
 
 		@Override
-		public Probe<KeyValueMap> build()
+		public Probe<MapSnapshot> build()
 		{
 			return new MergedProbe(probes);
 		}
@@ -51,7 +51,7 @@ public class MergedProbes
 		}
 
 		@Override
-		public SampledProbe<KeyValueMap> build()
+		public SampledProbe<MapSnapshot> build()
 		{
 			return new MergedSampledProbe(probes);
 		}
@@ -70,7 +70,7 @@ public class MergedProbes
 	}
 
 	public static class MergedProbe
-		implements Probe<KeyValueMap>
+		implements Probe<MapSnapshot>
 	{
 		private final Named<Probe<?>>[] values;
 
@@ -81,20 +81,20 @@ public class MergedProbes
 		}
 
 		@Override
-		public KeyValueMap read()
+		public MapSnapshot read()
 		{
-			KeyValueMap result = new KeyValueMap();
+			MapSnapshot.Builder builder = MapSnapshot.builder();
 			for(Named<Probe<?>> value : values)
 			{
-				result.set(value.name, value.value.read());
+				builder.set(value.name, value.value.read());
 			}
 
-			return result;
+			return builder.build();
 		}
 	}
 
 	public static class MergedSampledProbe
-		implements SampledProbe<KeyValueMap>
+		implements SampledProbe<MapSnapshot>
 	{
 		private final Named<SampledProbe<?>>[] values;
 
@@ -105,15 +105,15 @@ public class MergedProbes
 		}
 
 		@Override
-		public KeyValueMap sample()
+		public MapSnapshot sample()
 		{
-			KeyValueMap result = new KeyValueMap();
+			MapSnapshot.Builder builder = MapSnapshot.builder();
 			for(Named<SampledProbe<?>> value : values)
 			{
-				result.set(value.name, value.value.sample());
+				builder.set(value.name, value.value.sample());
 			}
 
-			return result;
+			return builder.build();
 		}
 	}
 }

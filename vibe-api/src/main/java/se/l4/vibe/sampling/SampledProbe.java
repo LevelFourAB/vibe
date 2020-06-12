@@ -2,9 +2,9 @@ package se.l4.vibe.sampling;
 
 import se.l4.vibe.Exportable;
 import se.l4.vibe.internal.MergedProbes;
-import se.l4.vibe.mapping.KeyValueMap;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.ProbeOperation;
+import se.l4.vibe.snapshots.MapSnapshot;
 
 /**
  * Probe that measures a value that requires sampling to be read.
@@ -97,6 +97,6 @@ public interface SampledProbe<T>
 		 *
 		 * @return
 		 */
-		SampledProbe<KeyValueMap> build();
+		SampledProbe<MapSnapshot> build();
 	}
 }

@@ -6,7 +6,7 @@ module se.l4.vibe {
 
 	exports se.l4.vibe.checks;
 	exports se.l4.vibe.events;
-	exports se.l4.vibe.mapping;
+	exports se.l4.vibe.snapshots;
 	exports se.l4.vibe.operations;
 	exports se.l4.vibe.percentiles;
 	exports se.l4.vibe.probes;

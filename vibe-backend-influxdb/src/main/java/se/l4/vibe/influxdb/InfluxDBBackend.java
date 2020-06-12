@@ -30,11 +30,11 @@ import se.l4.vibe.events.EventListener;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.influxdb.internal.DataPoint;
 import se.l4.vibe.influxdb.internal.DataQueue;
-import se.l4.vibe.mapping.KeyValueMappable;
-import se.l4.vibe.mapping.KeyValueReceiver;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListener;
 import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.snapshots.KeyValueReceiver;
+import se.l4.vibe.snapshots.Snapshot;
 import se.l4.vibe.timers.Timer;
 import se.l4.vibe.timers.TimerListener;
 
@@ -199,9 +199,9 @@ public class InfluxDBBackend
 			Map<String, Object> values = new HashMap<>();
 			KeyValueReceiver receiver = createReceiver(values);
 
-			if(value instanceof KeyValueMappable)
+			if(value instanceof Snapshot)
 			{
-				((KeyValueMappable) value).mapToKeyValues(receiver);
+				((Snapshot) value).mapToKeyValues(receiver);
 			}
 			else
 			{
@@ -257,9 +257,9 @@ public class InfluxDBBackend
 			KeyValueReceiver receiver = createReceiver(values);
 
 			EventData data = event.getData();
-			if(data instanceof KeyValueMappable)
+			if(data instanceof Snapshot)
 			{
-				((KeyValueMappable) data).mapToKeyValues(receiver);
+				((Snapshot) data).mapToKeyValues(receiver);
 			}
 			else
 			{

@@ -2,7 +2,7 @@ package se.l4.vibe.probes;
 
 import se.l4.vibe.Exportable;
 import se.l4.vibe.internal.MergedProbes;
-import se.l4.vibe.mapping.KeyValueMap;
+import se.l4.vibe.snapshots.MapSnapshot;
 
 /**
  * Probe that can measure a certain value.
@@ -82,6 +82,6 @@ public interface Probe<T>
 		 *
 		 * @return
 		 */
-		Probe<KeyValueMap> build();
+		Probe<MapSnapshot> build();
 	}
 }

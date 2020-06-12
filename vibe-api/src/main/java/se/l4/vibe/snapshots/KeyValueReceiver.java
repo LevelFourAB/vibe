@@ -1,4 +1,4 @@
-package se.l4.vibe.mapping;
+package se.l4.vibe.snapshots;
 
 /**
  * Receiver of key value pairs.

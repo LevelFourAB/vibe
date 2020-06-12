@@ -1,16 +1,21 @@
-package se.l4.vibe.mapping;
+package se.l4.vibe.snapshots;
 
 /**
- * Utility for creating a {@link #toString()} for something that is a
- * {@link KeyValueMappable}.
+ * Utility methods for {@link Snapshot}.
  */
-public class KeyValueToString
+public class Snapshots
 {
-	private KeyValueToString()
+	private Snapshots()
 	{
 	}
 
-	public static String toString(KeyValueMappable instance)
+	/**
+	 * Turn the given snapshot into a string value.
+	 *
+	 * @param instance
+	 * @return
+	 */
+	public static String toString(Snapshot instance)
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append(instance.getClass().getSimpleName());

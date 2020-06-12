@@ -9,11 +9,11 @@ import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 
-import se.l4.vibe.mapping.KeyValueMappable;
-import se.l4.vibe.mapping.KeyValueReceiver;
-import se.l4.vibe.mapping.KeyValueToString;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
+import se.l4.vibe.snapshots.KeyValueReceiver;
+import se.l4.vibe.snapshots.Snapshot;
+import se.l4.vibe.snapshots.Snapshots;
 
 /**
  * Probes for the JVM runtime.
@@ -304,7 +304,7 @@ public class JvmProbes
 	 * @see MemoryUsage
 	 */
 	public static class MemorySnapshot
-		implements KeyValueMappable
+		implements Snapshot
 	{
 		private final long heapUsed;
 		private final long heapCommitted;
@@ -428,12 +428,12 @@ public class JvmProbes
 		@Override
 		public String toString()
 		{
-			return KeyValueToString.toString(this);
+			return Snapshots.toString(this);
 		}
 	}
 
 	public static class BufferPoolDetails
-		implements KeyValueMappable
+		implements Snapshot
 	{
 		private final long memoryUsed;
 		private final long totalCapacity;
@@ -476,7 +476,7 @@ public class JvmProbes
 		@Override
 		public String toString()
 		{
-			return KeyValueToString.toString(this);
+			return Snapshots.toString(this);
 		}
 	}
 }
