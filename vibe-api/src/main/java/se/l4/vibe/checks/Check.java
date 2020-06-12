@@ -71,7 +71,7 @@ public interface Check
 		 * @param sampler
 		 * @return
 		 */
-		<I> SamplerWhenBuilder<I> forSampler(Sampler<I> sampler);
+		<I> SamplerWhenBuilder<I> whenSampler(Sampler<I> sampler);
 
 		/**
 		 * Set the condition for when to check based on a {@link BooleanSupplier}
@@ -80,7 +80,7 @@ public interface Check
 		 * @param supplier
 		 * @return
 		 */
-		ConditionWhenBuilder forSupplier(BooleanSupplier supplier);
+		BooleanSupplierWhenBuilder whenSupplier(BooleanSupplier supplier);
 
 		/**
 		 * Request that the check triggers repeating events when conditions
@@ -131,7 +131,7 @@ public interface Check
 		Builder is(Predicate<I> condition);
 	}
 
-	interface ConditionWhenBuilder
+	interface BooleanSupplierWhenBuilder
 	{
 		/**
 		 * Set how often the condition should be checked.
@@ -140,7 +140,7 @@ public interface Check
 		 * @param unit
 		 * @return
 		 */
-		ConditionWhenBuilder setCheckInterval(long time, TimeUnit unit);
+		BooleanSupplierWhenBuilder setCheckInterval(long time, TimeUnit unit);
 
 		Builder done();
 	}

@@ -151,7 +151,7 @@ public class CheckImpl<Input>
 		}
 
 		@Override
-		public ConditionWhenBuilder forSupplier(BooleanSupplier supplier)
+		public BooleanSupplierWhenBuilder whenSupplier(BooleanSupplier supplier)
 		{
 			return new BooleanSupplierBuilder(supplier, this::receiveResult);
 		}
@@ -230,7 +230,7 @@ public class CheckImpl<Input>
 	}
 
 	private static class BooleanSupplierBuilder
-		implements ConditionWhenBuilder
+		implements BooleanSupplierWhenBuilder
 	{
 		private final BiFunction<Sampler<?>, Predicate<?>, Builder> resultReceiver;
 
@@ -247,7 +247,7 @@ public class CheckImpl<Input>
 		}
 
 		@Override
-		public ConditionWhenBuilder setCheckInterval(long time, TimeUnit unit)
+		public BooleanSupplierWhenBuilder setCheckInterval(long time, TimeUnit unit)
 		{
 			this.checkInterval = Duration.ofMillis(unit.toMillis(time));
 			return this;
