@@ -2,6 +2,7 @@ package se.l4.vibe.influxdb;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,8 +31,10 @@ import se.l4.vibe.events.EventListener;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.influxdb.internal.DataPoint;
 import se.l4.vibe.influxdb.internal.DataQueue;
+import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListener;
+import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.snapshots.KeyValueReceiver;
 import se.l4.vibe.snapshots.Snapshot;
@@ -43,11 +46,11 @@ import se.l4.vibe.timers.TimerListener;
  *
  * <pre>
  * VibeBackend backed = InfluxDBBackend.builder()
- *   .setUrl("http://localhost:8086")
- *   .setAuthentication("user", "password")
- *   .withTag("host", "server-1")
+ *   .withUrl("http://localhost:8086")
+ *   .withAuthentication("user", "password")
+ *   .addTag("host", "server-1")
  *   .v1()
- *     .setDatabase("metrics")
+ *     .withDatabase("metrics")
  *     .done()
  *   .build();
  * </pre>
@@ -57,6 +60,8 @@ public class InfluxDBBackend
 {
 	private static final Logger logger = LoggerFactory.getLogger(InfluxDBBackend.class);
 	private static final MediaType MEDIA_TYPE = MediaType.parse("text/plain");
+
+	private final Duration samplingInterval;
 
 	private final String url;
 	private final String auth;
@@ -68,6 +73,7 @@ public class InfluxDBBackend
 	private final ScheduledExecutorService executor;
 
 	private InfluxDBBackend(
+		Duration samplingInterval,
 		String url,
 		String username,
 		String password,
@@ -75,6 +81,7 @@ public class InfluxDBBackend
 		Map<String, String> tags
 	)
 	{
+		this.samplingInterval = samplingInterval;
 		this.tags = tags;
 		client = new OkHttpClient();
 
@@ -151,6 +158,27 @@ public class InfluxDBBackend
 	public Handle export(String path, Sampler<?> sampler)
 	{
 		return ((Sampler) sampler).addListener(new SampleQueuer(path));
+	}
+
+	@Override
+	public Handle export(String path, Probe<?> probe)
+	{
+		return sampleAndExport(path, probe::read);
+	}
+
+	@Override
+	public Handle export(String path, SampledProbe<?> probe)
+	{
+		return sampleAndExport(path, probe);
+	}
+
+	private Handle sampleAndExport(String path, SampledProbe<?> probe)
+	{
+		Sampler<?> sampler = Sampler.forProbe(probe)
+			.withInterval(samplingInterval)
+			.build();
+
+		return export(path, sampler);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -294,6 +322,7 @@ public class InfluxDBBackend
 	{
 		private final Map<String, String> tags;
 
+		private Duration samplingInterval;
 		private String url;
 		private String username;
 		private String password;
@@ -303,6 +332,23 @@ public class InfluxDBBackend
 		public Builder()
 		{
 			tags = new HashMap<>();
+			samplingInterval = Duration.ofSeconds(10);
+		}
+
+		/**
+		 * Set the sampling interval this backend should use for {@link Probe}s
+		 * and {@link SampledProbe}s.
+		 *
+		 * @param interval
+		 *   interval to use
+		 * @return
+		 */
+		public Builder withSamplingInterval(Duration interval)
+		{
+			Objects.requireNonNull(interval, "interval can not be null");
+			this.samplingInterval = interval;
+
+			return this;
 		}
 
 		/**
@@ -381,7 +427,15 @@ public class InfluxDBBackend
 		{
 			Objects.requireNonNull(url, "URL to InfluxDB is required");
 			Objects.requireNonNull(queryParams, "V1 or V2 must be selected");
-			return new InfluxDBBackend(url, username, password, queryParams, tags);
+			return new InfluxDBBackend(
+				samplingInterval,
+
+				url,
+				username,
+				password,
+				queryParams,
+				tags
+			);
 		}
 	}
 
