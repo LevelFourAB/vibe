@@ -13,6 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import se.l4.vibe.checks.Check;
 import se.l4.vibe.events.EventData;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
@@ -82,7 +83,7 @@ public class VibeTest
 			.at("sampler")
 			.done();
 
-		assertThat(backend.get("sampler"), is(instanceOf(Sampler.class)));
+		assertThat(backend.get("sampler"), is(probe));
 
 		export.remove();
 
@@ -129,6 +130,25 @@ public class VibeTest
 		export.remove();
 
 		assertThat(backend.get("events"), is(nullValue()));
+	}
+
+	@Test
+	public void testExportCheck()
+	{
+		Check check = Check.builder()
+			.whenSupplier(() -> false)
+				.done()
+			.build();
+
+		Export<?> export = vibe.export(check)
+			.at("check")
+			.done();
+
+		assertThat(backend.get("check"), is(check));
+
+		export.remove();
+
+		assertThat(backend.get("check"), is(nullValue()));
 	}
 
 	@Test
@@ -231,6 +251,12 @@ public class VibeTest
 		}
 
 		@Override
+		public Handle export(String path, SampledProbe<?> probe)
+		{
+			return export0(path, probe);
+		}
+
+		@Override
 		public Handle export(String path, Sampler<?> series)
 		{
 			return export0(path, series);
@@ -240,6 +266,12 @@ public class VibeTest
 		public Handle export(String path, Timer timer)
 		{
 			return export0(path, timer);
+		}
+
+		@Override
+		public Handle export(String path, Check check)
+		{
+			return export0(path, check);
 		}
 	}
 }
