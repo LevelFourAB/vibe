@@ -3,7 +3,6 @@ package se.l4.vibe.internal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
@@ -247,9 +246,11 @@ public class CheckImpl<Input>
 		}
 
 		@Override
-		public BooleanSupplierWhenBuilder setCheckInterval(long time, TimeUnit unit)
+		public BooleanSupplierWhenBuilder setCheckInterval(Duration duration)
 		{
-			this.checkInterval = Duration.ofMillis(unit.toMillis(time));
+			Objects.requireNonNull(duration, "duration must not be null");
+
+			this.checkInterval = duration;
 			return this;
 		}
 

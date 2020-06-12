@@ -1,7 +1,6 @@
 package se.l4.vibe.checks;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
@@ -199,7 +198,7 @@ public interface Check
 		 * @param unit
 		 * @return
 		 */
-		BooleanSupplierWhenBuilder setCheckInterval(long time, TimeUnit unit);
+		BooleanSupplierWhenBuilder setCheckInterval(Duration duration);
 
 		/**
 		 * Indicate that the supplier is done and continue building the check.
