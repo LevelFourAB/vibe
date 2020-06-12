@@ -1,5 +1,6 @@
 package se.l4.vibe;
 
+import se.l4.vibe.checks.Check;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.Sampler;
@@ -50,6 +51,17 @@ public interface VibeBackend
 	 * @param timer
 	 */
 	default Handle export(String path, Timer timer)
+	{
+		return Handle.empty();
+	}
+
+	/**
+	 * Export a check.
+	 *
+	 * @param path
+	 * @param check
+	 */
+	default Handle export(String path, Check check)
 	{
 		return Handle.empty();
 	}

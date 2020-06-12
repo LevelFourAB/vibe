@@ -16,6 +16,7 @@ import se.l4.vibe.Vibe;
 import se.l4.vibe.VibeBackend;
 import se.l4.vibe.VibeException;
 import se.l4.vibe.VibePaths;
+import se.l4.vibe.checks.Check;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
@@ -138,6 +139,10 @@ public class VibeImpl
 		else if(object instanceof Events)
 		{
 			handle = backend.export(path, (Events) object);
+		}
+		else if(object instanceof Check)
+		{
+			handle = backend.export(path, (Check) object);
 		}
 		else if(object instanceof SampledProbe)
 		{

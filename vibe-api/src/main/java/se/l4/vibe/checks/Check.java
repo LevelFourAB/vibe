@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
+import se.l4.vibe.Exportable;
 import se.l4.vibe.Handle;
 import se.l4.vibe.Vibe;
 import se.l4.vibe.internal.CheckImpl;
@@ -50,6 +51,7 @@ import se.l4.vibe.sampling.Sampler;
  * </pre>
  */
 public interface Check
+	extends Exportable
 {
 	/**
 	 * Get if this check is currently matching. Use {@link #addListener(CheckListener)}
