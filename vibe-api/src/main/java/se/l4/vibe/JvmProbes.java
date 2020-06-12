@@ -25,12 +25,32 @@ public class JvmProbes
 	}
 
 	/**
-	 * Get a probe for measuring the CPU usage of this JVM process as factor
-	 * between 0 to 1.
+	 * Get a probe for measuring the recent CPU usage of this JVM process as
+	 * a factor between 0 to 1. A value of 0 would indicate that no CPUs are
+	 * being used and 1 that all CPUs are being 100% used by the JVM.
 	 *
 	 * @return
 	 */
 	public static SampledProbe<Double> cpuUsage()
+	{
+		com.sun.management.OperatingSystemMXBean os =
+			(com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+
+		return os::getProcessCpuLoad;
+	}
+
+	/**
+	 * Get a probe for measuring the CPU usage of this JVM process as a factor
+	 * between 0 to 1. A value of 0 would indicate that no CPUs are being used
+	 * and 1 that all CPUs are being 100% used by the JVM.
+	 *
+	 * <p>
+	 * This a {@link SampledProbe} that calculates the average CPU usage over
+	 * the period between the previous sample and this sample.
+	 *
+	 * @return
+	 */
+	public static SampledProbe<Double> sampledCpuUsage()
 	{
 		com.sun.management.OperatingSystemMXBean os =
 			(com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
@@ -49,17 +69,10 @@ public class JvmProbes
 				long uptime = runtime.getUptime();
 				long cpu = os.getProcessCpuTime();
 
-				if(lastUptime == 0)
-				{
-					lastUptime = uptime;
-					lastCpu = cpu;
-					return Double.NaN;
-				}
-
 				long elapsedCpu = cpu - lastCpu;
 				long elapsedTime = uptime - lastUptime;
 
-				double v = Math.min(99, elapsedCpu / (elapsedTime * 10000.0 * rt.availableProcessors())) / 100;
+				double v = Math.min(100, elapsedCpu / (elapsedTime * 10000.0 * rt.availableProcessors())) / 100;
 
 				lastUptime = uptime;
 				lastCpu = cpu;
@@ -69,15 +82,23 @@ public class JvmProbes
 		};
 	}
 
-	public static Probe<MemoryDetails> memoryUsage()
+	/**
+	 * Get a probe that reads a snapshot of heap and non-heap memory usage.
+	 *
+	 * @return
+	 *   snapshot of memory usage
+	 * @see MemoryMXBean#getHeapMemoryUsage()
+	 * @see MemoryMXBean#getNonHeapMemoryUsage()
+	 */
+	public static Probe<MemorySnapshot> memoryUsage()
 	{
-		final MemoryMXBean b = ManagementFactory.getMemoryMXBean();
+		MemoryMXBean b = ManagementFactory.getMemoryMXBean();
 
 		return () -> {
 			MemoryUsage heap = b.getHeapMemoryUsage();
 			MemoryUsage nonHeap = b.getNonHeapMemoryUsage();
 
-			return new MemoryDetails(
+			return new MemorySnapshot(
 				heap.getUsed(),
 				heap.getCommitted(),
 				heap.getMax(),
@@ -202,7 +223,9 @@ public class JvmProbes
 	}
 
 	/**
-	 * Get the number of open file descriptors.
+	 * Get the number of open file descriptors. This will report the open
+	 * file descriptors on UNIX-like systems, but will return {@code -1} for
+	 * Windows-based JVMs.
 	 *
 	 * @return
 	 */
@@ -219,7 +242,68 @@ public class JvmProbes
 		return () -> -1l;
 	}
 
-	public static class MemoryDetails
+	/**
+	 * Export JVM probes on the given {@link Vibe} instance. In most cases you
+	 * want to use a {@link Vibe#scope(String...) scoped instance} with this
+	 * method:
+	 *
+	 * <pre>
+	 * // Export all JVM probes under the prefix jvm
+	 * JvmProbes.export(Vibe.scope("jvm"));
+	 * </pre>
+	 *
+	 * <p>
+	 * This will export:
+	 *
+	 * <ul>
+	 *   <li>{@link #cpuUsage()} at {@code cpu}
+	 *   <li>{@link #memoryUsage()} at {@code memory}
+	 *   <li>{@link #openFileDescriptorCount()} at {@code openFileDescriptors}
+	 *   <li>{@link #threadCount()} at {@code threadCount}
+	 *   <li>{@link #loadedClassCount()} at {@code loadedClassCount}
+	 *   <li>{@link #directBufferPool()} at {@code buffers/direct}
+	 *   <li>{@link #mappedBufferPool() at {@code buffers/mapped}
+	 * </ul>
+	 *
+	 * @param vibe
+	 */
+	public void export(Vibe vibe)
+	{
+		vibe.export(cpuUsage())
+			.at("cpu")
+			.done();
+
+		vibe.export(memoryUsage())
+			.at("memory")
+			.done();
+
+		vibe.export(openFileDescriptorCount())
+			.at("openFileDescriptors")
+			.done();
+
+		vibe.export(threadCount())
+			.at("threadCount")
+			.done();
+
+		vibe.export(loadedClassCount())
+			.at("loadedClasses")
+			.done();
+
+		vibe.export(directBufferPool())
+			.at("buffers", "direct")
+			.done();
+
+		vibe.export(mappedBufferPool())
+			.at("buffers", "mapped")
+			.done();
+	}
+
+	/**
+	 * Details about heap and non-heap memory usage.
+	 *
+	 * @see MemoryUsage
+	 */
+	public static class MemorySnapshot
 		implements KeyValueMappable
 	{
 		private final long heapUsed;
@@ -229,8 +313,14 @@ public class JvmProbes
 		private final long nonHeapCommitted;
 		private final long nonHeapMax;
 
-		public MemoryDetails(long heapUsed, long heapCommitted, long heapMax,
-				long nonHeapUsed, long nonHeapCommitted, long nonHeapMax)
+		public MemorySnapshot(
+			long heapUsed,
+			long heapCommitted,
+			long heapMax,
+			long nonHeapUsed,
+			long nonHeapCommitted,
+			long nonHeapMax
+		)
 		{
 			this.heapUsed = heapUsed;
 			this.heapCommitted = heapCommitted;
@@ -240,39 +330,87 @@ public class JvmProbes
 			this.nonHeapMax = nonHeapMax;
 		}
 
+		/**
+		 * Get the amount of heap memory used in bytes.
+		 *
+		 * @return
+		 *   heap memory used in bytes
+		 */
 		public long getHeapUsed()
 		{
 			return heapUsed;
 		}
 
+		/**
+		 * Get the amount of heap memory in bytes that is committed for the JVM
+		 * to use.
+		 *
+		 * @return
+		 *   committed heap memory in bytes
+		 */
 		public long getHeapCommitted()
 		{
 			return heapCommitted;
 		}
 
+		/**
+		 * Get the maximum amount of heap memory in bytes that can be allocated.
+		 * This may return {@code -1} if the maximum is undefined.
+		 *
+		 * @return
+		 *   maximum heap memory in bytes, or {@code -1} if undefined
+		 */
 		public long getHeapMax()
 		{
 			return heapMax;
 		}
 
+		/**
+		 * Get the heap usage as a fraction. Will return {@code -1} if
+		 * {@link #getHeapMax()} is undefined.
+		 *
+		 * @return
+		 *   the ratio of used heap memory between {@code 0} and {@code 1},
+		 *   or {@code -1} if maximum heap memory is unavailable
+		 */
+		public double getHeapUsageAsFraction()
+		{
+			return heapMax < 0 ? -1 : heapUsed / (double) heapMax;
+		}
+
+		/**
+		 * Get the amount of non-heap memory used in bytes.
+		 *
+		 * @return
+		 *   non-heap memory used in bytes
+		 */
 		public long getNonHeapUsed()
 		{
 			return nonHeapUsed;
 		}
 
+		/**
+		 * Get the amount of non-heap memory in bytes that is committed for the
+		 * JVM to use.
+		 *
+		 * @return
+		 *   non-heap memory in bytes that is committed
+		 */
 		public long getNonHeapCommitted()
 		{
 			return nonHeapCommitted;
 		}
 
+		/**
+		 * Get the maximum amount of non-heap memory in bytes that can be
+		 * allocated. This may return {@code -1} if the maximum is undefined.
+		 *
+		 * @return
+		 *   maximum non-heap memory in bytes, or {@code -1} if undefined
+		 */
 		public long getNonHeapMax()
 		{
 			return nonHeapMax;
-		}
-
-		public double getHeapUsageAsFraction()
-		{
-			return heapUsed / (double) heapMax;
 		}
 
 		@Override
@@ -281,10 +419,10 @@ public class JvmProbes
 			receiver.add("heapUsed", heapUsed);
 			receiver.add("heapCommitted", heapCommitted);
 			receiver.add("heapMax", heapMax);
+			receiver.add("heapUsageAsFraction", getHeapUsageAsFraction());
 			receiver.add("nonHeapUsed", nonHeapUsed);
 			receiver.add("nonHeapCommitted", nonHeapCommitted);
 			receiver.add("nonHeapMax", nonHeapMax);
-			receiver.add("heapUsageAsFraction", getHeapUsageAsFraction());
 		}
 
 		@Override
@@ -301,7 +439,11 @@ public class JvmProbes
 		private final long totalCapacity;
 		private final long count;
 
-		public BufferPoolDetails(long memoryUsed, long totalCapacity, long count)
+		public BufferPoolDetails(
+			long memoryUsed,
+			long totalCapacity,
+			long count
+		)
 		{
 			this.memoryUsed = memoryUsed;
 			this.totalCapacity = totalCapacity;
