@@ -6,12 +6,12 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 
 import se.l4.vibe.Handle;
 import se.l4.vibe.checks.Check;
 import se.l4.vibe.checks.CheckEvent;
 import se.l4.vibe.checks.CheckListener;
-import se.l4.vibe.checks.Condition;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleOperation;
 import se.l4.vibe.sampling.Sampler;
@@ -22,7 +22,7 @@ public class CheckImpl<Input>
 	private final Listeners<CheckListener> listeners;
 
 	private final Sampler<Input> sampler;
-	private final Condition<Input> condition;
+	private final Predicate<Input> condition;
 	private final RepetitionGuard metRepetitionGuard;
 	private final RepetitionGuard unmetRepetitionGuard;
 
@@ -33,7 +33,7 @@ public class CheckImpl<Input>
 
 	public CheckImpl(
 		Sampler<Input> sampler,
-		Condition<Input> condition,
+		Predicate<Input> condition,
 		RepetitionGuard metRepetitionGuard,
 		RepetitionGuard unmetRepetitionGuard
 	)
@@ -59,7 +59,7 @@ public class CheckImpl<Input>
 	public boolean isConditionsMet()
 	{
 		Input input = sampler.read();
-		return condition.matches(input);
+		return condition.test(input);
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class CheckImpl<Input>
 	private void check(Sample<Input> sample)
 	{
 		CheckEvent event = null;
-		if(condition.matches(sample.getValue()))
+		if(condition.test(sample.getValue()))
 		{
 			if(! isConditionsMet)
 			{
@@ -140,12 +140,12 @@ public class CheckImpl<Input>
 		implements Builder
 	{
 		private Sampler<?> sampler;
-		private Condition<?> condition;
+		private Predicate<?> condition;
 		private RepetitionGuard metRepetitionGuard = RepetitionGuard.once();
 		private RepetitionGuard unmetRepetitionGuard = RepetitionGuard.once();
 
 		@Override
-		public <I> SamplerWhenBuilder<I> forSampler(Sampler<I> sampler)
+		public <I> SamplerWhenBuilder<I> whenSampler(Sampler<I> sampler)
 		{
 			return new SamplerBuilderImpl<>(sampler, this::receiveResult);
 		}
@@ -156,7 +156,7 @@ public class CheckImpl<Input>
 			return new BooleanSupplierBuilder(supplier, this::receiveResult);
 		}
 
-		private Builder receiveResult(Sampler<?> sampler, Condition<?> condition)
+		private Builder receiveResult(Sampler<?> sampler, Predicate<?> condition)
 		{
 			this.sampler = sampler;
 			this.condition = condition;
@@ -199,12 +199,12 @@ public class CheckImpl<Input>
 	private static class SamplerBuilderImpl<I>
 		implements SamplerWhenBuilder<I>
 	{
-		private final BiFunction<Sampler<?>, Condition<?>, Builder> resultReceiver;
+		private final BiFunction<Sampler<?>, Predicate<?>, Builder> resultReceiver;
 		private Sampler<I> sampler;
 
 		public SamplerBuilderImpl(
 			Sampler<I> sampler,
-			BiFunction<Sampler<?>, Condition<?>, Builder> resultReceiver
+			BiFunction<Sampler<?>, Predicate<?>, Builder> resultReceiver
 		)
 		{
 			this.sampler = sampler;
@@ -222,7 +222,7 @@ public class CheckImpl<Input>
 		}
 
 		@Override
-		public Builder is(Condition<I> condition)
+		public Builder is(Predicate<I> condition)
 		{
 			Objects.requireNonNull(condition, "condition can not be null");
 			return resultReceiver.apply(sampler, condition);
@@ -232,14 +232,14 @@ public class CheckImpl<Input>
 	private static class BooleanSupplierBuilder
 		implements ConditionWhenBuilder
 	{
-		private final BiFunction<Sampler<?>, Condition<?>, Builder> resultReceiver;
+		private final BiFunction<Sampler<?>, Predicate<?>, Builder> resultReceiver;
 
 		private final BooleanSupplier supplier;
 		private Duration checkInterval = Duration.ofMinutes(1);
 
 		public BooleanSupplierBuilder(
 			BooleanSupplier supplier,
-			BiFunction<Sampler<?>, Condition<?>, Builder> resultReceiver
+			BiFunction<Sampler<?>, Predicate<?>, Builder> resultReceiver
 		)
 		{
 			this.supplier = supplier;
@@ -260,7 +260,7 @@ public class CheckImpl<Input>
 				.withInterval(checkInterval)
 				.build();
 
-			Condition<Boolean> condition = v -> v;
+			Predicate<Boolean> condition = v -> v;
 
 			return resultReceiver.apply(sampler, condition);
 		}

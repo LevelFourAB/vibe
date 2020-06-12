@@ -128,7 +128,7 @@ public interface Check
 		 * @param condition
 		 * @return
 		 */
-		Builder is(Condition<I> condition);
+		Builder is(Predicate<I> condition);
 	}
 
 	interface ConditionWhenBuilder

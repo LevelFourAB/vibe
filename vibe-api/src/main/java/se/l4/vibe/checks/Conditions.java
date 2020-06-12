@@ -1,5 +1,8 @@
 package se.l4.vibe.checks;
 
+import java.util.Objects;
+import java.util.function.Predicate;
+
 /**
  * Conditions available for use with {@link Check checks}.
  */
@@ -15,26 +18,21 @@ public class Conditions
 	 * @param instance
 	 * @return
 	 */
-	public static <T> Condition<T> is(final T instance)
+	public static <T> Predicate<T> not(Predicate<T> instance)
 	{
-		return new Condition<T>()
-		{
-			public boolean matches(T value)
-			{
-				if(value == null && instance != null)
-				{
-					return false;
-				}
-				else if(value != null && instance == null)
-				{
-					return false;
-				}
-				else
-				{
-					return instance.equals(value);
-				}
-			}
-		};
+		return instance.negate();
+	}
+
+
+	/**
+	 * Check that the value is equal to the given instance.
+	 *
+	 * @param instance
+	 * @return
+	 */
+	public static <T> Predicate<T> is(T instance)
+	{
+		return v -> Objects.equals(v, instance);
 	}
 
 	/**
@@ -43,20 +41,9 @@ public class Conditions
 	 * @param number
 	 * @return
 	 */
-	public static Condition<Number> is(final double number)
+	public static Predicate<Number> is(double number)
 	{
-		return new Condition<Number>()
-		{
-			public boolean matches(Number value)
-			{
-				if(value == null)
-				{
-					return false;
-				}
-
-				return value.doubleValue() == number;
-			}
-		};
+		return v -> v != null && v.doubleValue() == number;
 	}
 
 	/**
@@ -65,42 +52,9 @@ public class Conditions
 	 * @param number
 	 * @return
 	 */
-	public static Condition<Number> is(final int number)
+	public static Predicate<Number> is(long number)
 	{
-		return new Condition<Number>()
-		{
-			public boolean matches(Number value)
-			{
-				if(value == null)
-				{
-					return false;
-				}
-
-				return value.intValue() == number;
-			}
-		};
-	}
-
-	/**
-	 * Check that a value is equal to the specified number.
-	 *
-	 * @param number
-	 * @return
-	 */
-	public static Condition<Number> is(final long number)
-	{
-		return new Condition<Number>()
-		{
-			public boolean matches(Number value)
-			{
-				if(value == null)
-				{
-					return false;
-				}
-
-				return value.longValue() == number;
-			}
-		};
+		return v -> v != null && v.longValue() == number;
 	}
 
 	/**
@@ -110,20 +64,13 @@ public class Conditions
 	 * @param number
 	 * @return
 	 */
-	public static Condition<Number> inRange(final double lower, final double upper)
+	public static Predicate<Number> inRange(double lower, double upper)
 	{
-		return new Condition<Number>()
-		{
-			public boolean matches(Number value)
-			{
-				if(value == null)
-				{
-					return false;
-				}
+		return v -> {
+			if(v == null) return false;
 
-				double d = value.doubleValue();
-				return d >= lower && d < upper;
-			}
+			double d = v.doubleValue();
+			return d >= lower && d < upper;
 		};
 	}
 
@@ -134,21 +81,9 @@ public class Conditions
 	 * @param value
 	 * @return
 	 */
-	public static <T extends Number> Condition<T> above(final double threshold)
+	public static <T extends Number> Predicate<T> above(double threshold)
 	{
-		return new Condition<T>()
-		{
-			public boolean matches(T value)
-			{
-				return value.doubleValue() > threshold;
-			}
-
-			@Override
-			public String toString()
-			{
-				return "is above " + threshold;
-			}
-		};
+		return v -> v != null && v.doubleValue() > threshold;
 	}
 
 	/**
@@ -158,20 +93,8 @@ public class Conditions
 	 * @param value
 	 * @return
 	 */
-	public static <T extends Number> Condition<T> below(final double threshold)
+	public static <T extends Number> Predicate<T> below(double threshold)
 	{
-		return new Condition<T>()
-		{
-			public boolean matches(T value)
-			{
-				return value.doubleValue() < threshold;
-			}
-
-			@Override
-			public String toString()
-			{
-				return "is below " + threshold;
-			}
-		};
+		return v -> v != null && v.doubleValue() < threshold;
 	}
 }
