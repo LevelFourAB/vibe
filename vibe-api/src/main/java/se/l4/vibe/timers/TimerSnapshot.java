@@ -1,12 +1,9 @@
 package se.l4.vibe.timers;
 
-import se.l4.vibe.probes.ModifiableData;
-
 /**
  * A sample of the state of a {@link Timer}.
  */
 public interface TimerSnapshot
-	extends ModifiableData<TimerSnapshot>
 {
 	/**
 	 * Get the total time measured as milliseconds.
@@ -70,4 +67,20 @@ public interface TimerSnapshot
 	 * @return
 	 */
 	long getMaximumInMs();
+
+	/**
+	 * Remove the values from the given object and return a new copy.
+	 *
+	 * @param other
+	 * @return
+	 */
+	TimerSnapshot remove(TimerSnapshot other);
+
+	/**
+	 * Add the value from the given object and return a new copy.
+	 *
+	 * @param other
+	 * @return
+	 */
+	TimerSnapshot add(TimerSnapshot other);
 }

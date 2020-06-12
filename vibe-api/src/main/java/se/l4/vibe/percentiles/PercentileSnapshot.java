@@ -1,12 +1,9 @@
 package se.l4.vibe.percentiles;
 
-import se.l4.vibe.probes.ModifiableData;
-
 /**
  * Snapshot of the state of a {@link PercentileCounter}.
  */
 public interface PercentileSnapshot
-	extends ModifiableData<PercentileSnapshot>
 {
 	/**
 	 * Get the total value measured.
@@ -31,4 +28,20 @@ public interface PercentileSnapshot
 	 * @return
 	 */
 	long estimatePercentile(int percentile);
+
+	/**
+	 * Remove the values from the given object and return a new copy.
+	 *
+	 * @param other
+	 * @return
+	 */
+	PercentileSnapshot remove(PercentileSnapshot other);
+
+	/**
+	 * Add the value from the given object and return a new copy.
+	 *
+	 * @param other
+	 * @return
+	 */
+	PercentileSnapshot add(PercentileSnapshot other);
 }
