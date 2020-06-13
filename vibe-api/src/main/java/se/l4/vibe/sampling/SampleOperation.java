@@ -1,7 +1,7 @@
 package se.l4.vibe.sampling;
 
 /**
- * Operation that can be applied to samples of a {@link Sampler}. Used to
+ * Operation that can be applied to samples of a {@link TimeSampler}. Used to
  * transform and aggregate samples.
  *
  * @param <Input>

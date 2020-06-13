@@ -13,14 +13,14 @@ import se.l4.vibe.checks.CheckEvent;
 import se.l4.vibe.checks.CheckListener;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleOperation;
-import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.sampling.TimeSampler;
 
 public class CheckImpl<Input>
 	implements Check
 {
 	private final Listeners<CheckListener> listeners;
 
-	private final Sampler<Input> sampler;
+	private final TimeSampler<Input> sampler;
 	private final Predicate<Input> condition;
 	private final RepetitionGuard metRepetitionGuard;
 	private final RepetitionGuard unmetRepetitionGuard;
@@ -31,7 +31,7 @@ public class CheckImpl<Input>
 	private Instant lastConditionsChange;
 
 	public CheckImpl(
-		Sampler<Input> sampler,
+		TimeSampler<Input> sampler,
 		Predicate<Input> condition,
 		RepetitionGuard metRepetitionGuard,
 		RepetitionGuard unmetRepetitionGuard
@@ -138,13 +138,13 @@ public class CheckImpl<Input>
 	public static class BuilderImpl
 		implements Builder
 	{
-		private Sampler<?> sampler;
+		private TimeSampler<?> sampler;
 		private Predicate<?> condition;
 		private RepetitionGuard metRepetitionGuard = RepetitionGuard.once();
 		private RepetitionGuard unmetRepetitionGuard = RepetitionGuard.once();
 
 		@Override
-		public <I> SamplerWhenBuilder<I> whenSampler(Sampler<I> sampler)
+		public <I> SamplerWhenBuilder<I> whenSampler(TimeSampler<I> sampler)
 		{
 			return new SamplerBuilderImpl<>(sampler, this::receiveResult);
 		}
@@ -155,7 +155,7 @@ public class CheckImpl<Input>
 			return new BooleanSupplierBuilder(supplier, this::receiveResult);
 		}
 
-		private Builder receiveResult(Sampler<?> sampler, Predicate<?> condition)
+		private Builder receiveResult(TimeSampler<?> sampler, Predicate<?> condition)
 		{
 			this.sampler = sampler;
 			this.condition = condition;
@@ -198,12 +198,12 @@ public class CheckImpl<Input>
 	private static class SamplerBuilderImpl<I>
 		implements SamplerWhenBuilder<I>
 	{
-		private final BiFunction<Sampler<?>, Predicate<?>, Builder> resultReceiver;
-		private Sampler<I> sampler;
+		private final BiFunction<TimeSampler<?>, Predicate<?>, Builder> resultReceiver;
+		private TimeSampler<I> sampler;
 
 		public SamplerBuilderImpl(
-			Sampler<I> sampler,
-			BiFunction<Sampler<?>, Predicate<?>, Builder> resultReceiver
+			TimeSampler<I> sampler,
+			BiFunction<TimeSampler<?>, Predicate<?>, Builder> resultReceiver
 		)
 		{
 			this.sampler = sampler;
@@ -216,7 +216,7 @@ public class CheckImpl<Input>
 		{
 			Objects.requireNonNull(operation, "operation can not be null");
 
-			sampler = (Sampler) sampler.apply(operation);
+			sampler = (TimeSampler) sampler.apply(operation);
 			return (SamplerWhenBuilder) this;
 		}
 
@@ -231,14 +231,14 @@ public class CheckImpl<Input>
 	private static class BooleanSupplierBuilder
 		implements BooleanSupplierWhenBuilder
 	{
-		private final BiFunction<Sampler<?>, Predicate<?>, Builder> resultReceiver;
+		private final BiFunction<TimeSampler<?>, Predicate<?>, Builder> resultReceiver;
 
 		private final BooleanSupplier supplier;
 		private Duration checkInterval = Duration.ofMinutes(1);
 
 		public BooleanSupplierBuilder(
 			BooleanSupplier supplier,
-			BiFunction<Sampler<?>, Predicate<?>, Builder> resultReceiver
+			BiFunction<TimeSampler<?>, Predicate<?>, Builder> resultReceiver
 		)
 		{
 			this.supplier = supplier;
@@ -257,7 +257,7 @@ public class CheckImpl<Input>
 		@Override
 		public Builder done()
 		{
-			Sampler<Boolean> sampler = Sampler.forProbe(supplier::getAsBoolean)
+			TimeSampler<Boolean> sampler = TimeSampler.forProbe(supplier::getAsBoolean)
 				.withInterval(checkInterval)
 				.build();
 

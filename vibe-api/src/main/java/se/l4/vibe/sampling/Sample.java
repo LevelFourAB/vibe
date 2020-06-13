@@ -3,7 +3,7 @@ package se.l4.vibe.sampling;
 import se.l4.vibe.internal.sampling.SampleImpl;
 
 /**
- * Sample as acquired by {@link Sampler} from a {@link SampledProbe}.
+ * Sample as acquired by {@link TimeSampler} from a {@link SampledProbe}.
  */
 public interface Sample<T>
 {

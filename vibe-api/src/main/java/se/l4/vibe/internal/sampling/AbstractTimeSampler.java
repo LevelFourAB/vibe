@@ -4,21 +4,21 @@ import se.l4.vibe.Handle;
 import se.l4.vibe.internal.Listeners;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListener;
-import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.sampling.TimeSampler;
 
 /**
- * Abstract implementation of {@link Sampler}.
+ * Abstract implementation of {@link TimeSampler}.
  *
  * @param <T>
  */
-public abstract class AbstractSampler<T>
-	implements Sampler<T>
+public abstract class AbstractTimeSampler<T>
+	implements TimeSampler<T>
 {
 	private final Listeners<SampleListener<T>> listeners;
 
 	private Sample<T> lastSample;
 
-	public AbstractSampler()
+	public AbstractTimeSampler()
 	{
 		listeners = new Listeners<>(count -> {
 			if(count == 1)

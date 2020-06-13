@@ -31,7 +31,7 @@ import se.l4.vibe.sampling.SampledProbe;
  * Instances contain two probes, one for total events via {@link #getTotalEventsProbe()}
  * and one sampled probe via {@link #getEventsProbe()}. These probes can be
  * {@link se.l4.vibe.Vibe#export(Exportable) exported}, used with a
- * {@link se.l4.vibe.sampling.Sampler} or {@link se.l4.vibe.checks.Check}.
+ * {@link se.l4.vibe.sampling.TimeSampler} or {@link se.l4.vibe.checks.Check}.
  *
  * @param <T>
  */

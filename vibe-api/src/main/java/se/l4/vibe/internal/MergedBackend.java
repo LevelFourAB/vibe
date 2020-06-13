@@ -8,7 +8,7 @@ import se.l4.vibe.checks.Check;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
-import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.sampling.TimeSampler;
 import se.l4.vibe.timers.Timer;
 
 /**
@@ -25,7 +25,7 @@ public class MergedBackend
 	}
 
 	@Override
-	public Handle export(String path, Sampler<?> series)
+	public Handle export(String path, TimeSampler<?> series)
 	{
 		Handle[] handles = Arrays.stream(backends)
 			.map(b -> b.export(path, series))

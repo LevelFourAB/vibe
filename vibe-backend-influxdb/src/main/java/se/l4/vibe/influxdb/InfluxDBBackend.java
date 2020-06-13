@@ -35,7 +35,7 @@ import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListener;
 import se.l4.vibe.sampling.SampledProbe;
-import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.sampling.TimeSampler;
 import se.l4.vibe.snapshots.KeyValueReceiver;
 import se.l4.vibe.snapshots.Snapshot;
 import se.l4.vibe.timers.Timer;
@@ -155,15 +155,15 @@ public class InfluxDBBackend
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Handle export(String path, Sampler<?> sampler)
+	public Handle export(String path, TimeSampler<?> sampler)
 	{
-		return ((Sampler) sampler).addListener(new SampleQueuer(path));
+		return ((TimeSampler) sampler).addListener(new SampleQueuer(path));
 	}
 
 	@Override
 	public Handle export(String path, Probe<?> probe)
 	{
-		return sampleAndExport(path, probe::read);
+		return sampleAndExport(path, SampledProbe.over(probe));
 	}
 
 	@Override
@@ -174,7 +174,7 @@ public class InfluxDBBackend
 
 	private Handle sampleAndExport(String path, SampledProbe<?> probe)
 	{
-		Sampler<?> sampler = Sampler.forProbe(probe)
+		TimeSampler<?> sampler = TimeSampler.forProbe(probe)
 			.withInterval(samplingInterval)
 			.build();
 

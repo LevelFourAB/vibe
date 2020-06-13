@@ -1,6 +1,5 @@
 package se.l4.vibe;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,7 +17,7 @@ import se.l4.vibe.events.EventData;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
-import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.sampling.TimeSampler;
 import se.l4.vibe.timers.Timer;
 
 public class VibeTest
@@ -60,7 +59,7 @@ public class VibeTest
 	@Test
 	public void testExportSampler()
 	{
-		Sampler<?> sampler = Sampler.forProbe(() -> ThreadLocalRandom.current().nextDouble())
+		TimeSampler<?> sampler = TimeSampler.forProbe(() -> ThreadLocalRandom.current().nextDouble())
 			.build();
 
 		Export<?> export = vibe.export(sampler)
@@ -77,7 +76,7 @@ public class VibeTest
 	@Test
 	public void testExportSampledProbe()
 	{
-		SampledProbe<Double> probe = () -> ThreadLocalRandom.current().nextDouble();
+		SampledProbe<Double> probe = SampledProbe.over(() -> ThreadLocalRandom.current().nextDouble());
 
 		Export<?> export = vibe.export(probe)
 			.at("sampler")
@@ -257,7 +256,7 @@ public class VibeTest
 		}
 
 		@Override
-		public Handle export(String path, Sampler<?> series)
+		public Handle export(String path, TimeSampler<?> series)
 		{
 			return export0(path, series);
 		}

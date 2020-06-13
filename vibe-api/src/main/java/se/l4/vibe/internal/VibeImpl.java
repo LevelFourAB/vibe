@@ -20,7 +20,7 @@ import se.l4.vibe.checks.Check;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
-import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.sampling.TimeSampler;
 import se.l4.vibe.timers.Timer;
 
 /**
@@ -128,9 +128,9 @@ public class VibeImpl
 		}
 
 		Handle handle;
-		if(object instanceof Sampler)
+		if(object instanceof TimeSampler)
 		{
-			handle = backend.export(path, (Sampler) object);
+			handle = backend.export(path, (TimeSampler) object);
 		}
 		else if(object instanceof Timer)
 		{

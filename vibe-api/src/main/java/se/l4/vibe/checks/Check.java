@@ -9,7 +9,7 @@ import se.l4.vibe.Handle;
 import se.l4.vibe.Vibe;
 import se.l4.vibe.internal.CheckImpl;
 import se.l4.vibe.sampling.SampleOperation;
-import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.sampling.TimeSampler;
 
 /**
  * Check is an object used to verify if certain conditions are met. Checks
@@ -122,7 +122,7 @@ public interface Check
 		 * @param sampler
 		 * @return
 		 */
-		<I> SamplerWhenBuilder<I> whenSampler(Sampler<I> sampler);
+		<I> SamplerWhenBuilder<I> whenSampler(TimeSampler<I> sampler);
 
 		/**
 		 * Set the condition for when to check based on a {@link BooleanSupplier}
@@ -162,7 +162,7 @@ public interface Check
 	}
 
 	/**
-	 * Builder for a condition on top of a {@link Sampler}.
+	 * Builder for a condition on top of a {@link TimeSampler}.
 	 */
 	interface SamplerWhenBuilder<I>
 	{

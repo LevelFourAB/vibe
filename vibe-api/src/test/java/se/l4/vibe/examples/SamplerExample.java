@@ -10,7 +10,7 @@ import se.l4.vibe.Vibe;
 import se.l4.vibe.checks.Check;
 import se.l4.vibe.checks.Conditions;
 import se.l4.vibe.operations.Average;
-import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.sampling.TimeSampler;
 
 /**
  * A simple example that will log the current CPU usage every 5 seconds.
@@ -31,7 +31,7 @@ public class SamplerExample
 		/*
 		 * Sample and export JVM CPU usage.
 		 */
-		Sampler<Double> cpuUsage = Sampler.forProbe(JvmProbes.cpuUsage())
+		TimeSampler<Double> cpuUsage = TimeSampler.forProbe(JvmProbes.cpuUsage())
 			.withInterval(Duration.ofSeconds(1))
 			.build();
 

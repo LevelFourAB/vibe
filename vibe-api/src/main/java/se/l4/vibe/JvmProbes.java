@@ -11,6 +11,7 @@ import java.lang.management.ThreadMXBean;
 
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
+import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.snapshots.KeyValueReceiver;
 import se.l4.vibe.snapshots.Snapshot;
 import se.l4.vibe.snapshots.Snapshots;
@@ -31,7 +32,7 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
-	public static SampledProbe<Double> cpuUsage()
+	public static Probe<Double> cpuUsage()
 	{
 		com.sun.management.OperatingSystemMXBean os =
 			(com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
@@ -58,27 +59,29 @@ public class JvmProbes
 		RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
 		Runtime rt = Runtime.getRuntime();
 
-		return new SampledProbe<Double>()
-		{
-			private long lastUptime = runtime.getUptime();
-			private long lastCpu = os.getProcessCpuTime();
-
-			@Override
-			public Double sample()
+		return () -> {
+			return new Sampler<Double>()
 			{
-				long uptime = runtime.getUptime();
-				long cpu = os.getProcessCpuTime();
+				private long lastUptime = runtime.getUptime();
+				private long lastCpu = os.getProcessCpuTime();
 
-				long elapsedCpu = cpu - lastCpu;
-				long elapsedTime = uptime - lastUptime;
+				@Override
+				public Double sample()
+				{
+					long uptime = runtime.getUptime();
+					long cpu = os.getProcessCpuTime();
 
-				double v = Math.min(100, elapsedCpu / (elapsedTime * 10000.0 * rt.availableProcessors())) / 100;
+					long elapsedCpu = cpu - lastCpu;
+					long elapsedTime = uptime - lastUptime;
 
-				lastUptime = uptime;
-				lastCpu = cpu;
+					double v = Math.min(100, elapsedCpu / (elapsedTime * 10000.0 * rt.availableProcessors())) / 100;
 
-				return v;
-			}
+					lastUptime = uptime;
+					lastCpu = cpu;
+
+					return v;
+				}
+			};
 		};
 	}
 
@@ -229,7 +232,7 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
-	public static SampledProbe<Long> openFileDescriptorCount()
+	public static Probe<Long> openFileDescriptorCount()
 	{
 		OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
 		if(os instanceof com.sun.management.UnixOperatingSystemMXBean)

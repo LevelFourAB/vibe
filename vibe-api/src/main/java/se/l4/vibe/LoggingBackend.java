@@ -40,7 +40,7 @@ public class LoggingBackend
 	}
 
 	@Override
-	public Handle export(String path, Sampler<?> series)
+	public Handle export(String path, TimeSampler<?> series)
 	{
 		if(! logSamples) return Handle.empty();
 

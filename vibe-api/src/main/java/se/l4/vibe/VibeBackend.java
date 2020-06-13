@@ -4,7 +4,7 @@ import se.l4.vibe.checks.Check;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
-import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.sampling.TimeSampler;
 import se.l4.vibe.timers.Timer;
 
 /**
@@ -13,12 +13,12 @@ import se.l4.vibe.timers.Timer;
 public interface VibeBackend
 {
 	/**
-	 * Export a {@link Sampler}.
+	 * Export a {@link TimeSampler}.
 	 *
 	 * @param path
 	 * @param series
 	 */
-	default Handle export(String path, Sampler<?> series)
+	default Handle export(String path, TimeSampler<?> series)
 	{
 		return Handle.empty();
 	}

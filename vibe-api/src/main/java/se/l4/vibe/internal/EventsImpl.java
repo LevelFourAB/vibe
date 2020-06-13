@@ -11,6 +11,7 @@ import se.l4.vibe.events.EventSeverity;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
+import se.l4.vibe.sampling.Sampler;
 
 /**
  * Implementation of {@link Events}.
@@ -81,19 +82,20 @@ public class EventsImpl<T extends EventData>
 	@Override
 	public SampledProbe<Long> getEventsProbe()
 	{
-		return new SampledProbe<Long>()
-		{
-			private long lastValue;
+		return () -> {
+			return new Sampler<Long>() {
+				private long lastValue;
 
-			@Override
-			public Long sample()
-			{
-				long current = totalEvents.longValue();
-				long sinceLastSample = current - lastValue;
-				lastValue = current;
+				@Override
+				public Long sample()
+				{
+					long current = totalEvents.longValue();
+					long sinceLastSample = current - lastValue;
+					lastValue = current;
 
-				return sinceLastSample;
-			}
+					return sinceLastSample;
+				}
+			};
 		};
 	}
 

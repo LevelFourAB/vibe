@@ -13,7 +13,7 @@ public class SamplerTest
 	@Test
 	public void testAddingListenerStartsSampling()
 	{
-		Sampler<Double> randomSampler = Sampler.forProbe(
+		TimeSampler<Double> randomSampler = TimeSampler.forProbe(
 			() -> ThreadLocalRandom.current().nextDouble()
 		).build();
 

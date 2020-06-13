@@ -15,7 +15,7 @@ import se.l4.vibe.internal.jmx.ExportMBeanBridge;
 import se.l4.vibe.internal.jmx.JmxExport;
 import se.l4.vibe.internal.jmx.ProbeBean;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.sampling.TimeSampler;
 
 /**
  * Backend that will probes and samplers over JMX.
@@ -131,7 +131,7 @@ public class JmxBackend
 	}
 
 	@Override
-	public Handle export(String path, Sampler<?> series)
+	public Handle export(String path, TimeSampler<?> series)
 	{
 		/*
 		 * Add a listener - doesn't actually do anything other than to activate

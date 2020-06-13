@@ -1,10 +1,12 @@
 package se.l4.vibe.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
+import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.snapshots.MapSnapshot;
 
 public class MergedProbes
@@ -105,15 +107,21 @@ public class MergedProbes
 		}
 
 		@Override
-		public MapSnapshot sample()
+		@SuppressWarnings("unchecked")
+		public Sampler<MapSnapshot> create()
 		{
-			MapSnapshot.Builder builder = MapSnapshot.builder();
-			for(Named<SampledProbe<?>> value : values)
-			{
-				builder.set(value.name, value.value.sample());
-			}
+			Named<Sampler<?>>[] samplers = Arrays.stream(values)
+				.map(n -> new Named<>(n.name, n.value.create()))
+				.toArray(Named[]::new);
 
-			return builder.build();
+			return () -> {
+				MapSnapshot.Builder builder = MapSnapshot.builder();
+				for(Named<Sampler<?>> value : samplers)
+				{
+					builder.set(value.name, value.value.sample());
+				}
+				return builder.build();
+			};
 		}
 	}
 }

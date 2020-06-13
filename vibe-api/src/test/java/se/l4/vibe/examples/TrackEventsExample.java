@@ -11,7 +11,7 @@ import se.l4.vibe.events.EventData;
 import se.l4.vibe.events.EventSeverity;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.sampling.TimeSampler;
 
 /**
  * Example showing how to track events.
@@ -43,7 +43,7 @@ public class TrackEventsExample
 			.done();
 
 		// Sampling the number of events sent during 10 second interval
-		Sampler<Long> eventsSampler = Sampler.forProbe(accessEvents.getEventsProbe())
+		TimeSampler<Long> eventsSampler = TimeSampler.forProbe(accessEvents.getEventsProbe())
 			.build();
 
 		vibe.export(eventsSampler)

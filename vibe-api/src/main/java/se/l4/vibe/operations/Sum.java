@@ -6,10 +6,10 @@ import java.util.Collection;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListOperation;
 import se.l4.vibe.sampling.SampleOperation;
-import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.sampling.TimeSampler;
 
 /**
- * Operations for {@link Sampler} that calculate the sum of sampled values.
+ * Operations for {@link TimeSampler} that calculate the sum of sampled values.
  */
 public class Sum
 {

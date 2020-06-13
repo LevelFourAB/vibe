@@ -10,30 +10,38 @@ import se.l4.vibe.internal.Scheduling;
 import se.l4.vibe.sampling.SampleOperation;
 import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.sampling.TimeSampler;
 
-public class SamplerImpl<T>
-	extends AbstractSampler<T>
+public class TimeSamplerImpl<T>
+	extends AbstractTimeSampler<T>
 {
 	private final long intervalTime;
-	private final SampledProbe<T> probe;
+	private final Sampler<T> sampler;
 
 	private Handle handle;
 
-	public SamplerImpl(
-		SampledProbe<T> probe,
+	public TimeSamplerImpl(
+		Sampler<T> sampler,
 		long intervalTime
 	)
 	{
 		this.intervalTime = intervalTime;
-		this.probe = probe;
+		this.sampler = sampler;
 	}
 
+	/**
+	 * Sample the probe and register the sample. Synchronized so that the
+	 * sampling and listeners are run in a thread-safe way.
+	 */
 	private void sample()
 	{
-		long time = System.currentTimeMillis();
-		T value = probe.sample();
+		synchronized(this)
+		{
+			long time = System.currentTimeMillis();
+			T value = sampler.sample();
 
-		registerSample(time, value);
+			registerSample(time, value);
+		}
 	}
 
 	@Override
@@ -97,9 +105,9 @@ public class SamplerImpl<T>
 
 		@Override
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public Sampler<T> build()
+		public TimeSampler<T> build()
 		{
-			Sampler sampler = new SamplerImpl<>(probe, interval);
+			TimeSampler sampler = new TimeSamplerImpl<>(probe.create(), interval);
 
 			if(ops != null)
 			{

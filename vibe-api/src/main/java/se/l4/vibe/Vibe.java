@@ -25,7 +25,7 @@ import se.l4.vibe.internal.VibeImpl;
  * When an instance has been built it can be used to export statistics via
  * the {@link #export(Exportable)} method. This works for objects that
  * implement {@link Exportable} via {@link se.l4.vibe.probes.Probe},
- * {@link se.l4.vibe.sampling.SampledProbe}, {@link se.l4.vibe.sampling.Sampler},
+ * {@link se.l4.vibe.sampling.SampledProbe}, {@link se.l4.vibe.sampling.TimeSampler},
  * {@link se.l4.vibe.timers.Timer}, {@link se.l4.vibe.events.Events} or
  * {@link se.l4.vibe.checks.Check}.
  *
@@ -76,6 +76,12 @@ public interface Vibe
 	/**
 	 * Start to export the given object. This will return a builder that
 	 * can be used to define the path the object will be exported at.
+	 *
+	 * <p>
+	 * Supports exporting {@link se.l4.vibe.probes.Probe},
+	 * {@link se.l4.vibe.sampling.SampledProbe}, {@link se.l4.vibe.sampling.TimeSampler},
+	 * {@link se.l4.vibe.timers.Timer}, {@link se.l4.vibe.events.Events} and
+	 * {@link se.l4.vibe.checks.Check}.
 	 *
 	 * @param <T>
 	 *   type of object being exported

@@ -10,16 +10,21 @@ import se.l4.vibe.snapshots.MapSnapshot;
  * Probe that measures a value that requires sampling to be read.
  *
  * @param <T>
+ *   the type of value being sampled, supports {@link Boolean}, {@link String},
+ *   {@link Number} such as integers, longs, floats and doubles. More complex
+ *   objects are supported if they implement {@link se.l4.vibe.snapshots.Snapshot}.
  */
+@FunctionalInterface
 public interface SampledProbe<T>
 	extends Exportable
 {
 	/**
-	 * Sample the current value and optionally reset the probe.
+	 * Create a {@link Sampler} that can be used to sample values on this for
+	 * this probe.
 	 *
 	 * @return
 	 */
-	T sample();
+	Sampler<T> create();
 
 	/**
 	 * Create a new probe that applies the given operation to the value of this
@@ -34,8 +39,11 @@ public interface SampledProbe<T>
 	default <O> SampledProbe<O> apply(ProbeOperation<T, O> operation)
 	{
 		return () -> {
-			T value = this.sample();
-			return operation.apply(value);
+			Sampler<T> probe = this.create();
+			return () -> {
+				T value = probe.sample();
+				return operation.apply(value);
+			};
 		};
 	}
 
@@ -49,7 +57,7 @@ public interface SampledProbe<T>
 	 */
 	static <T> SampledProbe<T> over(Probe<T> probe)
 	{
-		return probe::read;
+		return () -> probe::read;
 	}
 
 	/**

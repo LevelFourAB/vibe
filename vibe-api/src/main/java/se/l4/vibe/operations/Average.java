@@ -6,10 +6,10 @@ import java.util.Collection;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListOperation;
 import se.l4.vibe.sampling.SampleOperation;
-import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.sampling.TimeSampler;
 
 /**
- * Operations for calculating averages of samples from a {@link Sampler}.
+ * Operations for calculating averages of samples from a {@link TimeSampler}.
  */
 public class Average
 {

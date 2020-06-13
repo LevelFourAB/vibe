@@ -3,24 +3,24 @@ package se.l4.vibe.internal.sampling;
 import se.l4.vibe.Handle;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleOperation;
-import se.l4.vibe.sampling.Sampler;
+import se.l4.vibe.sampling.TimeSampler;
 
 /**
- * {@link Sampler} that applies a {@link SampleOperation}.
+ * {@link TimeSampler} that applies a {@link SampleOperation}.
  *
  * @param <I>
  * @param <O>
  */
 public class SamplerWithOperation<I, O>
-	extends AbstractSampler<O>
+	extends AbstractTimeSampler<O>
 {
-	private final Sampler<I> input;
+	private final TimeSampler<I> input;
 	private final SampleOperation<I, O> modifier;
 
 	private Handle listenerHandle;
 
 	public SamplerWithOperation(
-		Sampler<I> input,
+		TimeSampler<I> input,
 		SampleOperation<I, O> modifier
 	)
 	{
