@@ -144,7 +144,7 @@ public class CheckImpl<Input>
 		private RepetitionGuard unmetRepetitionGuard = RepetitionGuard.once();
 
 		@Override
-		public <I> SamplerWhenBuilder<I> whenSampler(TimeSampler<I> sampler)
+		public <I> SamplerWhenBuilder<I> whenTimeSampler(TimeSampler<I> sampler)
 		{
 			return new SamplerBuilderImpl<>(sampler, this::receiveResult);
 		}

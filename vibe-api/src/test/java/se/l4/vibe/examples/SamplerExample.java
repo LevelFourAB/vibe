@@ -45,7 +45,7 @@ public class SamplerExample
 		 * the check meets these conditions.
 		 */
 		Check check = Check.builder()
-			.whenSampler(cpuUsage)
+			.whenTimeSampler(cpuUsage)
 				.applyResampling(Average.averageOver(Duration.ofSeconds(10)))
 				.is(Conditions.below(0.8))
 			.whenMetRepeatEvery(Duration.ofSeconds(5))

@@ -123,7 +123,7 @@ public interface Check
 		 * @param sampler
 		 * @return
 		 */
-		<I> SamplerWhenBuilder<I> whenSampler(TimeSampler<I> sampler);
+		<I> SamplerWhenBuilder<I> whenTimeSampler(TimeSampler<I> sampler);
 
 		/**
 		 * Set the condition for when to check based on a {@link BooleanSupplier}
