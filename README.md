@@ -9,22 +9,16 @@ Licensed under Apache 2.0.
 
 ```java
 /*
- * Create an instance that will log samples and make metrics available over
- * JMX.
+ * Create an instance make metrics available over JMX.
  */
 Vibe vibe = Vibe.builder()
-  .withBackend(
-    LoggingBackend.builder().logSamples().build()
-  )
   .withBackend(
     JmxBackend.builder().build()
   )
   .build();
 
 /*
- * Sample CPU usage using the default interval (10 seconds) and export it.
- * The logging backend will log the value every minute and it will be available
- * over JMX.
+ * Export CPU usage of the JVM.
  */
 vibe.export(JvmProbes.cpuUsage())
   .at("jvm", "cpu")
@@ -64,10 +58,13 @@ Probe<Double> heapUsage = JvmProbes.heapMemoryAsFraction();
 
 ### Implementing a probe
 
-Both `Probe` and `SampledProbe` are functional interfaces with one method,
-the difference being that a regular probe can be read whenever while a sampled
-probe must be used via `Sampler`. Probes can return any `Number`, `String` or
-object that implements `KeyValueMappable`.
+Probes can return any `Number` (such as integers, longs, floats, doubles etc),
+`Boolean`, `String` or object that implements `Snapshot`.
+
+#### `Probe`
+
+`Probe` is a functional interface with one method that should return the
+probed value. 
 
 A small probe that reads a single value might look like this:
 
@@ -93,6 +90,50 @@ ThreadPoolExecutor executor = ...;
 Probe<Integer> probe = executor::getActiveCount;
 ```
 
+#### `SampledProbe`
+
+`SampledProbe` works as a factory for instances of `Sampler` that perform the
+actual sampling. This allows sampled probes to be exported over different
+backends or used with several instances of `TimeSampler`.
+
+A `Sampler` like a `Probe` is a functional interface that should return a 
+single value.
+
+```java
+class ThreadPoolExecutorCompletedTasksProbe implements SampledProbe<Integer> {
+  private final ThreadPoolExecutor executor;
+
+  public ThreadPoolExecutorCompletedTasksProbe(ThreadPoolExecutor executor) {
+    this.executor = executor;
+  }
+
+  public Sampler<Integer> create() {
+    return new Sampler<Integer>() {
+      private int lastTotal = 0;
+
+      public Integer sample() {
+        int total = executor.getCompletedTaskCount();
+        int change = total - lastTotal;
+        lastTotal = total;
+        return change;
+      }
+    }
+  }
+}
+```
+
+In many cases a `SampledProbe` is easier to create via another `Probe` with
+an operation applied to. For example the above class can be simplified to:
+
+```java
+Probe<Integer> totalCompletedTasks = executor::getCompletedTaskCount;
+
+SampledProbe<Long> completedTasks = SampledProbe.over(totalCompletedTasks)
+  .apply(Change.changeAsLong());
+```
+
+#### Multiple values
+
 For probes that read several values `Probe.merged()` and `SampleProbe.merged()`
 can be used to create probes that read several values:
 
@@ -115,7 +156,7 @@ if it's exported or used by another Vibe object.
 Example:
 
 ```java
-Sampler<?> sampler = Sampler.forProbe(sampledProbe)
+TimeSampler<?> sampler = TimeSampler.forProbe(sampledProbe)
   .withInterval(Duration.ofMinutes(1))
   .build();
 ```
@@ -126,7 +167,7 @@ It's possible to sample a probe as well using `Probe` by referencing it's
 ```java
 Probe<Double> probe = ...;
 
-Sampler<Double> sampler = Sampler.forProbe(probe::read)
+TimeSampler<Double> sampler = TimeSampler.forProbe(probe::read)
   .build();
 ```
 
@@ -138,8 +179,10 @@ average of a time period, extract minimum and maximum values or detecting the
 how much something changes.
 
 ```java
-Sampler<Double> averageOverFiveMinutes = sampler
-  .apply(Average.averageOver(Duration.ofMinutes(5)));
+Probe<Long> maxValue = probe.apply(Range.maxAsLong());
+
+TimeSampler<Double> averageOverFiveMinutes = sampler
+  .applyResampling(Average.averageOver(Duration.ofMinutes(5)));
 ```
 
 These modified probes and samplers can then be exported or used to create
@@ -167,11 +210,11 @@ used a health checks, such as checking if CPU usage over 5 minutes is above
 a certain value:
 
 ```java
-Sampler<Double> cpuUsage = Sampler.forProbe(JvmProbes.cpuUsage())
+TimeSampler<Double> cpuUsage = TimeSampler.forProbe(JvmProbes.cpuUsage())
   .build();
 
 Check check = Check.builder()
-  .when(cpuUsage)
+  .whenTimeSampler(cpuUsage)
     .apply(Average.averageOver(Duration.ofMinutes(5)))
     .is(Conditions.above(0.9))
   .build();
@@ -196,7 +239,7 @@ of conditions being met changes, but checks can also repeat events:
 
 ```java
 Check check = Check.builder()
-  .when(cpuUsage)
+  .whenTimeSampler(cpuUsage)
     .apply(Average.averageOver(Duration.ofMinutes(5)))
     .is(Conditions.above(0.9))
   .whenMetRepeatEvery(Duration.ofMinutes(30))
@@ -218,7 +261,7 @@ To create a timer:
 ```java
 Timer timer = Timer.builder()
   .withBuckets(0, 50, 100, 200, 500, 1000) // for calculating percentiles
-  .export();
+  .build();
 ```
 
 To use a timer:
@@ -250,7 +293,7 @@ Vibe vibe = Vibe.builder()
 Export using the `export` method:
 
 ```java
-Export<Sampler<Double>> exportedCpuUsage = vibe.export(cpuUsageSampler)
+Export<SampledProbe<Double>> exportedCpuUsage = vibe.export(JvmProbes.cpuUsage())
   .at("jvm", "cpu")
   .done();
 ```
