@@ -1,5 +1,7 @@
 package se.l4.vibe.internal.timer;
 
+import java.util.concurrent.TimeUnit;
+
 import se.l4.vibe.percentiles.PercentileSnapshot;
 import se.l4.vibe.snapshots.KeyValueReceiver;
 import se.l4.vibe.timers.TimerSnapshot;
@@ -10,25 +12,32 @@ import se.l4.vibe.timers.TimerSnapshot;
 public class TimerSnapshotImpl
 	implements TimerSnapshot
 {
+	private final TimeUnit resolution;
 	private final PercentileSnapshot snapshot;
 	private final long min;
 	private final long max;
 
-	public TimerSnapshotImpl(PercentileSnapshot snapshot, long min, long max)
+	public TimerSnapshotImpl(
+		TimeUnit resolution,
+		PercentileSnapshot snapshot,
+		long min,
+		long max
+	)
 	{
+		this.resolution = resolution;
 		this.snapshot = snapshot;
 		this.min = min;
 		this.max = max;
 	}
 
 	@Override
-	public long getTotalTimeInMs()
+	public TimeUnit getResolution()
 	{
-		return snapshot.getTotal() / 1000000;
+		return resolution;
 	}
 
 	@Override
-	public long getTotalTimeInNs()
+	public long getTotalTime()
 	{
 		return snapshot.getTotal();
 	}
@@ -40,48 +49,31 @@ public class TimerSnapshotImpl
 	}
 
 	@Override
-	public double getAverageInMs()
-	{
-		return snapshot.getTotal() / 1000000.0 / snapshot.getSamples();
-	}
-
-	@Override
-	public double getAverageInNs()
+	public double getAverage()
 	{
 		return snapshot.getTotal() / (double) snapshot.getSamples();
 	}
 
 	@Override
-	public long getMinimumInNs()
+	public long getMinimum()
 	{
 		return min;
 	}
 
 	@Override
-	public long getMinimumInMs()
-	{
-		return min / 1000000;
-	}
-
-	@Override
-	public long getMaximumInNs()
+	public long getMaximum()
 	{
 		return max;
-	}
-
-	@Override
-	public long getMaximumInMs()
-	{
-		return max / 1000000;
 	}
 
 	@Override
 	public TimerSnapshot add(TimerSnapshot other)
 	{
 		return new TimerSnapshotImpl(
+			resolution,
 			snapshot.add(((TimerSnapshotImpl) other).snapshot),
-			Math.min(other.getMinimumInNs(), min),
-			Math.min(other.getMaximumInNs(), max)
+			Math.min(other.getMinimum(), min),
+			Math.min(other.getMaximum(), max)
 		);
 	}
 
@@ -89,9 +81,10 @@ public class TimerSnapshotImpl
 	public TimerSnapshot remove(TimerSnapshot other)
 	{
 		return new TimerSnapshotImpl(
+			resolution,
 			snapshot.remove(((TimerSnapshotImpl) other).snapshot),
-			Math.min(other.getMinimumInNs(), min),
-			Math.min(other.getMaximumInNs(), max)
+			Math.min(other.getMinimum(), min),
+			Math.min(other.getMaximum(), max)
 		);
 	}
 
@@ -99,19 +92,22 @@ public class TimerSnapshotImpl
 	public void mapToKeyValues(KeyValueReceiver receiver)
 	{
 		receiver.add("samples", snapshot.getSamples());
-		receiver.add("totalTime", snapshot.getTotal() / 1000000);
-		receiver.add("average", getAverageInMs());
-		receiver.add("min", getMinimumInMs());
-		receiver.add("max", getMaximumInMs());
+		receiver.add("totalTime", snapshot.getTotal());
+		receiver.add("average", getAverage());
+		receiver.add("min", getMinimum());
+		receiver.add("max", getMaximum());
+
+		snapshot.partialMapToKeyValues(receiver);
 	}
 
 	@Override
 	public String toString()
 	{
 		return "TimerSnapshot{" +
-			"samples=" + getSamples() +
-			", totalTimeMs=" + getTotalTimeInMs() +
-			", averageTimeMs=" + getAverageInMs() +
+			"resolution=" + resolution +
+			", samples=" + getSamples() +
+			", totalTime=" + getTotalTime() +
+			", averageTime=" + getAverage() +
 		"}";
 	}
 }

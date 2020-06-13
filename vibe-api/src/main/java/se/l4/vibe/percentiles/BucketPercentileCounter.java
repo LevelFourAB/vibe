@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongArray;
 
 import se.l4.vibe.VibeException;
+import se.l4.vibe.snapshots.KeyValueReceiver;
 
 /**
  * A {@link PercentileCounter} that uses a fixed set of buckets that values are
@@ -208,6 +209,15 @@ public class BucketPercentileCounter
 				newBuckets,
 				limits
 			);
+		}
+
+		@Override
+		public void partialMapToKeyValues(KeyValueReceiver receiver)
+		{
+			for(int i=0, n=limits.length; i<n; i++)
+			{
+				receiver.add("bucket" + limits[i], buckets[i]);
+			}
 		}
 	}
 }

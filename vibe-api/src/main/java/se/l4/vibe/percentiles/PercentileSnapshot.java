@@ -1,9 +1,13 @@
 package se.l4.vibe.percentiles;
 
+import se.l4.vibe.snapshots.KeyValueReceiver;
+import se.l4.vibe.snapshots.Snapshot;
+
 /**
  * Snapshot of the state of a {@link PercentileCounter}.
  */
 public interface PercentileSnapshot
+	extends Snapshot
 {
 	/**
 	 * Get the total value measured.
@@ -44,4 +48,19 @@ public interface PercentileSnapshot
 	 * @return
 	 */
 	PercentileSnapshot add(PercentileSnapshot other);
+
+	@Override
+	default void mapToKeyValues(KeyValueReceiver receiver)
+	{
+		receiver.add("samples", getSamples());
+		receiver.add("total", getTotal());
+
+		partialMapToKeyValues(receiver);
+	}
+
+	/**
+	 *
+	 * @param receiver
+	 */
+	void partialMapToKeyValues(KeyValueReceiver receiver);
 }

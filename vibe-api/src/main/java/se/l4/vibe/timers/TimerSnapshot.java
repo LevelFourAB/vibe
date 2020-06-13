@@ -1,5 +1,7 @@
 package se.l4.vibe.timers;
 
+import java.util.concurrent.TimeUnit;
+
 import se.l4.vibe.snapshots.Snapshot;
 
 /**
@@ -9,18 +11,18 @@ public interface TimerSnapshot
 	extends Snapshot
 {
 	/**
-	 * Get the total time measured as milliseconds.
+	 * Get the resolution of this snapshot.
 	 *
 	 * @return
 	 */
-	long getTotalTimeInMs();
+	TimeUnit getResolution();
 
 	/**
-	 * Get the total time measured as nanoseconds.
+	 * Get the total time measured.
 	 *
 	 * @return
 	 */
-	long getTotalTimeInNs();
+	long getTotalTime();
 
 	/**
 	 * Get how many times we have measured.
@@ -30,46 +32,25 @@ public interface TimerSnapshot
 	long getSamples();
 
 	/**
-	 * Get the average time in milliseconds.
+	 * Get the average time.
 	 *
 	 * @return
 	 */
-	double getAverageInMs();
+	double getAverage();
 
 	/**
-	 * Get the average time in nanoseconds.
+	 * Get the minimum time.
 	 *
 	 * @return
 	 */
-	double getAverageInNs();
+	long getMinimum();
 
 	/**
-	 * Get the minimum time in nanoseconds.
+	 * Get the maximum time.
 	 *
 	 * @return
 	 */
-	long getMinimumInNs();
-
-	/**
-	 * Get the minimum time in milliseconds.
-	 *
-	 * @return
-	 */
-	long getMinimumInMs();
-
-	/**
-	 * Get the maximum time in nanoseconds.
-	 *
-	 * @return
-	 */
-	long getMaximumInNs();
-
-	/**
-	 * Get the maximum time in milliseconds.
-	 *
-	 * @return
-	 */
-	long getMaximumInMs();
+	long getMaximum();
 
 	/**
 	 * Remove the values from the given object and return a new copy.

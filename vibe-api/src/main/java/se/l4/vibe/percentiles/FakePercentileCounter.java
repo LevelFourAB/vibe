@@ -2,6 +2,8 @@ package se.l4.vibe.percentiles;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import se.l4.vibe.snapshots.KeyValueReceiver;
+
 /**
  * A {@link PercentileCounter} that only counts samples and the total value.
  */
@@ -80,6 +82,11 @@ public class FakePercentileCounter
 		public PercentileSnapshot remove(PercentileSnapshot other)
 		{
 			return new FakeSnapshot(samples - other.getSamples(), total - other.getTotal());
+		}
+
+		@Override
+		public void partialMapToKeyValues(KeyValueReceiver receiver)
+		{
 		}
 	}
 }

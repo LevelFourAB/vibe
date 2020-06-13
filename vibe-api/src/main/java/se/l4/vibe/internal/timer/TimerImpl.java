@@ -1,7 +1,9 @@
 package se.l4.vibe.internal.timer;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -29,6 +31,8 @@ public class TimerImpl
 
 	private final Listeners<TimerListener> listeners;
 
+	private final TimeUnit resolution;
+
 	private final Supplier<PercentileCounter> counterSupplier;
 	private final SampledProbe<TimerSnapshot> snapshotProbe;
 
@@ -36,8 +40,12 @@ public class TimerImpl
 	private final AtomicLong max;
 	private volatile SnapshotSampler[] samplers;
 
-	private TimerImpl(Supplier<PercentileCounter> counter)
+	private TimerImpl(
+		TimeUnit resolution,
+		Supplier<PercentileCounter> counter
+	)
 	{
+		this.resolution = resolution;
 		this.counterSupplier = counter;
 
 		listeners = new Listeners<>();
@@ -69,7 +77,8 @@ public class TimerImpl
 			long now = System.nanoTime();
 			long nowInMs = System.currentTimeMillis();
 
-			long total = now - time;
+			long totalInNs = now - time;
+			long total = resolution.convert(totalInNs, TimeUnit.NANOSECONDS);
 
 			SnapshotSampler[] samplers = this.samplers;
 			for(SnapshotSampler sampler : samplers)
@@ -85,13 +94,19 @@ public class TimerImpl
 	}
 
 	@Override
-	public Probe<Long> getMaximumInNSProbe()
+	public TimeUnit getResolution()
+	{
+		return resolution;
+	}
+
+	@Override
+	public Probe<Long> getMaximumProbe()
 	{
 		return max::get;
 	}
 
 	@Override
-	public Probe<Long> getMinimumInNSProbe()
+	public Probe<Long> getMinimumProbe()
 	{
 		return min::get;
 	}
@@ -105,6 +120,7 @@ public class TimerImpl
 	private Sampler<TimerSnapshot> createSampler()
 	{
 		SnapshotSampler sampler = new SnapshotSampler(
+			resolution,
 			counterSupplier.get(),
 			this::releaseSampler
 		);
@@ -135,15 +151,19 @@ public class TimerImpl
 	{
 		private final Consumer<SnapshotSampler> remover;
 
+		private final TimeUnit resolution;
 		private final PercentileCounter counter;
 		private final AtomicLong min;
 		private final AtomicLong max;
 
 		public SnapshotSampler(
+			TimeUnit resolution,
 			PercentileCounter counter,
 			Consumer<SnapshotSampler> remover
 		)
 		{
+			this.resolution = resolution;
+
 			this.counter = counter;
 			this.min = new AtomicLong();
 			this.max = new AtomicLong();
@@ -154,7 +174,12 @@ public class TimerImpl
 		@Override
 		public TimerSnapshot sample()
 		{
-			TimerSnapshot snapshot = new TimerSnapshotImpl(counter.get(), min.get(), max.get());
+			TimerSnapshot snapshot = new TimerSnapshotImpl(
+				resolution,
+				counter.get(),
+				min.get(),
+				max.get()
+			);
 			counter.reset();
 			min.set(Long.MAX_VALUE);
 			max.set(0);
@@ -179,21 +204,31 @@ public class TimerImpl
 		implements Builder
 	{
 		private Supplier<PercentileCounter> percentileCounter;
+		private TimeUnit resolution;
+
+		private Duration[] buckets;
 
 		public BuilderImpl()
 		{
 			percentileCounter = FakePercentileCounter::new;
+			resolution = TimeUnit.MILLISECONDS;
 		}
 
 		@Override
-		public Builder withBuckets(int... limits)
+		public Builder withResolution(TimeUnit unit)
 		{
-			int[] msLimits = new int[limits.length];
-			for(int i=0, n=limits.length; i<n; i++)
-			{
-				msLimits[i] = limits[i] * 1000000;
-			}
-			return withPercentiles(() -> new BucketPercentileCounter(msLimits));
+			Objects.requireNonNull(unit, "unit must be specified");
+			this.resolution = unit;
+			return this;
+		}
+
+		@Override
+		public Builder withBuckets(Duration... limits)
+		{
+			Objects.requireNonNull(limits, "limits must be specified");
+
+			this.buckets = limits;
+			return this;
 		}
 
 		@Override
@@ -208,7 +243,16 @@ public class TimerImpl
 		@Override
 		public Timer build()
 		{
-			return new TimerImpl(percentileCounter);
+			if(buckets != null)
+			{
+				int[] limits = Arrays.stream(buckets)
+					.mapToInt(d -> (int) resolution.convert(d.toNanos(), TimeUnit.NANOSECONDS))
+					.toArray();
+
+				percentileCounter = () -> new BucketPercentileCounter(limits);
+			}
+
+			return new TimerImpl(resolution, percentileCounter);
 		}
 	}
 }
