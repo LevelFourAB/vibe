@@ -1,6 +1,6 @@
 package se.l4.vibe.probes;
 
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * Probe used for counting values.
@@ -8,11 +8,11 @@ import java.util.concurrent.atomic.AtomicLong;
 public class CountingProbe
 	implements Probe<Long>
 {
-	private final AtomicLong counter;
+	private final LongAdder counter;
 
 	public CountingProbe()
 	{
-		counter = new AtomicLong();
+		counter = new LongAdder();
 	}
 
 	/**
@@ -21,7 +21,7 @@ public class CountingProbe
 	 */
 	public void increase()
 	{
-		counter.incrementAndGet();
+		counter.increment();
 	}
 
 	/**
@@ -30,7 +30,7 @@ public class CountingProbe
 	 */
 	public void decrease()
 	{
-		counter.decrementAndGet();
+		counter.decrement();
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class CountingProbe
 	 */
 	public void add(long delta)
 	{
-		counter.addAndGet(delta);
+		counter.add(delta);
 	}
 
 	/**
@@ -50,22 +50,12 @@ public class CountingProbe
 	 */
 	public void remove(long delta)
 	{
-		counter.addAndGet(-delta);
-	}
-
-	/**
-	 * Set a new value.
-	 *
-	 * @param value
-	 */
-	public void set(long value)
-	{
-		counter.set(value);
+		counter.add(-delta);
 	}
 
 	@Override
 	public Long read()
 	{
-		return counter.get();
+		return counter.sum();
 	}
 }
