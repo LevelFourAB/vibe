@@ -260,7 +260,6 @@ To create a timer:
 
 ```java
 Timer timer = Timer.builder()
-  .withBuckets(0, 50, 100, 200, 500, 1000) // for calculating percentiles
   .build();
 ```
 
@@ -272,10 +271,35 @@ try(Stopwatch stopwatch = timer.start()) {
 }
 ```
 
+Timers can either be exported directly or the `getSnapshotProbe` method can
+be used to export snapshot information:
+
+```java
+vibe.export(timer.getSnapshotProbe())
+  .at("http", "requests")
+  .done();
+```
+
+Timers support estimating percentiles, the easiest way to activate this support
+is via `withBuckets` that will sort timings into buckets:
+
+```java
+Timer timer = Timer.builder()
+  .withBuckets(
+    Duration.ofMillis(0), 
+    Duration.ofMillis(50),
+    Duration.ofMillis(100),
+    Duration.ofMillis(200),
+    Duration.ofMillis(500),
+    Duration.ofMillis(1000)
+  )
+  .build();
+```
+
 ## Exporting metrics
 
-Creating probes, samplers, timers and so on is only half the work. These metrics
-should then be exported.
+Probes, samplers, timers and other objects from Vibe can be exported over
+different backends.
 
 Create an instance of Vibe:
 
