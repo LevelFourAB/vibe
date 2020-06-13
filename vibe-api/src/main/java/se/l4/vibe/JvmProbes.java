@@ -32,7 +32,7 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
-	public static Probe<Double> cpuUsage()
+	public static Probe<Double> currentCpuUsage()
 	{
 		com.sun.management.OperatingSystemMXBean os =
 			(com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
@@ -51,7 +51,7 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
-	public static SampledProbe<Double> sampledCpuUsage()
+	public static SampledProbe<Double> cpuUsage()
 	{
 		com.sun.management.OperatingSystemMXBean os =
 			(com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
