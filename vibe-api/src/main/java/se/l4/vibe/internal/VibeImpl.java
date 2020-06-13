@@ -1,10 +1,10 @@
 package se.l4.vibe.internal;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -192,6 +192,18 @@ public class VibeImpl
 			Objects.requireNonNull(backend, "backend must not be null");
 
 			backends.add(backend);
+			return this;
+		}
+
+		@Override
+		public Builder addBackend(Optional<VibeBackend> backend)
+		{
+			Objects.requireNonNull(backend, "backend must not be null");
+
+			if(backend.isPresent())
+			{
+				backends.add(backend.get());
+			}
 			return this;
 		}
 

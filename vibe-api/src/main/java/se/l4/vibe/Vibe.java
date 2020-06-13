@@ -1,5 +1,7 @@
 package se.l4.vibe;
 
+import java.util.Optional;
+
 import se.l4.vibe.internal.VibeImpl;
 
 /**
@@ -146,6 +148,14 @@ public interface Vibe
 		 * @return
 		 */
 		Builder addBackend(VibeBackend backend);
+
+		/**
+		 * Add a backend to use. This takes an optional that may be empty.
+		 *
+		 * @param backend
+		 * @return
+		 */
+		Builder addBackend(Optional<VibeBackend> backend);
 
 		/**
 		 * Build the instance.
