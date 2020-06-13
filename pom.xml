@@ -105,7 +105,9 @@
 						<version>3.1.0</version>
 						<configuration>
 							<doclint>none</doclint>
-							<source>8</source>
+							<source>9</source>
+
+							<excludePackageNames>*.internal.*</excludePackageNames>
 						</configuration>
 						<executions>
 							<execution>
