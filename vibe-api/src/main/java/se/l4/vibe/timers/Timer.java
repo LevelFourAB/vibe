@@ -1,16 +1,19 @@
 package se.l4.vibe.timers;
 
+import java.util.function.Supplier;
+
 import se.l4.vibe.Exportable;
 import se.l4.vibe.Handle;
 import se.l4.vibe.internal.timer.TimerImpl;
 import se.l4.vibe.percentiles.PercentileCounter;
+import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
 
 /**
  * Timer for timing how long things take.
  */
 public interface Timer
-	extends SampledProbe<TimerSnapshot>, Exportable
+	extends Exportable
 {
 	/**
 	 * Start timing something.
@@ -30,6 +33,27 @@ public interface Timer
 	 * @param listener
 	 */
 	void removeListener(TimerListener listener);
+
+	/**
+	 * Get a probe for the all time maximum time measured.
+	 *
+	 * @return
+	 */
+	Probe<Long> getMaximumInNSProbe();
+
+	/**
+	 * Get a probe for the all time maximum time measured.
+	 *
+	 * @return
+	 */
+	Probe<Long> getMinimumInNSProbe();
+
+	/**
+	 * Get a probe that samples snapshot information for this probe.
+	 *
+	 * @return
+	 */
+	SampledProbe<TimerSnapshot> getSnapshotProbe();
 
 	/**
 	 * Start building a new timer.
@@ -83,7 +107,7 @@ public interface Timer
 		 * @param counter
 		 * @return
 		 */
-		Builder withPercentiles(PercentileCounter counter);
+		Builder withPercentiles(Supplier<PercentileCounter> counter);
 
 		/**
 		 * Build the timer.
