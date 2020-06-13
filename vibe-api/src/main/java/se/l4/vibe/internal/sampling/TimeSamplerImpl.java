@@ -16,17 +16,18 @@ public class TimeSamplerImpl<T>
 	extends AbstractTimeSampler<T>
 {
 	private final long intervalTime;
-	private final Sampler<T> sampler;
+	private final SampledProbe<T> probe;
 
 	private Handle handle;
+	private Sampler<T> sampler;
 
 	public TimeSamplerImpl(
-		Sampler<T> sampler,
+		SampledProbe<T> probe,
 		long intervalTime
 	)
 	{
 		this.intervalTime = intervalTime;
-		this.sampler = sampler;
+		this.probe = probe;
 	}
 
 	/**
@@ -47,6 +48,9 @@ public class TimeSamplerImpl<T>
 	@Override
 	protected void startSampling()
 	{
+		// Create the sampler to use
+		sampler = probe.create();
+
 		// Perform the initial sampling
 		sample();
 
@@ -58,6 +62,7 @@ public class TimeSamplerImpl<T>
 	protected void stopSampling()
 	{
 		handle.release();
+		sampler.release();
 	}
 
 	public static class BuilderImpl<T>
@@ -107,7 +112,7 @@ public class TimeSamplerImpl<T>
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public TimeSampler<T> build()
 		{
-			TimeSampler sampler = new TimeSamplerImpl<>(probe.create(), interval);
+			TimeSampler sampler = new TimeSamplerImpl<>(probe, interval);
 
 			if(ops != null)
 			{

@@ -131,7 +131,7 @@ public class TimerImpl
 	}
 
 	private static class SnapshotSampler
-		implements Sampler<TimerSnapshot>, Handle
+		implements Sampler<TimerSnapshot>
 	{
 		private final Consumer<SnapshotSampler> remover;
 
