@@ -1,9 +1,12 @@
 package se.l4.vibe.timers;
 
+import se.l4.vibe.snapshots.Snapshot;
+
 /**
  * A sample of the state of a {@link Timer}.
  */
 public interface TimerSnapshot
+	extends Snapshot
 {
 	/**
 	 * Get the total time measured as milliseconds.

@@ -2,14 +2,13 @@ package se.l4.vibe.internal.timer;
 
 import se.l4.vibe.percentiles.PercentileSnapshot;
 import se.l4.vibe.snapshots.KeyValueReceiver;
-import se.l4.vibe.snapshots.Snapshot;
 import se.l4.vibe.timers.TimerSnapshot;
 
 /**
  * Implementation of {@link TimerSnapshot}.
  */
 public class TimerSnapshotImpl
-	implements TimerSnapshot, Snapshot
+	implements TimerSnapshot
 {
 	private final PercentileSnapshot snapshot;
 	private final long min;
