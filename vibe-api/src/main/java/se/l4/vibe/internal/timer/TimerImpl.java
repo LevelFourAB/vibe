@@ -18,6 +18,7 @@ import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.timers.Stopwatch;
 import se.l4.vibe.timers.Timer;
+import se.l4.vibe.timers.TimerEvent;
 import se.l4.vibe.timers.TimerListener;
 import se.l4.vibe.timers.TimerSnapshot;
 
@@ -75,7 +76,6 @@ public class TimerImpl
 		long time = System.nanoTime();
 		return () -> {
 			long now = System.nanoTime();
-			long nowInMs = System.currentTimeMillis();
 
 			long totalInNs = now - time;
 			long total = resolution.convert(totalInNs, TimeUnit.NANOSECONDS);
@@ -89,7 +89,8 @@ public class TimerImpl
 			min.updateAndGet(c -> c > total ? total : c);
 			max.updateAndGet(c -> c < total ? total : c);
 
-			listeners.forEach(l -> l.timerEvent(nowInMs, total));
+			TimerEvent event = new TimerEvent(resolution, total);
+			listeners.forEach(l -> l.timingComplete(event));
 		};
 	}
 

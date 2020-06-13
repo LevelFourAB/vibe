@@ -39,6 +39,7 @@ import se.l4.vibe.sampling.TimeSampler;
 import se.l4.vibe.snapshots.KeyValueReceiver;
 import se.l4.vibe.snapshots.Snapshot;
 import se.l4.vibe.timers.Timer;
+import se.l4.vibe.timers.TimerEvent;
 import se.l4.vibe.timers.TimerListener;
 
 /**
@@ -255,12 +256,12 @@ public class InfluxDBBackend
 		}
 
 		@Override
-		public void timerEvent(long now, long timeInNanoseconds)
+		public void timingComplete(TimerEvent event)
 		{
 			HashMap<String, Object> map = new HashMap<>();
-			map.put("value", timeInNanoseconds);
+			map.put("value", event.getDuration());
 
-			DataPoint point = new DataPoint(path, now, tags, map);
+			DataPoint point = new DataPoint(path, System.currentTimeMillis(), tags, map);
 			queue.add(point);
 		}
 	}

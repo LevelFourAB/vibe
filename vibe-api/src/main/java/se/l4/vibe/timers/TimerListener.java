@@ -6,10 +6,9 @@ package se.l4.vibe.timers;
 public interface TimerListener
 {
 	/**
-	 * Called when a timer is started and then stopped.
+	 * Something has completed timing.
 	 *
-	 * @param currentTimeInMs
-	 * @param timeInNanoseconds
+	 * @param event
 	 */
-	void timerEvent(long currentTimeInMs, long timeInNanoseconds);
+	void timingComplete(TimerEvent event);
 }
