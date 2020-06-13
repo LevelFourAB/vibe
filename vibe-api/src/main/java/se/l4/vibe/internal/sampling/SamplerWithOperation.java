@@ -1,12 +1,13 @@
 package se.l4.vibe.internal.sampling;
 
 import se.l4.vibe.Handle;
+import se.l4.vibe.operations.Operation;
 import se.l4.vibe.sampling.Sample;
-import se.l4.vibe.sampling.SampleOperation;
 import se.l4.vibe.sampling.TimeSampler;
 
 /**
- * {@link TimeSampler} that applies a {@link SampleOperation}.
+ * {@link TimeSampler} that applies an {@link Operation} that can optionally
+ * change the interval at which samples are created.
  *
  * @param <I>
  * @param <O>
@@ -15,13 +16,13 @@ public class SamplerWithOperation<I, O>
 	extends AbstractTimeSampler<O>
 {
 	private final TimeSampler<I> input;
-	private final SampleOperation<I, O> modifier;
+	private final Operation<Sample<I>, Sample<O>> modifier;
 
 	private Handle listenerHandle;
 
 	public SamplerWithOperation(
 		TimeSampler<I> input,
-		SampleOperation<I, O> modifier
+		Operation<Sample<I>, Sample<O>> modifier
 	)
 	{
 		this.input = input;
@@ -32,7 +33,7 @@ public class SamplerWithOperation<I, O>
 	protected void startSampling()
 	{
 		listenerHandle = input.addListener(sample -> {
-			Sample<O> nextSample = modifier.handleSample(sample);
+			Sample<O> nextSample = modifier.apply(sample);
 			Sample<O> lastSample = lastSample();
 
 			if(lastSample == null || nextSample.getTime() != lastSample.getTime())

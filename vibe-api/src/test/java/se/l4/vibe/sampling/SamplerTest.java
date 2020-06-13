@@ -23,4 +23,31 @@ public class SamplerTest
 
 		assertThat(randomSampler.read(), is(notNullValue()));
 	}
+
+	@Test
+	public void testSamplingReturnsValue()
+	{
+		TimeSampler<Integer> randomSampler = TimeSampler.forProbe(() -> 10)
+			.build();
+
+		assertThat(randomSampler, is(notNullValue()));
+
+		randomSampler.addListener(sample -> {});
+
+		assertThat(randomSampler.read(), is(10));
+	}
+
+	@Test
+	public void testSamplingWithApplyWorks()
+	{
+		TimeSampler<Integer> randomSampler = TimeSampler.forProbe(() -> 10)
+			.apply(i -> i * 10)
+			.build();
+
+		assertThat(randomSampler, is(notNullValue()));
+
+		randomSampler.addListener(sample -> {});
+
+		assertThat(randomSampler.read(), is(100));
+	}
 }

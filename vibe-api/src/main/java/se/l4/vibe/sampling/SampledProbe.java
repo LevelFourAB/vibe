@@ -2,8 +2,8 @@ package se.l4.vibe.sampling;
 
 import se.l4.vibe.Exportable;
 import se.l4.vibe.internal.MergedProbes;
+import se.l4.vibe.operations.Operation;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.probes.ProbeOperation;
 import se.l4.vibe.snapshots.MapSnapshot;
 
 /**
@@ -36,7 +36,7 @@ public interface SampledProbe<T>
 	 * @return
 	 *   new probe
 	 */
-	default <O> SampledProbe<O> apply(ProbeOperation<T, O> operation)
+	default <O> SampledProbe<O> apply(Operation<T, O> operation)
 	{
 		return () -> {
 			Sampler<T> probe = this.create();

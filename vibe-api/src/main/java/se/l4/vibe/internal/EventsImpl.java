@@ -1,7 +1,7 @@
 package se.l4.vibe.internal;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
 import se.l4.vibe.Handle;
 import se.l4.vibe.events.Event;
@@ -9,9 +9,9 @@ import se.l4.vibe.events.EventData;
 import se.l4.vibe.events.EventListener;
 import se.l4.vibe.events.EventSeverity;
 import se.l4.vibe.events.Events;
+import se.l4.vibe.operations.Change;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.SampledProbe;
-import se.l4.vibe.sampling.Sampler;
 
 /**
  * Implementation of {@link Events}.
@@ -24,7 +24,7 @@ public class EventsImpl<T extends EventData>
 	private final Listeners<EventListener<T>> listeners;
 	private final EventSeverity severity;
 
-	private final AtomicLong totalEvents;
+	private final LongAdder totalEvents;
 
 	public EventsImpl(EventSeverity severity)
 	{
@@ -32,7 +32,7 @@ public class EventsImpl<T extends EventData>
 
 		listeners = new Listeners<>();
 
-		totalEvents = new AtomicLong();
+		totalEvents = new LongAdder();
 	}
 
 	public void register(T eventData)
@@ -42,7 +42,7 @@ public class EventsImpl<T extends EventData>
 
 	public void register(EventSeverity severity, T eventData)
 	{
-		totalEvents.incrementAndGet();
+		totalEvents.increment();
 
 		Event<T> event = new Event<>(severity, eventData);
 		listeners.forEach(l -> l.eventRegistered(event));
@@ -69,34 +69,14 @@ public class EventsImpl<T extends EventData>
 	@Override
 	public Probe<Long> getTotalEventsProbe()
 	{
-		return new Probe<Long>()
-		{
-			@Override
-			public Long read()
-			{
-				return totalEvents.longValue();
-			}
-		};
+		return totalEvents::longValue;
 	}
 
 	@Override
 	public SampledProbe<Long> getEventsProbe()
 	{
-		return () -> {
-			return new Sampler<Long>() {
-				private long lastValue;
-
-				@Override
-				public Long sample()
-				{
-					long current = totalEvents.longValue();
-					long sinceLastSample = current - lastValue;
-					lastValue = current;
-
-					return sinceLastSample;
-				}
-			};
-		};
+		return SampledProbe.over(getTotalEventsProbe())
+			.apply(Change.changeAsLong());
 	}
 
 	public static class BuilderImpl<T extends EventData>

@@ -43,6 +43,26 @@ public class CountingProbe
 		counter.addAndGet(delta);
 	}
 
+	/**
+	 * Subtract the given delta from the count.
+	 *
+	 * @param delta
+	 */
+	public void remove(long delta)
+	{
+		counter.addAndGet(-delta);
+	}
+
+	/**
+	 * Set a new value.
+	 *
+	 * @param value
+	 */
+	public void set(long value)
+	{
+		counter.set(value);
+	}
+
 	@Override
 	public Long read()
 	{

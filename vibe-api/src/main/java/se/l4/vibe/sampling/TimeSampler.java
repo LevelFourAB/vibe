@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 import se.l4.vibe.Handle;
 import se.l4.vibe.internal.sampling.SamplerWithOperation;
 import se.l4.vibe.internal.sampling.TimeSamplerImpl;
+import se.l4.vibe.operations.Operation;
+import se.l4.vibe.operations.TimeSampleOperation;
 import se.l4.vibe.probes.Probe;
 
 /**
@@ -61,7 +63,22 @@ public interface TimeSampler<T>
 	 * @return
 	 *   new sampler
 	 */
-	default <O> TimeSampler<O> apply(SampleOperation<T, O> operation)
+	default <O> TimeSampler<O> apply(Operation<T, O> operation)
+	{
+		return applyResampling(TimeSampleOperation.over(operation));
+	}
+
+	/**
+	 * Return a new sampler that uses the given operation to modify the samples
+	 * returned by this sampler.
+	 *
+	 * @param <O>
+	 * @param operation
+	 *   operation to apply
+	 * @return
+	 *   new sampler
+	 */
+	default <O> TimeSampler<O> applyResampling(Operation<Sample<T>, Sample<O>> operation)
 	{
 		return new SamplerWithOperation<>(this, operation);
 	}
@@ -112,7 +129,16 @@ public interface TimeSampler<T>
 		 * @param operation
 		 * @return
 		 */
-		<O> Builder<O> apply(SampleOperation<T, O> operation);
+		<O> Builder<O> apply(Operation<T, O> operation);
+
+		/**
+		 * Apply an operation that can modify the time of samples.
+		 *
+		 * @param <O>
+		 * @param operation
+		 * @return
+		 */
+		<O> Builder<O> applyResampling(Operation<Sample<T>, Sample<O>> operation);
 
 		/**
 		 * Build the sampler.

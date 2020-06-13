@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListOperation;
-import se.l4.vibe.sampling.SampleOperation;
 import se.l4.vibe.sampling.TimeSampler;
 
 /**
@@ -24,17 +23,17 @@ public class Sum
 	 * @param <T>
 	 * @return
 	 */
-	public static <T extends Number> SampleOperation<T, Long> sumAsLong()
+	public static <T extends Number> Operation<T, Long> sumAsLong()
 	{
-		return new SampleOperation<T, Long>()
+		return new Operation<T, Long>()
 		{
 			private long sum;
 
 			@Override
-			public Sample<Long> handleSample(Sample<T> sample)
+			public Long apply(T value)
 			{
-				sum += sample.getValue().longValue();
-				return Sample.create(sample.getTime(), sum);
+				sum += value.longValue();
+				return sum;
 			}
 		};
 	}
@@ -46,17 +45,17 @@ public class Sum
 	 * @param <T>
 	 * @return
 	 */
-	public static <T extends Number> SampleOperation<T, Double> sumAsDouble()
+	public static <T extends Number> Operation<T, Double> sumAsDouble()
 	{
-		return new SampleOperation<T, Double>()
+		return new Operation<T, Double>()
 		{
 			private double sum;
 
 			@Override
-			public Sample<Double> handleSample(Sample<T> sample)
+			public Double apply(T value)
 			{
-				sum += sample.getValue().doubleValue();
-				return Sample.create(sample.getTime(), sum);
+				sum += value.doubleValue();
+				return sum;
 			}
 		};
 	}
@@ -69,7 +68,7 @@ public class Sum
 	 * @param duration
 	 * @return
 	 */
-	public static <T extends Number> SampleOperation<T, Long> sumAsLongOver(
+	public static <T extends Number> TimeSampleOperation<T, Long> sumAsLongOver(
 		Duration duration
 	)
 	{
@@ -84,7 +83,7 @@ public class Sum
 	 * @param duration
 	 * @return
 	 */
-	public static <T extends Number> SampleOperation<T, Double> sumAsDoubleOver(
+	public static <T extends Number> TimeSampleOperation<T, Double> sumAsDoubleOver(
 		Duration duration
 	)
 	{

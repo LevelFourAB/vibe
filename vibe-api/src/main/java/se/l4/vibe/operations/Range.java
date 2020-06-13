@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListOperation;
-import se.l4.vibe.sampling.SampleOperation;
 
 /**
  * Operations that can calculate range values such as maximum and minimum
@@ -24,9 +23,9 @@ public class Range
 	 *
 	 * @return
 	 */
-	public static <T extends Number> SampleAndProbeOperation<T, Double> minAsDouble()
+	public static <T extends Number> Operation<T, Double> minAsDouble()
 	{
-		return new SampleAndProbeOperation<T, Double>()
+		return new Operation<T, Double>()
 		{
 			private double min = Double.MAX_VALUE;
 
@@ -46,9 +45,9 @@ public class Range
 	 *
 	 * @return
 	 */
-	public static <T extends Number> SampleAndProbeOperation<T, Long> minAsLong()
+	public static <T extends Number> Operation<T, Long> minAsLong()
 	{
-		return new SampleAndProbeOperation<T, Long>()
+		return new Operation<T, Long>()
 		{
 			private long min = Long.MAX_VALUE;
 
@@ -70,7 +69,7 @@ public class Range
 	 * @param duration
 	 * @return
 	 */
-	public static <T extends Number> SampleOperation<T, Double> minAsDoubleOver(
+	public static <T extends Number> TimeSampleOperation<T, Double> minAsDoubleOver(
 		Duration duration
 	)
 	{
@@ -85,7 +84,7 @@ public class Range
 	 * @param duration
 	 * @return
 	 */
-	public static <T extends Number> SampleOperation<T, Long> minAsLongOver(
+	public static <T extends Number> TimeSampleOperation<T, Long> minAsLongOver(
 		Duration duration
 	)
 	{
@@ -98,9 +97,9 @@ public class Range
 	 *
 	 * @return
 	 */
-	public static <T extends Number> SampleAndProbeOperation<T, Double> maxAsDouble()
+	public static <T extends Number> Operation<T, Double> maxAsDouble()
 	{
-		return new SampleAndProbeOperation<T, Double>()
+		return new Operation<T, Double>()
 		{
 			private double max = Double.MIN_VALUE;
 
@@ -120,9 +119,9 @@ public class Range
 	 *
 	 * @return
 	 */
-	public static <T extends Number> SampleAndProbeOperation<T, Long> maxAsLong()
+	public static <T extends Number> Operation<T, Long> maxAsLong()
 	{
-		return new SampleAndProbeOperation<T, Long>()
+		return new Operation<T, Long>()
 		{
 			private long max = Long.MIN_VALUE;
 
@@ -144,7 +143,7 @@ public class Range
 	 * @param duration
 	 * @return
 	 */
-	public static <T extends Number> SampleOperation<T, Double> maxAsDoubleOver(
+	public static <T extends Number> TimeSampleOperation<T, Double> maxAsDoubleOver(
 		Duration duration
 	)
 	{
@@ -159,7 +158,7 @@ public class Range
 	 * @param duration
 	 * @return
 	 */
-	public static <T extends Number> SampleOperation<T, Long> maxAsLongOver(
+	public static <T extends Number> TimeSampleOperation<T, Long> maxAsLongOver(
 		Duration duration
 	)
 	{

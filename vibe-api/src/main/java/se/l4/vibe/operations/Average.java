@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListOperation;
-import se.l4.vibe.sampling.SampleOperation;
 import se.l4.vibe.sampling.TimeSampler;
 
 /**
@@ -22,7 +21,7 @@ public class Average
 	 *
 	 * @return
 	 */
-	public static <T extends Number> SampleOperation<T, Double> average()
+	public static <T extends Number> Operation<T, Double> average()
 	{
 		return new AveragingSampleOperation<>();
 	}
@@ -34,7 +33,7 @@ public class Average
 	 * @param duration
 	 * @return
 	 */
-	public static <T extends Number> SampleOperation<T, Double> averageOver(
+	public static <T extends Number> TimeSampleOperation<T, Double> averageOver(
 		Duration duration
 	)
 	{
@@ -79,17 +78,17 @@ public class Average
 	 * @param <I>
 	 */
 	private static class AveragingSampleOperation<I extends Number>
-		implements SampleOperation<I, Double>
+		implements Operation<I, Double>
 	{
 		private double accumulated;
 		private long samples;
 
 		@Override
-		public Sample<Double> handleSample(Sample<I> sample)
+		public Double apply(I sample)
 		{
-			accumulated += sample.getValue().doubleValue();
+			accumulated += sample.doubleValue();
 			samples++;
-			return Sample.create(sample.getTime(), accumulated / samples);
+			return accumulated / samples;
 		}
 	}
 }

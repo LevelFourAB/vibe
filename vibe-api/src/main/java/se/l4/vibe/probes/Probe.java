@@ -2,13 +2,31 @@ package se.l4.vibe.probes;
 
 import se.l4.vibe.Exportable;
 import se.l4.vibe.internal.MergedProbes;
+import se.l4.vibe.operations.Operation;
+import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.snapshots.MapSnapshot;
 
 /**
- * Probe that can measure a certain value.
+ * Probe that can measure a certain value. Probes are intended to read a simple
+ * value, where calling {@link #read()} several times has no side effects.
+ * If the value you trying to measure depends on a previous value a
+ * {@link SampledProbe} is more applicable.
+ *
+ * <p>
+ * Probes are {@link FunctionalInterface functional interfaces} and as such
+ * can easily be implemented via lambdas:
+ *
+ * <pre>
+ * Probe<Double> randomProbe = () -> ThreadLocalRandom.current().nextDouble();
+ * </pre>
  *
  * @param <T>
+ *   the type of value being read, supports {@link Boolean}, {@link String},
+ *   {@link Number} such as integers, longs, floats and doubles. More complex
+ *   objects are supported if they implement {@link se.l4.vibe.snapshots.Snapshot}.
+ * @see SampledProbe
  */
+@FunctionalInterface
 public interface Probe<T>
 	extends Exportable
 {
@@ -29,7 +47,7 @@ public interface Probe<T>
 	 * @return
 	 *   new probe
 	 */
-	default <O> Probe<O> apply(ProbeOperation<T, O> operation)
+	default <O> Probe<O> apply(Operation<T, O> operation)
 	{
 		return () -> {
 			T value = this.read();

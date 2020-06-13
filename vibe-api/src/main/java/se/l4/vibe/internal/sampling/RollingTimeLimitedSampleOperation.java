@@ -2,19 +2,20 @@ package se.l4.vibe.internal.sampling;
 
 import java.util.LinkedList;
 
+import se.l4.vibe.operations.Operation;
+import se.l4.vibe.operations.TimeSampleOperation;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListOperation;
-import se.l4.vibe.sampling.SampleOperation;
 
 /**
- * {@link SampleOperation} that uses a rolling time window and
+ * {@link Operation} that uses a rolling time window and
  * {@link SampleListOperation} to calculate its value.
  *
  * @param <Input>
  * @param <Output>
  */
 public class RollingTimeLimitedSampleOperation<Input, Output>
-	implements SampleOperation<Input, Output>
+	implements TimeSampleOperation<Input, Output>
 {
 	private final long maxAge;
 	private final SampleListOperation<Input, Output> operationToApply;
@@ -33,7 +34,7 @@ public class RollingTimeLimitedSampleOperation<Input, Output>
 	}
 
 	@Override
-	public Sample<Output> handleSample(Sample<Input> sample)
+	public Sample<Output> apply(Sample<Input> sample)
 	{
 		long cutOff = System.currentTimeMillis() - maxAge;
 		while(! samples.isEmpty())

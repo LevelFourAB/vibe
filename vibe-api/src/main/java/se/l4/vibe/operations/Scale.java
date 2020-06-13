@@ -16,7 +16,7 @@ public class Scale
 	 * @param decimals
 	 * @return
 	 */
-	public static SampleAndProbeOperation<? extends Number, Double> scale(
+	public static Operation<? extends Number, Double> scale(
 		int decimals
 	)
 	{
@@ -32,7 +32,7 @@ public class Scale
 	 * @param divisor
 	 * @return
 	 */
-	public static SampleAndProbeOperation<? extends Number, Double> divide(
+	public static Operation<? extends Number, Double> divide(
 		double divisor
 	)
 	{
@@ -46,7 +46,7 @@ public class Scale
 	 * @param divisor
 	 * @return
 	 */
-	public static SampleAndProbeOperation<? extends Number, Long> divideAsLong(
+	public static Operation<? extends Number, Long> divideAsLong(
 		double divisor
 	)
 	{
@@ -60,7 +60,7 @@ public class Scale
 	 * @param multiplier
 	 * @return
 	 */
-	public static SampleAndProbeOperation<? extends Number, Double> multiply(
+	public static Operation<? extends Number, Double> multiply(
 		double multiplier
 	)
 	{
@@ -74,7 +74,7 @@ public class Scale
 	 * @param multiplier
 	 * @return
 	 */
-	public static SampleAndProbeOperation<? extends Number, Long> multiplyAsLong(
+	public static Operation<? extends Number, Long> multiplyAsLong(
 		double multiplier
 	)
 	{

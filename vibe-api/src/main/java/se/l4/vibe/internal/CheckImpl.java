@@ -11,8 +11,8 @@ import se.l4.vibe.Handle;
 import se.l4.vibe.checks.Check;
 import se.l4.vibe.checks.CheckEvent;
 import se.l4.vibe.checks.CheckListener;
+import se.l4.vibe.operations.Operation;
 import se.l4.vibe.sampling.Sample;
-import se.l4.vibe.sampling.SampleOperation;
 import se.l4.vibe.sampling.TimeSampler;
 
 public class CheckImpl<Input>
@@ -212,11 +212,21 @@ public class CheckImpl<Input>
 
 		@Override
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public <O> SamplerWhenBuilder<O> apply(SampleOperation<I, O> operation)
+		public <O> SamplerWhenBuilder<O> apply(Operation<I, O> operation)
 		{
 			Objects.requireNonNull(operation, "operation can not be null");
 
 			sampler = (TimeSampler) sampler.apply(operation);
+			return (SamplerWhenBuilder) this;
+		}
+
+		@Override
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		public <O> SamplerWhenBuilder<O> applyResampling(Operation<Sample<I>, Sample<O>> operation)
+		{
+			Objects.requireNonNull(operation, "operation can not be null");
+
+			sampler = (TimeSampler) sampler.applyResampling(operation);
 			return (SamplerWhenBuilder) this;
 		}
 

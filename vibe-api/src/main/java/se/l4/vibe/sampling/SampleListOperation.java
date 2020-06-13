@@ -11,7 +11,7 @@ import se.l4.vibe.operations.TimeLimited;
  * averages, minimum and maximum values for these samples.
  *
  * <p>
- * {@link TimeLimited} can be used to create {@link SampleOperation}s that
+ * {@link TimeLimited} can be used to create {@link TimeSampleOperation}s that
  * use this interface to calculate something within a certain time period.
  */
 public interface SampleListOperation<Input, Output>

@@ -8,7 +8,8 @@ import se.l4.vibe.Exportable;
 import se.l4.vibe.Handle;
 import se.l4.vibe.Vibe;
 import se.l4.vibe.internal.CheckImpl;
-import se.l4.vibe.sampling.SampleOperation;
+import se.l4.vibe.operations.Operation;
+import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.TimeSampler;
 
 /**
@@ -167,14 +168,23 @@ public interface Check
 	interface SamplerWhenBuilder<I>
 	{
 		/**
-		 * Apply a {@link SampleOperation operation} to change the value being
-		 * checked.
+		 * Apply an operation to the value being sampled.
 		 *
 		 * @param <O>
 		 * @param modifier
 		 * @return
 		 */
-		<O> SamplerWhenBuilder<O> apply(SampleOperation<I, O> operation);
+		<O> SamplerWhenBuilder<O> apply(Operation<I, O> operation);
+
+		/**
+		 * Apply an operation that can optionally resample based on the time
+		 * of samples.
+		 *
+		 * @param <O>
+		 * @param modifier
+		 * @return
+		 */
+		<O> SamplerWhenBuilder<O> applyResampling(Operation<Sample<I>, Sample<O>> operation);
 
 		/**
 		 * Set the predicate that checks if the value is meets the desired

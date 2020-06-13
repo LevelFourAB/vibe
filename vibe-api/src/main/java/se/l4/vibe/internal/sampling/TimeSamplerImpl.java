@@ -7,7 +7,9 @@ import java.util.concurrent.TimeUnit;
 
 import se.l4.vibe.Handle;
 import se.l4.vibe.internal.Scheduling;
-import se.l4.vibe.sampling.SampleOperation;
+import se.l4.vibe.operations.Operation;
+import se.l4.vibe.operations.TimeSampleOperation;
+import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.sampling.TimeSampler;
@@ -71,8 +73,7 @@ public class TimeSamplerImpl<T>
 		private SampledProbe<?> probe;
 		private long interval;
 
-		@SuppressWarnings({ "rawtypes" })
-		private List<SampleOperation> ops;
+		private List<Operation<Sample<?>, Sample<?>>> ops;
 
 		public BuilderImpl(SampledProbe<?> probe)
 		{
@@ -95,15 +96,21 @@ public class TimeSamplerImpl<T>
 		}
 
 		@Override
+		public <O> Builder<O> apply(Operation<T, O> operation)
+		{
+			return applyResampling(TimeSampleOperation.over(operation));
+		}
+
+		@Override
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public <O> Builder<O> apply(SampleOperation<T, O> operation)
+		public <O> Builder<O> applyResampling(Operation<Sample<T>, Sample<O>> operation)
 		{
 			if(ops == null)
 			{
 				ops = new ArrayList<>();
 			}
 
-			ops.add(operation);
+			ops.add((Operation) operation);
 
 			return (Builder) this;
 		}
@@ -117,9 +124,9 @@ public class TimeSamplerImpl<T>
 			if(ops != null)
 			{
 				// Apply the operations if they exist
-				for(SampleOperation op : ops)
+				for(Operation<Sample<?>, Sample<?>> op : ops)
 				{
-					sampler = sampler.apply(op);
+					sampler = sampler.applyResampling(op);
 				}
 			}
 

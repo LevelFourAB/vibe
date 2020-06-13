@@ -1,8 +1,5 @@
 package se.l4.vibe.operations;
 
-import se.l4.vibe.sampling.Sample;
-import se.l4.vibe.sampling.SampleOperation;
-
 /**
  * Operations for detecting changes to samples values.
  */
@@ -17,9 +14,9 @@ public class Change
 	 *
 	 * @return
 	 */
-	public static <T extends Number> SampleAndProbeOperation<T, Double> changeAsDouble()
+	public static <T extends Number> Operation<T, Double> changeAsDouble()
 	{
-		return new SampleAndProbeOperation<T, Double>()
+		return new Operation<T, Double>()
 		{
 			private double lastValue = 0;
 
@@ -39,9 +36,9 @@ public class Change
 	 *
 	 * @return
 	 */
-	public static <T extends Number> SampleAndProbeOperation<T, Long> changeAsLong()
+	public static <T extends Number> Operation<T, Long> changeAsLong()
 	{
-		return new SampleAndProbeOperation<T, Long>()
+		return new Operation<T, Long>()
 		{
 			private long lastValue = 0;
 
@@ -62,16 +59,16 @@ public class Change
 	 * @param series
 	 * @return
 	 */
-	public static <T extends Number> SampleOperation<T, Double> changeAsFraction()
+	public static <T extends Number> Operation<T, Double> changeAsFraction()
 	{
-		return new SampleOperation<T, Double>()
+		return new Operation<T, Double>()
 		{
 			private double lastValue = Double.NaN;
 
 			@Override
-			public Sample<Double> handleSample(Sample<T> sample)
+			public Double apply(T input)
 			{
-				double current = sample.getValue().doubleValue();
+				double current = input.doubleValue();
 				double change;
 				if(Double.isNaN(lastValue))
 				{
@@ -86,7 +83,7 @@ public class Change
 					change = (current - lastValue) / lastValue;
 				}
 				lastValue = current;
-				return Sample.create(sample.getTime(), change);
+				return change;
 			}
 		};
 	}
