@@ -3,8 +3,8 @@ package se.l4.vibe;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import se.l4.vibe.operations.Change;
-import se.l4.vibe.probes.Probe;
-import se.l4.vibe.sampling.SampledProbe;
+import se.l4.vibe.operations.OperationExecutor;
+import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.snapshots.KeyValueReceiver;
 import se.l4.vibe.snapshots.Snapshot;
 
@@ -20,14 +20,13 @@ public class ExecutorProbes
 	public static SampledProbe<ThreadPoolExecutorSnapshot> forThreadPoolExecutor(ThreadPoolExecutor executor)
 	{
 		return () -> {
-			Probe<Long> completedTasks = Probe.over(executor::getCompletedTaskCount)
-				.apply(Change.changeAsLong());
+			OperationExecutor<Number, Long> completedTasksChange = Change.changeAsLong().create();
 
 			return () -> new ThreadPoolExecutorSnapshot(
 				executor.getPoolSize(),
 				executor.getMaximumPoolSize(),
 				executor.getActiveCount(),
-				completedTasks.read(),
+				completedTasksChange.apply(executor.getCompletedTaskCount()),
 				executor.getQueue().size()
 			);
 		};

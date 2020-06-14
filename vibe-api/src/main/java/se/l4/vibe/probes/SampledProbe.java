@@ -1,10 +1,10 @@
-package se.l4.vibe.sampling;
+package se.l4.vibe.probes;
 
 import se.l4.vibe.Exportable;
 import se.l4.vibe.internal.MergedProbes;
 import se.l4.vibe.operations.Operation;
 import se.l4.vibe.operations.OperationExecutor;
-import se.l4.vibe.probes.Probe;
+import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.snapshots.MapSnapshot;
 
 /**

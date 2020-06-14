@@ -21,7 +21,7 @@ public class SamplerTest
 
 		randomSampler.addListener(sample -> {});
 
-		assertThat(randomSampler.read(), is(notNullValue()));
+		assertThat(randomSampler.getLastSample(), is(notNullValue()));
 	}
 
 	@Test
@@ -34,7 +34,7 @@ public class SamplerTest
 
 		randomSampler.addListener(sample -> {});
 
-		assertThat(randomSampler.read(), is(10));
+		assertThat(randomSampler.getLastSample().getValue(), is(10));
 	}
 
 	@Test
@@ -48,6 +48,6 @@ public class SamplerTest
 
 		randomSampler.addListener(sample -> {});
 
-		assertThat(randomSampler.read(), is(100));
+		assertThat(randomSampler.getLastSample().getValue(), is(100));
 	}
 }

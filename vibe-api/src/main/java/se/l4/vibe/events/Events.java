@@ -4,7 +4,7 @@ import se.l4.vibe.Exportable;
 import se.l4.vibe.Handle;
 import se.l4.vibe.internal.EventsImpl;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.sampling.SampledProbe;
+import se.l4.vibe.probes.SampledProbe;
 
 /**
  * Event registration, used to register events in a system. The events object

@@ -3,6 +3,7 @@ package se.l4.vibe.sampling;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
+import se.l4.vibe.Exportable;
 import se.l4.vibe.Handle;
 import se.l4.vibe.internal.sampling.SamplerWithOperation;
 import se.l4.vibe.internal.sampling.TimeSamplerImpl;
@@ -10,12 +11,13 @@ import se.l4.vibe.operations.Operation;
 import se.l4.vibe.operations.OperationExecutor;
 import se.l4.vibe.operations.TimeSampleOperation;
 import se.l4.vibe.probes.Probe;
+import se.l4.vibe.probes.SampledProbe;
 
 /**
  * Samples measured over time for a certain {@link SampledProbe}.
  */
 public interface TimeSampler<T>
-	extends Probe<T>
+	extends Exportable
 {
 	/**
 	 * Get the last sample acquired by this instance.

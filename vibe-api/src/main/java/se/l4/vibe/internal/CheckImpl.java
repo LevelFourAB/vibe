@@ -13,8 +13,8 @@ import se.l4.vibe.checks.CheckEvent;
 import se.l4.vibe.checks.CheckListener;
 import se.l4.vibe.operations.Operation;
 import se.l4.vibe.probes.Probe;
+import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.sampling.Sample;
-import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.sampling.TimeSampler;
 
 public class CheckImpl<Input>
@@ -59,7 +59,7 @@ public class CheckImpl<Input>
 	@Override
 	public boolean isConditionsMet()
 	{
-		Input input = sampler.read();
+		Input input = sampler.getLastSample().getValue();
 		return condition.test(input);
 	}
 

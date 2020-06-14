@@ -10,8 +10,8 @@ import se.l4.vibe.internal.Scheduling;
 import se.l4.vibe.operations.Operation;
 import se.l4.vibe.operations.OperationExecutor;
 import se.l4.vibe.operations.TimeSampleOperation;
+import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.sampling.Sample;
-import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.sampling.TimeSampler;
 

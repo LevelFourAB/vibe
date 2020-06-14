@@ -11,7 +11,7 @@ import se.l4.vibe.events.EventSeverity;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.operations.Change;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.sampling.SampledProbe;
+import se.l4.vibe.probes.SampledProbe;
 
 /**
  * Implementation of {@link Events}.

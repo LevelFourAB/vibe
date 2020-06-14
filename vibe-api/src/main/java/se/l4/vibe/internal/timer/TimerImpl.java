@@ -14,7 +14,7 @@ import se.l4.vibe.percentiles.BucketPercentileCounter;
 import se.l4.vibe.percentiles.FakePercentileCounter;
 import se.l4.vibe.percentiles.PercentileCounter;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.sampling.SampledProbe;
+import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.timers.Stopwatch;
 import se.l4.vibe.timers.Timer;

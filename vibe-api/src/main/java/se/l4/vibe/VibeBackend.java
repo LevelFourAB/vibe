@@ -3,7 +3,7 @@ package se.l4.vibe;
 import se.l4.vibe.checks.Check;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.sampling.SampledProbe;
+import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.sampling.TimeSampler;
 import se.l4.vibe.timers.Timer;
 

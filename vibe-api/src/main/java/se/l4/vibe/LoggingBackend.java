@@ -10,9 +10,9 @@ import se.l4.vibe.events.Event;
 import se.l4.vibe.events.EventListener;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
+import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListener;
-import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.sampling.TimeSampler;
 
 /**

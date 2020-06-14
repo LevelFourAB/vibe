@@ -10,8 +10,8 @@ import se.l4.vibe.Vibe;
 import se.l4.vibe.internal.CheckImpl;
 import se.l4.vibe.operations.Operation;
 import se.l4.vibe.probes.Probe;
+import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.sampling.Sample;
-import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.sampling.TimeSampler;
 
 /**

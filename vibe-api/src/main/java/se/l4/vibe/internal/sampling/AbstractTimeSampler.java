@@ -33,12 +33,6 @@ public abstract class AbstractTimeSampler<T>
 	}
 
 	@Override
-	public T read()
-	{
-		return lastSample == null ? null : lastSample.getValue();
-	}
-
-	@Override
 	public Sample<T> getLastSample()
 	{
 		return lastSample;

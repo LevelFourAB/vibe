@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import se.l4.vibe.internal.MergedProbes.Named;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.sampling.SampledProbe;
+import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.snapshots.MapSnapshot;
 

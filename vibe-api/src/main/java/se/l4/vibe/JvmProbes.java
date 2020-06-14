@@ -10,7 +10,7 @@ import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.sampling.SampledProbe;
+import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.sampling.Sampler;
 import se.l4.vibe.snapshots.KeyValueReceiver;
 import se.l4.vibe.snapshots.Snapshot;

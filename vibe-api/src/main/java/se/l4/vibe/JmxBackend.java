@@ -16,7 +16,7 @@ import se.l4.vibe.internal.jmx.ExportMBeanBridge;
 import se.l4.vibe.internal.jmx.JmxExport;
 import se.l4.vibe.internal.jmx.ProbeBean;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.sampling.SampledProbe;
+import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.sampling.TimeSampler;
 
 /**
@@ -147,7 +147,7 @@ public class JmxBackend
 		 * sampling.
 		 */
 		Handle h1 = series.start();
-		Handle h2 = export0(path, new ProbeBean(series));
+		Handle h2 = export0(path, new ProbeBean(() -> series.getLastSample().getValue()));
 
 		return () -> {
 			h1.release();

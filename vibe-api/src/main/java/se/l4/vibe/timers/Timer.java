@@ -10,7 +10,7 @@ import se.l4.vibe.internal.timer.TimerImpl;
 import se.l4.vibe.percentiles.BucketPercentileCounter;
 import se.l4.vibe.percentiles.PercentileCounter;
 import se.l4.vibe.probes.Probe;
-import se.l4.vibe.sampling.SampledProbe;
+import se.l4.vibe.probes.SampledProbe;
 
 /**
  * Timer for timing how long things take.

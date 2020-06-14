@@ -6,7 +6,6 @@ import se.l4.vibe.Exportable;
 import se.l4.vibe.internal.MergedProbes;
 import se.l4.vibe.operations.Operation;
 import se.l4.vibe.operations.OperationExecutor;
-import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.snapshots.MapSnapshot;
 
 /**
@@ -50,9 +49,12 @@ public interface Probe<T>
 	 * @return
 	 *   new probe
 	 */
-	default <O> Probe<O> apply(Operation<T, O> operation)
+	default <O> SampledProbe<O> apply(Operation<T, O> operation)
 	{
-		return apply(operation.create());
+		return () -> {
+			Probe<O> probe = apply(operation.create());
+			return probe::read;
+		};
 	}
 
 	/**
