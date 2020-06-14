@@ -1,5 +1,9 @@
 # Vibe
 
+[![License](https://img.shields.io/github/license/levelfourab/vibe)](https://github.com/LevelFourAB/vibe/blob/master/LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/se.l4.vibe/vibe-api)](https://search.maven.org/search?q=g:se.l4.vibe)
+[![javadoc](https://javadoc.io/badge2/se.l4.vibe/vibe-api/javadoc.svg)](https://javadoc.io/doc/se.l4.vibe/vibe-api) 
+
 Vibe is a simplistic approach to Java application monitoring. Vibe can be used
 to create probes, sample metrics ovr time and collect events. This information 
 can then be exported over backends, allowing it to be accessed over JMX, sent
