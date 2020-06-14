@@ -128,8 +128,7 @@ an operation applied to. For example the above class can be simplified to:
 ```java
 Probe<Integer> totalCompletedTasks = executor::getCompletedTaskCount;
 
-SampledProbe<Long> completedTasks = SampledProbe.over(totalCompletedTasks)
-  .apply(Change.changeAsLong());
+SampledProbe<Long> completedTasks = totalCompletedTasks.apply(Change.changeAsLong());
 ```
 
 #### Multiple values
@@ -179,7 +178,7 @@ average of a time period, extract minimum and maximum values or detecting the
 how much something changes.
 
 ```java
-Probe<Long> maxValue = probe.apply(Range.maxAsLong());
+SampledProbe<Long> maxValue = probe.apply(Range.maxAsLong());
 
 TimeSampler<Double> averageOverFiveMinutes = sampler
   .applyResampling(Average.averageOver(Duration.ofMinutes(5)));
@@ -206,15 +205,13 @@ events.register(new UnauthorizedAccess(someImportantInfo));
 ## Checks
 
 Checks are objects that can report if their conditions are met. These can be
-used a health checks, such as checking if CPU usage over 5 minutes is above
-a certain value:
+used a health checks, such as checking every minute if average CPU usage over
+the last 5 minutes is above a certain value:
 
 ```java
-TimeSampler<Double> cpuUsage = TimeSampler.forProbe(JvmProbes.cpuUsage())
-  .build();
-
 Check check = Check.builder()
-  .whenTimeSampler(cpuUsage)
+  .whenProbe(JvmProbes.cpuUsage())
+    .withCheckInterval(Duration.ofMinutes(1))
     .apply(Average.averageOver(Duration.ofMinutes(5)))
     .is(Conditions.above(0.9))
   .build();
@@ -239,7 +236,8 @@ of conditions being met changes, but checks can also repeat events:
 
 ```java
 Check check = Check.builder()
-  .whenTimeSampler(cpuUsage)
+  .whenProbe(JvmProbes.cpuUsage())
+    .withCheckInterval(Duration.ofMinutes(1))
     .apply(Average.averageOver(Duration.ofMinutes(5)))
     .is(Conditions.above(0.9))
   .whenMetRepeatEvery(Duration.ofMinutes(30))
