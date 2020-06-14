@@ -9,7 +9,9 @@ import se.l4.vibe.Handle;
 import se.l4.vibe.Vibe;
 import se.l4.vibe.internal.CheckImpl;
 import se.l4.vibe.operations.Operation;
+import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.Sample;
+import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.sampling.TimeSampler;
 
 /**
@@ -116,14 +118,33 @@ public interface Check
 	interface Builder
 	{
 		/**
-		 * Set the condition for when the check based on the value of
-		 * something being sampled.
+		 * Set the condition for the check via a {@link TimeSampler}.
 		 *
 		 * @param <I>
 		 * @param sampler
 		 * @return
 		 */
 		<I> SamplerWhenBuilder<I> whenTimeSampler(TimeSampler<I> sampler);
+
+		/**
+		 * Set the condition for the check via a {@link Probe} that will be
+		 * checked periodically.
+		 *
+		 * @param <I>
+		 * @param probe
+		 * @return
+		 */
+		<I> ProbeWhenBuilder<I> whenProbe(Probe<I> probe);
+
+		/**
+		 * Set the condition for the check via a {@link SampledProbe} that will be
+		 * checked periodically.
+		 *
+		 * @param <I>
+		 * @param probe
+		 * @return
+		 */
+		<I> ProbeWhenBuilder<I> whenProbe(SampledProbe<I> probe);
 
 		/**
 		 * Set the condition for when to check based on a {@link BooleanSupplier}
@@ -185,6 +206,49 @@ public interface Check
 		 * @return
 		 */
 		<O> SamplerWhenBuilder<O> applyResampling(Operation<Sample<I>, Sample<O>> operation);
+
+		/**
+		 * Set the predicate that checks if the value is meets the desired
+		 * condition.
+		 *
+		 * @param condition
+		 * @return
+		 */
+		Builder is(Predicate<I> condition);
+	}
+
+	/**
+	 * Builder for a condition on top of a {@link TimeSampler}.
+	 */
+	interface ProbeWhenBuilder<I>
+	{
+		/**
+		 * Set how often the probe should be checked.
+		 *
+		 * @param time
+		 * @param unit
+		 * @return
+		 */
+		ProbeWhenBuilder<I> setCheckInterval(Duration duration);
+
+		/**
+		 * Apply an operation to the value being sampled.
+		 *
+		 * @param <O>
+		 * @param modifier
+		 * @return
+		 */
+		<O> ProbeWhenBuilder<O> apply(Operation<I, O> operation);
+
+		/**
+		 * Apply an operation that can optionally resample based on the time
+		 * of samples.
+		 *
+		 * @param <O>
+		 * @param modifier
+		 * @return
+		 */
+		<O> ProbeWhenBuilder<O> applyResampling(Operation<Sample<I>, Sample<O>> operation);
 
 		/**
 		 * Set the predicate that checks if the value is meets the desired

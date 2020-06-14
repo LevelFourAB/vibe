@@ -12,7 +12,9 @@ import se.l4.vibe.checks.Check;
 import se.l4.vibe.checks.CheckEvent;
 import se.l4.vibe.checks.CheckListener;
 import se.l4.vibe.operations.Operation;
+import se.l4.vibe.probes.Probe;
 import se.l4.vibe.sampling.Sample;
+import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.sampling.TimeSampler;
 
 public class CheckImpl<Input>
@@ -150,6 +152,18 @@ public class CheckImpl<Input>
 		}
 
 		@Override
+		public <I> ProbeWhenBuilder<I> whenProbe(Probe<I> probe)
+		{
+			return new ProbeBuilderImpl<>(SampledProbe.over(probe), this::receiveResult);
+		}
+
+		@Override
+		public <I> ProbeWhenBuilder<I> whenProbe(SampledProbe<I> probe)
+		{
+			return new ProbeBuilderImpl<>(probe, this::receiveResult);
+		}
+
+		@Override
 		public BooleanSupplierWhenBuilder whenSupplier(BooleanSupplier supplier)
 		{
 			return new BooleanSupplierBuilder(supplier, this::receiveResult);
@@ -238,13 +252,67 @@ public class CheckImpl<Input>
 		}
 	}
 
+	private static class ProbeBuilderImpl<I>
+		implements ProbeWhenBuilder<I>
+	{
+		private final BiFunction<TimeSampler<?>, Predicate<?>, Builder> resultReceiver;
+
+		private final TimeSampler.Builder<I> builder;
+
+		public ProbeBuilderImpl(
+			SampledProbe<I> probe,
+			BiFunction<TimeSampler<?>, Predicate<?>, Builder> resultReceiver
+		)
+		{
+			this.resultReceiver = resultReceiver;
+
+			this.builder = TimeSampler.forProbe(probe)
+				.withInterval(Duration.ofMinutes(1));
+		}
+
+		@Override
+		public ProbeWhenBuilder<I> setCheckInterval(Duration duration)
+		{
+			Objects.requireNonNull(duration, "duration can not be null");
+			this.builder.withInterval(duration);
+			return this;
+		}
+
+		@Override
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		public <O> ProbeWhenBuilder<O> apply(Operation<I, O> operation)
+		{
+			Objects.requireNonNull(operation, "operation can not be null");
+
+			builder.apply(operation);
+			return (ProbeWhenBuilder) this;
+		}
+
+		@Override
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		public <O> ProbeWhenBuilder<O> applyResampling(Operation<Sample<I>, Sample<O>> operation)
+		{
+			Objects.requireNonNull(operation, "operation can not be null");
+
+			builder.applyResampling(operation);
+			return (ProbeWhenBuilder) this;
+		}
+
+		@Override
+		public Builder is(Predicate<I> condition)
+		{
+			Objects.requireNonNull(condition, "condition can not be null");
+			return resultReceiver.apply(builder.build(), condition);
+		}
+	}
+
 	private static class BooleanSupplierBuilder
 		implements BooleanSupplierWhenBuilder
 	{
 		private final BiFunction<TimeSampler<?>, Predicate<?>, Builder> resultReceiver;
 
 		private final BooleanSupplier supplier;
-		private Duration checkInterval = Duration.ofMinutes(1);
+		private Duration checkInterval;
 
 		public BooleanSupplierBuilder(
 			BooleanSupplier supplier,
@@ -253,6 +321,8 @@ public class CheckImpl<Input>
 		{
 			this.supplier = supplier;
 			this.resultReceiver = resultReceiver;
+
+			checkInterval = Duration.ofMinutes(1);
 		}
 
 		@Override
