@@ -1,9 +1,9 @@
 # Vibe
 
 Vibe is a simplistic approach to Java application monitoring. Vibe can be used
-to create probes, sample metrics and collect events for a JVM based application.
-This information can then be exported over backends, allowing it to be accessed
-over JMX, sent to services such as InfluxDB, logged or e-mailed.
+to create probes, sample metrics ovr time and collect events. This information 
+can then be exported over backends, allowing it to be accessed over JMX, sent
+to services such as InfluxDB, logged or e-mailed.
 
 Licensed under Apache 2.0.
 
@@ -27,7 +27,7 @@ vibe.export(JvmProbes.cpuUsage())
 
 ## Using
 
-The latest version is **0.4.0-SNAPSHOT**.
+Vibe requires at least Java 9. The latest version is **0.4.0**.
 
 Using Maven:
 
@@ -35,7 +35,7 @@ Using Maven:
 <dependency>
   <groupId>se.l4.vibe</groupId>
   <artifactId>vibe-api</artifactId>
-  <version>0.4.0-SNAPSHOT</version>
+  <version>0.4.0</version>
 </dependency>
 ```
 
@@ -338,7 +338,7 @@ First include the backend:
 <dependency>
   <groupId>se.l4.vibe</groupId>
   <artifactId>vibe-backend-mail</artifactId>
-  <version>current version</version>
+  <version>0.4.0</version>
 </dependency>
 ``` 
 
@@ -364,7 +364,7 @@ Dependency:
 <dependency>
   <groupId>se.l4.vibe</groupId>
   <artifactId>vibe-backend-influxdb</artifactId>
-  <version>current version</version>
+  <version>0.4.0</version>
 </dependency>
 ``` 
 
