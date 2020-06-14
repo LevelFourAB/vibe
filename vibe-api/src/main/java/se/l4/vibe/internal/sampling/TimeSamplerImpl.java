@@ -83,13 +83,6 @@ public class TimeSamplerImpl<T>
 		}
 
 		@Override
-		public Builder<T> withInterval(long time, TimeUnit unit)
-		{
-			this.interval = unit.toMillis(time);
-			return this;
-		}
-
-		@Override
 		public Builder<T> withInterval(Duration time)
 		{
 			this.interval = time.toMillis();

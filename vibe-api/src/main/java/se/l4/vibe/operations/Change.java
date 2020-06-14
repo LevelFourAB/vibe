@@ -1,5 +1,7 @@
 package se.l4.vibe.operations;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 /**
  * Operations for detecting changes to samples values.
  */
@@ -14,6 +16,7 @@ public class Change
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> Operation<T, Double> changeAsDouble()
 	{
 		return () -> new OperationExecutor<T, Double>()
@@ -36,6 +39,7 @@ public class Change
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> Operation<T, Long> changeAsLong()
 	{
 		return () -> new OperationExecutor<T, Long>()
@@ -59,6 +63,7 @@ public class Change
 	 * @param series
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> Operation<T, Double> changeAsFraction()
 	{
 		return () -> new OperationExecutor<T, Double>()

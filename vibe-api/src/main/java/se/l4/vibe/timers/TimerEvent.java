@@ -2,6 +2,8 @@ package se.l4.vibe.timers;
 
 import java.util.concurrent.TimeUnit;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 /**
  * Event emitted when something has been timed in a {@link Timer}.
  */
@@ -11,7 +13,7 @@ public class TimerEvent
 	private final long duration;
 
 	public TimerEvent(
-		TimeUnit resolution,
+		@NonNull TimeUnit resolution,
 		long duration
 	)
 	{
@@ -24,6 +26,7 @@ public class TimerEvent
 	 *
 	 * @return
 	 */
+	@NonNull
 	public TimeUnit getResolution()
 	{
 		return resolution;

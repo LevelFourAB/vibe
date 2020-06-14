@@ -3,6 +3,7 @@ package se.l4.vibe.operations;
 import java.time.Duration;
 import java.util.Collection;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListOperation;
 import se.l4.vibe.sampling.TimeSampler;
@@ -23,6 +24,7 @@ public class Sum
 	 * @param <T>
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> Operation<T, Long> sumAsLong()
 	{
 		return () -> new OperationExecutor<T, Long>()
@@ -45,6 +47,7 @@ public class Sum
 	 * @param <T>
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> Operation<T, Double> sumAsDouble()
 	{
 		return () -> new OperationExecutor<T, Double>()
@@ -68,6 +71,7 @@ public class Sum
 	 * @param duration
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> TimeSampleOperation<T, Long> sumAsLongOver(
 		Duration duration
 	)
@@ -83,8 +87,9 @@ public class Sum
 	 * @param duration
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> TimeSampleOperation<T, Double> sumAsDoubleOver(
-		Duration duration
+		@NonNull Duration duration
 	)
 	{
 		return TimeLimited.rollingOver(duration, new SumDoubleOperation<>());

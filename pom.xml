@@ -27,6 +27,15 @@
 		<module>vibe-backend-influxdb</module>
 	</modules>
 
+	<dependencies>
+		<dependency>
+			<groupId>com.github.spotbugs</groupId>
+			<artifactId>spotbugs-annotations</artifactId>
+			<version>4.0.3</version>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

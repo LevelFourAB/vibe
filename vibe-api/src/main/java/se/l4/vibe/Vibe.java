@@ -2,6 +2,7 @@ package se.l4.vibe;
 
 import java.util.Optional;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.internal.VibeImpl;
 
 /**
@@ -92,7 +93,8 @@ public interface Vibe
 	 * @return
 	 *   builder for the export
 	 */
-	<T extends Exportable> ExportBuilder<T> export(T object);
+	@NonNull
+	<T extends Exportable> ExportBuilder<T> export(@NonNull T object);
 
 	/**
 	 * Create a Vibe instance for the given hierarchy. This creates an instance
@@ -117,7 +119,8 @@ public interface Vibe
 	 * @return
 	 *   instance scoped to the given hierarchy
 	 */
-	Vibe scope(String... hierarchy);
+	@NonNull
+	Vibe scope(@NonNull String... hierarchy);
 
 	/**
 	 * Destroy this Vibe instance. For the top level instance this will stop
@@ -131,6 +134,7 @@ public interface Vibe
 	 *
 	 * @return
 	 */
+	@NonNull
 	static Builder builder()
 	{
 		return new VibeImpl.BuilderImpl();
@@ -147,7 +151,8 @@ public interface Vibe
 		 * @param backend
 		 * @return
 		 */
-		Builder addBackend(VibeBackend backend);
+		@NonNull
+		Builder addBackend(@NonNull VibeBackend backend);
 
 		/**
 		 * Add a backend to use. This takes an optional that may be empty.
@@ -155,13 +160,15 @@ public interface Vibe
 		 * @param backend
 		 * @return
 		 */
-		Builder addBackend(Optional<VibeBackend> backend);
+		@NonNull
+		Builder addBackend(@NonNull Optional<VibeBackend> backend);
 
 		/**
 		 * Build the instance.
 		 *
 		 * @return
 		 */
+		@NonNull
 		Vibe build();
 	}
 }

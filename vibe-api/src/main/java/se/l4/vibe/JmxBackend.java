@@ -12,6 +12,7 @@ import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.internal.jmx.ExportMBeanBridge;
 import se.l4.vibe.internal.jmx.JmxExport;
 import se.l4.vibe.internal.jmx.ProbeBean;
@@ -182,6 +183,7 @@ public class JmxBackend
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static Builder builder()
 	{
 		return new Builder();
@@ -208,7 +210,8 @@ public class JmxBackend
 		 *   interval to use
 		 * @return
 		 */
-		public Builder withSamplingInterval(Duration interval)
+		@NonNull
+		public Builder withSamplingInterval(@NonNull Duration interval)
 		{
 			Objects.requireNonNull(interval, "interval can not be null");
 			this.samplingInterval = interval;
@@ -216,7 +219,8 @@ public class JmxBackend
 			return this;
 		}
 
-		public Builder withName(String name)
+		@NonNull
+		public Builder withName(@NonNull String name)
 		{
 			Objects.requireNonNull(name, "name can not be null");
 
@@ -224,7 +228,8 @@ public class JmxBackend
 			return this;
 		}
 
-		public Builder withServer(MBeanServer server)
+		@NonNull
+		public Builder withServer(@NonNull MBeanServer server)
 		{
 			Objects.requireNonNull(server, "server can not be null");
 
@@ -232,6 +237,7 @@ public class JmxBackend
 			return this;
 		}
 
+		@NonNull
 		public JmxBackend build()
 		{
 			return new JmxBackend(samplingInterval, name, server);

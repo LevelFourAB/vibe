@@ -2,6 +2,7 @@ package se.l4.vibe.operations;
 
 import java.time.Duration;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.internal.sampling.RollingTimeLimitedSampleOperation;
 import se.l4.vibe.sampling.SampleListOperation;
 
@@ -23,9 +24,10 @@ public class TimeLimited
 	 * @param operation
 	 * @return
 	 */
+	@NonNull
 	public static <I, O> TimeSampleOperation<I, O> rollingOver(
-		Duration duration,
-		SampleListOperation<I, O> operation
+		@NonNull Duration duration,
+		@NonNull SampleListOperation<I, O> operation
 	)
 	{
 		return () -> new RollingTimeLimitedSampleOperation<>(duration.toMillis(), operation);

@@ -3,6 +3,9 @@ package se.l4.vibe.checks;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
+
 /**
  * Conditions available for use with {@link Check checks}.
  */
@@ -18,7 +21,8 @@ public class Conditions
 	 * @param instance
 	 * @return
 	 */
-	public static <T> Predicate<T> not(Predicate<T> instance)
+	@NonNull
+	public static <T> Predicate<T> not(@NonNull Predicate<T> instance)
 	{
 		return instance.negate();
 	}
@@ -30,7 +34,8 @@ public class Conditions
 	 * @param instance
 	 * @return
 	 */
-	public static <T> Predicate<T> is(T instance)
+	@NonNull
+	public static <T> Predicate<T> is(@Nullable T instance)
 	{
 		return v -> Objects.equals(v, instance);
 	}
@@ -41,6 +46,7 @@ public class Conditions
 	 * @param number
 	 * @return
 	 */
+	@NonNull
 	public static Predicate<Number> is(double number)
 	{
 		return v -> v != null && v.doubleValue() == number;
@@ -52,6 +58,7 @@ public class Conditions
 	 * @param number
 	 * @return
 	 */
+	@NonNull
 	public static Predicate<Number> is(long number)
 	{
 		return v -> v != null && v.longValue() == number;
@@ -64,6 +71,7 @@ public class Conditions
 	 * @param number
 	 * @return
 	 */
+	@NonNull
 	public static Predicate<Number> inRange(double lower, double upper)
 	{
 		return v -> {
@@ -81,6 +89,7 @@ public class Conditions
 	 * @param value
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> Predicate<T> above(double threshold)
 	{
 		return v -> v != null && v.doubleValue() > threshold;
@@ -93,6 +102,7 @@ public class Conditions
 	 * @param value
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> Predicate<T> below(double threshold)
 	{
 		return v -> v != null && v.doubleValue() < threshold;

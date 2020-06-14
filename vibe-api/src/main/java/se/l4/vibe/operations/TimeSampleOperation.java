@@ -1,5 +1,6 @@
 package se.l4.vibe.operations;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.sampling.Sample;
 
 /**
@@ -21,7 +22,10 @@ public interface TimeSampleOperation<Input, Output>
 	 * @param op
 	 * @return
 	 */
-	static <Input, Output> TimeSampleOperation<Input, Output> over(Operation<Input, Output> op)
+	@NonNull
+	static <Input, Output> TimeSampleOperation<Input, Output> over(
+		@NonNull Operation<Input, Output> op
+	)
 	{
 		return () -> {
 			OperationExecutor<Input, Output> executor = op.create();

@@ -1,5 +1,7 @@
 package se.l4.vibe.events;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 /**
  * Event as emitted by {@link Events}. Passed to {@link EventListener}.
  *
@@ -11,19 +13,21 @@ public class Event<T extends EventData>
 	private final T data;
 
 	public Event(
-		EventSeverity severity,
-		T data
+		@NonNull EventSeverity severity,
+		@NonNull T data
 	)
 	{
 		this.severity = severity;
 		this.data = data;
 	}
 
+	@NonNull
 	public EventSeverity getSeverity()
 	{
 		return severity;
 	}
 
+	@NonNull
 	public T getData()
 	{
 		return data;

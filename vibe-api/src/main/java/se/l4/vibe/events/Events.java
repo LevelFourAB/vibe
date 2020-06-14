@@ -1,5 +1,6 @@
 package se.l4.vibe.events;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.Exportable;
 import se.l4.vibe.Handle;
 import se.l4.vibe.internal.EventsImpl;
@@ -44,7 +45,7 @@ public interface Events<T extends EventData>
 	 * @param eventData
 	 *   data of the event
 	 */
-	void register(T eventData);
+	void register(@NonNull T eventData);
 
 	/**
 	 * Register a new event with the specified severity.
@@ -54,13 +55,14 @@ public interface Events<T extends EventData>
 	 * @param eventData
 	 *   data of the event
 	 */
-	void register(EventSeverity severity, T eventData);
+	void register(@NonNull EventSeverity severity, @NonNull T eventData);
 
 	/**
 	 * Get the default severity for this object.
 	 *
 	 * @return
 	 */
+	@NonNull
 	EventSeverity getDefaultSeverity();
 
 	/**
@@ -68,7 +70,8 @@ public interface Events<T extends EventData>
 	 *
 	 * @param listener
 	 */
-	Handle addListener(EventListener<T> listener);
+	@NonNull
+	Handle addListener(@NonNull EventListener<T> listener);
 
 	/**
 	 * Remove a listener that will receive events.
@@ -82,6 +85,7 @@ public interface Events<T extends EventData>
 	 *
 	 * @return
 	 */
+	@NonNull
 	Probe<Long> getTotalEventsProbe();
 
 	/**
@@ -90,6 +94,7 @@ public interface Events<T extends EventData>
 	 *
 	 * @return
 	 */
+	@NonNull
 	SampledProbe<Long> getEventsProbe();
 
 	/**
@@ -98,6 +103,7 @@ public interface Events<T extends EventData>
 	 * @param <T>
 	 * @return
 	 */
+	@NonNull
 	static <T extends EventData> Builder<T> builder()
 	{
 		return new EventsImpl.BuilderImpl<>();
@@ -114,7 +120,8 @@ public interface Events<T extends EventData>
 		 * @param severity
 		 * @return
 		 */
-		Builder<T> withSeverity(EventSeverity severity);
+		@NonNull
+		Builder<T> withSeverity(@NonNull EventSeverity severity);
 
 		/**
 		 * Build the instance.
@@ -122,6 +129,7 @@ public interface Events<T extends EventData>
 		 * @return
 		 *   instance of {@link Events}
 		 */
+		@NonNull
 		Events<T> build();
 	}
 }

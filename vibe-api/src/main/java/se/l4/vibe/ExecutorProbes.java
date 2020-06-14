@@ -2,6 +2,7 @@ package se.l4.vibe;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.operations.Change;
 import se.l4.vibe.operations.OperationExecutor;
 import se.l4.vibe.probes.SampledProbe;
@@ -17,7 +18,10 @@ public class ExecutorProbes
 	{
 	}
 
-	public static SampledProbe<ThreadPoolExecutorSnapshot> forThreadPoolExecutor(ThreadPoolExecutor executor)
+	@NonNull
+	public static SampledProbe<ThreadPoolExecutorSnapshot> forThreadPoolExecutor(
+		@NonNull ThreadPoolExecutor executor
+	)
 	{
 		return () -> {
 			OperationExecutor<Number, Long> completedTasksChange = Change.changeAsLong().create();

@@ -1,5 +1,7 @@
 package se.l4.vibe.sampling;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 /**
  * Listener for sample events.
  *
@@ -12,5 +14,5 @@ public interface SampleListener<T>
 	 *
 	 * @param sample
 	 */
-	void sampleAcquired(Sample<T> sample);
+	void sampleAcquired(@NonNull Sample<T> sample);
 }

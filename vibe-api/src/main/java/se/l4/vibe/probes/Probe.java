@@ -2,6 +2,7 @@ package se.l4.vibe.probes;
 
 import java.util.function.Supplier;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.Exportable;
 import se.l4.vibe.internal.MergedProbes;
 import se.l4.vibe.operations.Operation;
@@ -37,6 +38,7 @@ public interface Probe<T>
 	 *
 	 * @return
 	 */
+	@NonNull
 	T read();
 
 	/**
@@ -49,7 +51,8 @@ public interface Probe<T>
 	 * @return
 	 *   new probe
 	 */
-	default <O> SampledProbe<O> apply(Operation<T, O> operation)
+	@NonNull
+	default <O> SampledProbe<O> apply(@NonNull Operation<T, O> operation)
 	{
 		return () -> {
 			Probe<O> probe = apply(operation.create());
@@ -67,7 +70,8 @@ public interface Probe<T>
 	 * @return
 	 *   new probe
 	 */
-	default <O> Probe<O> apply(OperationExecutor<T, O> executor)
+	@NonNull
+	default <O> Probe<O> apply(@NonNull OperationExecutor<T, O> executor)
 	{
 		return () -> {
 			T value = this.read();
@@ -82,7 +86,8 @@ public interface Probe<T>
 	 * @param supplier
 	 * @return
 	 */
-	static <O> Probe<O> over(Supplier<O> supplier)
+	@NonNull
+	static <O> Probe<O> over(@NonNull Supplier<O> supplier)
 	{
 		return supplier::get;
 	}
@@ -103,6 +108,7 @@ public interface Probe<T>
      *  .build();
 	 * </pre>
 	 */
+	@NonNull
 	static MergedBuilder merged()
 	{
 		return new MergedProbes.ProbeBuilder();
@@ -125,13 +131,15 @@ public interface Probe<T>
 		 * @return
 		 *   builder
 		 */
-		MergedBuilder add(String name, Probe<?> probe);
+		@NonNull
+		MergedBuilder add(@NonNull String name, @NonNull Probe<?> probe);
 
 		/**
 		 * Create the probe.
 		 *
 		 * @return
 		 */
+		@NonNull
 		Probe<MapSnapshot> build();
 	}
 }

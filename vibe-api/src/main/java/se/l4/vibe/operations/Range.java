@@ -3,6 +3,7 @@ package se.l4.vibe.operations;
 import java.time.Duration;
 import java.util.Collection;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListOperation;
 
@@ -23,6 +24,7 @@ public class Range
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> Operation<T, Double> minAsDouble()
 	{
 		return () -> new OperationExecutor<T, Double>()
@@ -45,6 +47,7 @@ public class Range
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> Operation<T, Long> minAsLong()
 	{
 		return () -> new OperationExecutor<T, Long>()
@@ -69,8 +72,9 @@ public class Range
 	 * @param duration
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> TimeSampleOperation<T, Double> minAsDoubleOver(
-		Duration duration
+		@NonNull Duration duration
 	)
 	{
 		return TimeLimited.rollingOver(duration, new MinDoubleOperation<>());
@@ -84,8 +88,9 @@ public class Range
 	 * @param duration
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> TimeSampleOperation<T, Long> minAsLongOver(
-		Duration duration
+		@NonNull Duration duration
 	)
 	{
 		return TimeLimited.rollingOver(duration, new MinLongOperation<>());
@@ -97,6 +102,7 @@ public class Range
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> Operation<T, Double> maxAsDouble()
 	{
 		return () -> new OperationExecutor<T, Double>()
@@ -119,6 +125,7 @@ public class Range
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> Operation<T, Long> maxAsLong()
 	{
 		return () -> new OperationExecutor<T, Long>()
@@ -143,8 +150,9 @@ public class Range
 	 * @param duration
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> TimeSampleOperation<T, Double> maxAsDoubleOver(
-		Duration duration
+		@NonNull Duration duration
 	)
 	{
 		return TimeLimited.rollingOver(duration, new MaxDoubleOperation<>());
@@ -158,8 +166,9 @@ public class Range
 	 * @param duration
 	 * @return
 	 */
+	@NonNull
 	public static <T extends Number> TimeSampleOperation<T, Long> maxAsLongOver(
-		Duration duration
+		@NonNull Duration duration
 	)
 	{
 		return TimeLimited.rollingOver(duration, new MaxLongOperation<>());

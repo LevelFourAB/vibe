@@ -3,6 +3,7 @@ package se.l4.vibe.percentiles;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongArray;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.VibeException;
 import se.l4.vibe.snapshots.KeyValueReceiver;
 
@@ -36,7 +37,9 @@ public class BucketPercentileCounter
 	private volatile AtomicLongArray buckets;
 	private final AtomicLong total;
 
-	public BucketPercentileCounter(int... limits)
+	public BucketPercentileCounter(
+		@NonNull int... limits
+	)
 	{
 		for(int i=1, n=limits.length; i<n; i++)
 		{

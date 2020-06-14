@@ -2,6 +2,7 @@ package se.l4.vibe.timers;
 
 import java.util.concurrent.TimeUnit;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.snapshots.Snapshot;
 
 /**
@@ -15,6 +16,7 @@ public interface TimerSnapshot
 	 *
 	 * @return
 	 */
+	@NonNull
 	TimeUnit getResolution();
 
 	/**
@@ -58,7 +60,8 @@ public interface TimerSnapshot
 	 * @param other
 	 * @return
 	 */
-	TimerSnapshot remove(TimerSnapshot other);
+	@NonNull
+	TimerSnapshot remove(@NonNull TimerSnapshot other);
 
 	/**
 	 * Add the value from the given object and return a new copy.
@@ -66,5 +69,6 @@ public interface TimerSnapshot
 	 * @param other
 	 * @return
 	 */
-	TimerSnapshot add(TimerSnapshot other);
+	@NonNull
+	TimerSnapshot add(@NonNull TimerSnapshot other);
 }

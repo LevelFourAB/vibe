@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.events.Event;
 import se.l4.vibe.events.EventListener;
 import se.l4.vibe.events.Events;
@@ -88,6 +89,12 @@ public class LoggingBackend
 		return events.addListener(listener);
 	}
 
+	/**
+	 * Start building a new {@link LoggingBackend}.
+	 *
+	 * @return
+	 */
+	@NonNull
 	public static Builder builder()
 	{
 		return new Builder();
@@ -114,7 +121,8 @@ public class LoggingBackend
 		 *   interval to use
 		 * @return
 		 */
-		public Builder withSamplingInterval(Duration interval)
+		@NonNull
+		public Builder withSamplingInterval(@NonNull Duration interval)
 		{
 			Objects.requireNonNull(interval, "interval can not be null");
 			this.samplingInterval = interval;
@@ -122,7 +130,8 @@ public class LoggingBackend
 			return this;
 		}
 
-		public Builder withLogger(Logger logger)
+		@NonNull
+		public Builder withLogger(@NonNull Logger logger)
 		{
 			Objects.requireNonNull(logger, "logger may not be null");
 			this.logger = logger;
@@ -130,7 +139,8 @@ public class LoggingBackend
 			return this;
 		}
 
-		public Builder withLogger(String name)
+		@NonNull
+		public Builder withLogger(@NonNull String name)
 		{
 			Objects.requireNonNull(logger, "name may not be null");
 			this.logger = LoggerFactory.getLogger(name);
@@ -138,7 +148,8 @@ public class LoggingBackend
 			return this;
 		}
 
-		public Builder withLogger(Class<?> type)
+		@NonNull
+		public Builder withLogger(@NonNull Class<?> type)
 		{
 			Objects.requireNonNull(logger, "type may not be null");
 			this.logger = LoggerFactory.getLogger(type);
@@ -146,28 +157,33 @@ public class LoggingBackend
 			return this;
 		}
 
+		@NonNull
 		public Builder logEvents()
 		{
 			return logEvents(true);
 		}
 
+		@NonNull
 		public Builder logEvents(boolean enabled)
 		{
 			this.logEvents = enabled;
 			return this;
 		}
 
+		@NonNull
 		public Builder logSamples()
 		{
 			return logSamples(true);
 		}
 
+		@NonNull
 		public Builder logSamples(boolean enabled)
 		{
 			this.logSamples = enabled;
 			return this;
 		}
 
+		@NonNull
 		public LoggingBackend build()
 		{
 			return new LoggingBackend(

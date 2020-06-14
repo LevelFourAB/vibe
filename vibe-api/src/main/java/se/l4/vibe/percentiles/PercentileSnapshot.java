@@ -1,5 +1,6 @@
 package se.l4.vibe.percentiles;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.snapshots.KeyValueReceiver;
 import se.l4.vibe.snapshots.Snapshot;
 
@@ -39,7 +40,8 @@ public interface PercentileSnapshot
 	 * @param other
 	 * @return
 	 */
-	PercentileSnapshot remove(PercentileSnapshot other);
+	@NonNull
+	PercentileSnapshot remove(@NonNull PercentileSnapshot other);
 
 	/**
 	 * Add the value from the given object and return a new copy.
@@ -47,7 +49,8 @@ public interface PercentileSnapshot
 	 * @param other
 	 * @return
 	 */
-	PercentileSnapshot add(PercentileSnapshot other);
+	@NonNull
+	PercentileSnapshot add(@NonNull PercentileSnapshot other);
 
 	@Override
 	default void mapToKeyValues(KeyValueReceiver receiver)
@@ -62,5 +65,5 @@ public interface PercentileSnapshot
 	 *
 	 * @param receiver
 	 */
-	void partialMapToKeyValues(KeyValueReceiver receiver);
+	void partialMapToKeyValues(@NonNull KeyValueReceiver receiver);
 }

@@ -1,5 +1,7 @@
 package se.l4.vibe.checks;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 /**
  * Listener for status of a {@link Check}.
  *
@@ -12,5 +14,5 @@ public interface CheckListener
 	 *
 	 * @param event
 	 */
-	void checkStatus(CheckEvent event);
+	void checkStatus(@NonNull CheckEvent event);
 }

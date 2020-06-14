@@ -2,7 +2,9 @@ package se.l4.vibe.sampling;
 
 import java.util.Collection;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.operations.TimeLimited;
+import se.l4.vibe.operations.TimeSampleOperation;
 
 /**
  * Operation on list of {@link Sample samples}. This type of operation has
@@ -24,7 +26,7 @@ public interface SampleListOperation<Input, Output>
 	 * @param samples
 	 *   all of the samples, without the sample being removed
 	 */
-	void remove(Sample<Input> sample, Collection<Sample<Input>> samples);
+	void remove(@NonNull Sample<Input> sample, @NonNull Collection<Sample<Input>> samples);
 
 	/**
 	 * Handle a sample being added to the list.
@@ -34,12 +36,13 @@ public interface SampleListOperation<Input, Output>
 	 * @param samples
 	 *   all of the samples, including the value added
 	 */
-	void add(Sample<Input> sample, Collection<Sample<Input>> samples);
+	void add(@NonNull Sample<Input> sample, @NonNull Collection<Sample<Input>> samples);
 
 	/**
-	 * Get the value of this
+	 * Get the current value.
 	 *
 	 * @return
 	 */
+	@NonNull
 	Output get();
 }

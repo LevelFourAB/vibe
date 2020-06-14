@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.Exportable;
 import se.l4.vibe.Handle;
 import se.l4.vibe.internal.timer.TimerImpl;
@@ -21,6 +22,7 @@ public interface Timer
 	/**
 	 * Start timing something.
 	 */
+	@NonNull
 	Stopwatch start();
 
 	/**
@@ -28,20 +30,22 @@ public interface Timer
 	 *
 	 * @param listener
 	 */
-	Handle addListener(TimerListener listener);
+	@NonNull
+	Handle addListener(@NonNull TimerListener listener);
 
 	/**
 	 * Remove a previously added listener.
 	 *
 	 * @param listener
 	 */
-	void removeListener(TimerListener listener);
+	void removeListener(@NonNull TimerListener listener);
 
 	/**
 	 * Get the resolution of this timer.
 	 *
 	 * @return
 	 */
+	@NonNull
 	TimeUnit getResolution();
 
 	/**
@@ -49,6 +53,7 @@ public interface Timer
 	 *
 	 * @return
 	 */
+	@NonNull
 	Probe<Long> getMaximumProbe();
 
 	/**
@@ -56,6 +61,7 @@ public interface Timer
 	 *
 	 * @return
 	 */
+	@NonNull
 	Probe<Long> getMinimumProbe();
 
 	/**
@@ -63,6 +69,7 @@ public interface Timer
 	 *
 	 * @return
 	 */
+	@NonNull
 	SampledProbe<TimerSnapshot> getSnapshotProbe();
 
 	/**
@@ -70,6 +77,7 @@ public interface Timer
 	 *
 	 * @return
 	 */
+	@NonNull
 	static Builder builder()
 	{
 		return new TimerImpl.BuilderImpl();
@@ -87,7 +95,8 @@ public interface Timer
 		 *   the unit to use for resolution
 		 * @return
 		 */
-		Builder withResolution(TimeUnit unit);
+		@NonNull
+		Builder withResolution(@NonNull TimeUnit unit);
 
 		/**
 		 * Measure how many timings fall within a predefined set of ranges.
@@ -133,7 +142,8 @@ public interface Timer
 		 * @return
 		 * @see BucketPercentileCounter
 		 */
-		Builder withBuckets(Duration... limits);
+		@NonNull
+		Builder withBuckets(@NonNull Duration... limits);
 
 		/**
 		 * Set the percentile counter to use for this timer. The counter should
@@ -142,12 +152,15 @@ public interface Timer
 		 * @param counter
 		 * @return
 		 */
-		Builder withPercentiles(Supplier<PercentileCounter> counter);
+		@NonNull
+		Builder withPercentiles(@NonNull Supplier<PercentileCounter> counter);
 
 		/**
 		 * Build the timer.
+		 *
 		 * @return
 		 */
+		@NonNull
 		Timer build();
 	}
 }

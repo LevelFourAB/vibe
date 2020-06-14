@@ -1,5 +1,7 @@
 package se.l4.vibe.snapshots;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 /**
  * Utility methods for {@link Snapshot}.
  */
@@ -15,7 +17,8 @@ public class Snapshots
 	 * @param instance
 	 * @return
 	 */
-	public static String toString(Snapshot instance)
+	@NonNull
+	public static String toString(@NonNull Snapshot instance)
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append(instance.getClass().getSimpleName());

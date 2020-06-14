@@ -1,5 +1,8 @@
 package se.l4.vibe;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
+
 /**
  * Helper for paths in Vibe.
  */
@@ -22,7 +25,8 @@ public class VibePaths
 	 * @return
 	 *   merged path
 	 */
-	public static String hierarchy(String... hierarchy)
+	@NonNull
+	public static String hierarchy(@NonNull String... hierarchy)
 	{
 		StringBuilder path = new StringBuilder();
 		for(int i=0, n=hierarchy.length; i<n; i++)
@@ -42,7 +46,8 @@ public class VibePaths
 		return path.toString();
 	}
 
-	public static String merge(String current, String toAppend)
+	@Nullable
+	public static String merge(@Nullable String current, @Nullable String toAppend)
 	{
 		if(toAppend == null)
 		{

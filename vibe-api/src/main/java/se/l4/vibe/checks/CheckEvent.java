@@ -2,6 +2,8 @@ package se.l4.vibe.checks;
 
 import java.time.Instant;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 /**
  * Event used with {@link Check} to carry information about the check. This
  * type of class is passed to {@link CheckListener}s.
@@ -18,7 +20,7 @@ public class CheckEvent
 	public CheckEvent(
 		boolean active,
 		boolean repeating,
-		Instant firstActive
+		@NonNull Instant firstActive
 	)
 	{
 		this.conditionsMet = active;
@@ -54,6 +56,7 @@ public class CheckEvent
 	 *
 	 * @return
 	 */
+	@NonNull
 	public Instant getLastChange()
 	{
 		return firstActive;

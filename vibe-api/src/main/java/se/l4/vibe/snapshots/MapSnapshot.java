@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 /**
  * {@link Snapshot} that is implemented like a {@link java.util.Map}.
  */
@@ -12,13 +14,16 @@ public class MapSnapshot
 {
 	private final Map<String, Object> values;
 
-	private MapSnapshot(Map<String, Object> values)
+	private MapSnapshot(
+		Map<String, Object> values
+	)
 	{
 		this.values = values;
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> Optional<T> get(String key)
+	@NonNull
+	public <T> Optional<T> get(@NonNull String key)
 	{
 		return Optional.ofNullable((T) values.get(key));
 	}
@@ -37,6 +42,7 @@ public class MapSnapshot
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static Builder builder()
 	{
 		return new Builder();
@@ -51,12 +57,14 @@ public class MapSnapshot
 			values = new HashMap<>();
 		}
 
-		public Builder set(String key, Object value)
+		@NonNull
+		public Builder set(@NonNull String key, @NonNull Object value)
 		{
 			values.put(key, value);
 			return this;
 		}
 
+		@NonNull
 		public MapSnapshot build()
 		{
 			return new MapSnapshot(values);

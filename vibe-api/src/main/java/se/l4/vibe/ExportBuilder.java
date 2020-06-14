@@ -1,5 +1,7 @@
 package se.l4.vibe;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 /**
  * Builder used for exporting objects.
  */
@@ -14,7 +16,8 @@ public interface ExportBuilder<T extends Exportable>
 	 * @return
 	 *   self
 	 */
-	ExportBuilder<T> at(String... hierarchy);
+	@NonNull
+	ExportBuilder<T> at(@NonNull String... hierarchy);
 
 	/**
 	 * Set the hierarchy where the feature is to be exported. The hierarchy
@@ -25,7 +28,8 @@ public interface ExportBuilder<T extends Exportable>
 	 * @return
 	 *   self
 	 */
-	ExportBuilder<T> at(String path);
+	@NonNull
+	ExportBuilder<T> at(@NonNull String path);
 
 	/**
 	 * Export the object and return an instance describing the export. The
@@ -35,5 +39,6 @@ public interface ExportBuilder<T extends Exportable>
 	 * @return
 	 *   instance describing the export
 	 */
+	@NonNull
 	Export<T> done();
 }

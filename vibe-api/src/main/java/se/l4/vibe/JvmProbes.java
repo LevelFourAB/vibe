@@ -9,6 +9,7 @@ import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.SampledProbe;
 import se.l4.vibe.sampling.Sampler;
@@ -32,6 +33,7 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static Probe<Double> currentCpuUsage()
 	{
 		com.sun.management.OperatingSystemMXBean os =
@@ -51,6 +53,7 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static SampledProbe<Double> cpuUsage()
 	{
 		com.sun.management.OperatingSystemMXBean os =
@@ -93,6 +96,7 @@ public class JvmProbes
 	 * @see MemoryMXBean#getHeapMemoryUsage()
 	 * @see MemoryMXBean#getNonHeapMemoryUsage()
 	 */
+	@NonNull
 	public static Probe<MemorySnapshot> memoryUsage()
 	{
 		MemoryMXBean b = ManagementFactory.getMemoryMXBean();
@@ -117,6 +121,7 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static Probe<Long> heapMemoryUsage()
 	{
 		MemoryMXBean b = ManagementFactory.getMemoryMXBean();
@@ -128,6 +133,7 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static Probe<Long> nonHeapMemoryUsage()
 	{
 		MemoryMXBean b = ManagementFactory.getMemoryMXBean();
@@ -139,6 +145,7 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static Probe<Long> totalUsedMemory()
 	{
 		MemoryMXBean b = ManagementFactory.getMemoryMXBean();
@@ -150,6 +157,7 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static Probe<Double> heapMemoryAsFraction()
 	{
 		MemoryMXBean b = ManagementFactory.getMemoryMXBean();
@@ -164,6 +172,7 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static Probe<BufferPoolDetails> directBufferPool()
 	{
 		return bufferPool("direct");
@@ -174,12 +183,14 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static Probe<BufferPoolDetails> mappedBufferPool()
 	{
 		return bufferPool("mapped");
 	}
 
-	private static Probe<BufferPoolDetails> bufferPool(String name)
+	@NonNull
+	private static Probe<BufferPoolDetails> bufferPool(@NonNull String name)
 	{
 		for(BufferPoolMXBean b : ManagementFactory.getPlatformMXBeans(BufferPoolMXBean.class))
 		{
@@ -197,6 +208,7 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static Probe<Long> uptime()
 	{
 		RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
@@ -208,6 +220,7 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static Probe<Integer> threadCount()
 	{
 		ThreadMXBean thread = ManagementFactory.getThreadMXBean();
@@ -219,6 +232,7 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static Probe<Integer> loadedClassCount()
 	{
 		ClassLoadingMXBean cl = ManagementFactory.getClassLoadingMXBean();
@@ -232,6 +246,7 @@ public class JvmProbes
 	 *
 	 * @return
 	 */
+	@NonNull
 	public static Probe<Long> openFileDescriptorCount()
 	{
 		OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
@@ -270,7 +285,7 @@ public class JvmProbes
 	 *
 	 * @param vibe
 	 */
-	public void export(Vibe vibe)
+	public void export(@NonNull Vibe vibe)
 	{
 		vibe.export(cpuUsage())
 			.at("cpu")

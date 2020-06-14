@@ -1,6 +1,7 @@
 module se.l4.vibe {
 	requires transitive jdk.management;
 	requires transitive org.slf4j;
+	requires transitive com.github.spotbugs.annotations;
 
 	exports se.l4.vibe;
 

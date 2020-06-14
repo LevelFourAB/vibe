@@ -1,5 +1,6 @@
 package se.l4.vibe.operations;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.checks.Check;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.probes.SampledProbe;
@@ -25,5 +26,6 @@ public interface Operation<Input, Output>
 	/**
 	 * Create the operation.
 	 */
+	@NonNull
 	OperationExecutor<Input, Output> create();
 }

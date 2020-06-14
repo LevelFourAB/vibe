@@ -1,5 +1,7 @@
 package se.l4.vibe.percentiles;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 /**
  * Counter for helping with calculating percentiles.
  */
@@ -17,6 +19,7 @@ public interface PercentileCounter
 	 *
 	 * @return
 	 */
+	@NonNull
 	PercentileSnapshot get();
 
 	/**

@@ -1,5 +1,7 @@
 package se.l4.vibe.operations;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 /**
  * Executor that performs an option on input data. This is the companion to
  * {@link Operation} that performs the actual operation. An executor may keep
@@ -19,5 +21,6 @@ public interface OperationExecutor<Input, Output>
 	 * @return
 	 *   modified result
 	 */
-	Output apply(Input input);
+	@NonNull
+	Output apply(@NonNull Input input);
 }

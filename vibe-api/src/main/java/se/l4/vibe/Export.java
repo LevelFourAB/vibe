@@ -1,5 +1,7 @@
 package se.l4.vibe;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 /**
  * An object that has been exported by a {@link Vibe} instance.
  *
@@ -12,6 +14,7 @@ public interface Export<T extends Exportable>
 	 *
 	 * @return
 	 */
+	@NonNull
 	T get();
 
 	/**

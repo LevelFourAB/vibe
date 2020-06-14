@@ -1,5 +1,6 @@
 package se.l4.vibe.probes;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.Exportable;
 import se.l4.vibe.internal.MergedProbes;
 import se.l4.vibe.operations.Operation;
@@ -25,6 +26,7 @@ public interface SampledProbe<T>
 	 *
 	 * @return
 	 */
+	@NonNull
 	Sampler<T> create();
 
 	/**
@@ -37,7 +39,8 @@ public interface SampledProbe<T>
 	 * @return
 	 *   new probe
 	 */
-	default <O> SampledProbe<O> apply(Operation<T, O> operation)
+	@NonNull
+	default <O> SampledProbe<O> apply(@NonNull Operation<T, O> operation)
 	{
 		return () -> {
 			Sampler<T> probe = this.create();
@@ -56,7 +59,8 @@ public interface SampledProbe<T>
 	 * @param operation
 	 * @return
 	 */
-	default <O> SampledProbe<O> apply(OperationExecutor<T, O> executor)
+	@NonNull
+	default <O> SampledProbe<O> apply(@NonNull OperationExecutor<T, O> executor)
 	{
 		return () -> {
 			Sampler<T> probe = this.create();
@@ -75,7 +79,8 @@ public interface SampledProbe<T>
 	 * @return
 	 *   converted probe
 	 */
-	static <T> SampledProbe<T> over(Probe<T> probe)
+	@NonNull
+	static <T> SampledProbe<T> over(@NonNull Probe<T> probe)
 	{
 		return () -> probe::read;
 	}
@@ -96,6 +101,7 @@ public interface SampledProbe<T>
      *  .build();
 	 * </pre>
 	 */
+	@NonNull
 	static MergedBuilder merged()
 	{
 		return new MergedProbes.SampledProbeBuilder();
@@ -118,13 +124,15 @@ public interface SampledProbe<T>
 		 * @return
 		 *   builder
 		 */
-		MergedBuilder add(String name, SampledProbe<?> probe);
+		@NonNull
+		MergedBuilder add(@NonNull String name, @NonNull SampledProbe<?> probe);
 
 		/**
 		 * Create the probe.
 		 *
 		 * @return
 		 */
+		@NonNull
 		SampledProbe<MapSnapshot> build();
 	}
 }

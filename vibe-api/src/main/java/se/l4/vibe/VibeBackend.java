@@ -1,5 +1,6 @@
 package se.l4.vibe;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.checks.Check;
 import se.l4.vibe.events.Events;
 import se.l4.vibe.probes.Probe;
@@ -18,7 +19,8 @@ public interface VibeBackend
 	 * @param path
 	 * @param series
 	 */
-	default Handle export(String path, TimeSampler<?> series)
+	@NonNull
+	default Handle export(@NonNull String path, @NonNull TimeSampler<?> series)
 	{
 		return Handle.empty();
 	}
@@ -29,7 +31,8 @@ public interface VibeBackend
 	 * @param path
 	 * @param probe
 	 */
-	default Handle export(String path, Probe<?> probe)
+	@NonNull
+	default Handle export(@NonNull String path, @NonNull Probe<?> probe)
 	{
 		return Handle.empty();
 	}
@@ -40,7 +43,8 @@ public interface VibeBackend
 	 * @param path
 	 * @param probe
 	 */
-	default Handle export(String path, SampledProbe<?> probe)
+	@NonNull
+	default Handle export(@NonNull String path, @NonNull SampledProbe<?> probe)
 	{
 		return Handle.empty();
 	}
@@ -51,7 +55,8 @@ public interface VibeBackend
 	 * @param path
 	 * @param events
 	 */
-	default Handle export(String path, Events<?> events)
+	@NonNull
+	default Handle export(@NonNull String path, @NonNull Events<?> events)
 	{
 		return Handle.empty();
 	}
@@ -62,7 +67,8 @@ public interface VibeBackend
 	 * @param path
 	 * @param timer
 	 */
-	default Handle export(String path, Timer timer)
+	@NonNull
+	default Handle export(@NonNull String path, @NonNull Timer timer)
 	{
 		return Handle.empty();
 	}
@@ -73,7 +79,8 @@ public interface VibeBackend
 	 * @param path
 	 * @param check
 	 */
-	default Handle export(String path, Check check)
+	@NonNull
+	default Handle export(@NonNull String path, @NonNull Check check)
 	{
 		return Handle.empty();
 	}

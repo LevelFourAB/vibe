@@ -1,5 +1,7 @@
 package se.l4.vibe.operations;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 /**
  * Operations for scaling values.
  */
@@ -16,6 +18,7 @@ public class Scale
 	 * @param decimals
 	 * @return
 	 */
+	@NonNull
 	public static Operation<? extends Number, Double> scale(
 		int decimals
 	)
@@ -32,6 +35,7 @@ public class Scale
 	 * @param divisor
 	 * @return
 	 */
+	@NonNull
 	public static Operation<? extends Number, Double> divide(
 		double divisor
 	)
@@ -46,6 +50,7 @@ public class Scale
 	 * @param divisor
 	 * @return
 	 */
+	@NonNull
 	public static Operation<? extends Number, Long> divideAsLong(
 		double divisor
 	)
@@ -60,6 +65,7 @@ public class Scale
 	 * @param multiplier
 	 * @return
 	 */
+	@NonNull
 	public static Operation<? extends Number, Double> multiply(
 		double multiplier
 	)
@@ -74,6 +80,7 @@ public class Scale
 	 * @param multiplier
 	 * @return
 	 */
+	@NonNull
 	public static Operation<? extends Number, Long> multiplyAsLong(
 		double multiplier
 	)

@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.Exportable;
 import se.l4.vibe.Handle;
 import se.l4.vibe.Vibe;
@@ -80,6 +81,7 @@ public interface Check
 	 *   handle that can be released when the code that called this method
 	 *   no longer needs the check
 	 */
+	@NonNull
 	Handle start();
 
 	/**
@@ -91,7 +93,8 @@ public interface Check
 	 * @return
 	 *   handle that can be used to remove the listener
 	 */
-	Handle addListener(CheckListener listener);
+	@NonNull
+	Handle addListener(@NonNull CheckListener listener);
 
 	/**
 	 * Remove a listener from the check.
@@ -99,7 +102,7 @@ public interface Check
 	 * @param listener
 	 *   listener to remove
 	 */
-	void removeListener(CheckListener listener);
+	void removeListener(@NonNull CheckListener listener);
 
 	/**
 	 * Start building a new instance.
@@ -107,6 +110,7 @@ public interface Check
 	 * @return
 	 *   builder for instance
 	 */
+	@NonNull
 	static Builder builder()
 	{
 		return new CheckImpl.BuilderImpl();
@@ -124,7 +128,8 @@ public interface Check
 		 * @param sampler
 		 * @return
 		 */
-		<I> SamplerWhenBuilder<I> whenTimeSampler(TimeSampler<I> sampler);
+		@NonNull
+		<I> SamplerWhenBuilder<I> whenTimeSampler(@NonNull TimeSampler<I> sampler);
 
 		/**
 		 * Set the condition for the check via a {@link Probe} that will be
@@ -134,7 +139,8 @@ public interface Check
 		 * @param probe
 		 * @return
 		 */
-		<I> ProbeWhenBuilder<I> whenProbe(Probe<I> probe);
+		@NonNull
+		<I> ProbeWhenBuilder<I> whenProbe(@NonNull Probe<I> probe);
 
 		/**
 		 * Set the condition for the check via a {@link SampledProbe} that will be
@@ -144,7 +150,8 @@ public interface Check
 		 * @param probe
 		 * @return
 		 */
-		<I> ProbeWhenBuilder<I> whenProbe(SampledProbe<I> probe);
+		@NonNull
+		<I> ProbeWhenBuilder<I> whenProbe(@NonNull SampledProbe<I> probe);
 
 		/**
 		 * Set the condition for when to check based on a {@link BooleanSupplier}
@@ -153,7 +160,8 @@ public interface Check
 		 * @param supplier
 		 * @return
 		 */
-		BooleanSupplierWhenBuilder whenSupplier(BooleanSupplier supplier);
+		@NonNull
+		BooleanSupplierWhenBuilder whenSupplier(@NonNull BooleanSupplier supplier);
 
 		/**
 		 * Request that the check triggers repeating events when conditions
@@ -163,7 +171,8 @@ public interface Check
 		 * @param duration
 		 * @return
 		 */
-		Builder whenMetRepeatEvery(Duration duration);
+		@NonNull
+		Builder whenMetRepeatEvery(@NonNull Duration duration);
 
 		/**
 		 * Request that the check triggers repeating events when the the
@@ -173,13 +182,15 @@ public interface Check
 		 * @param duration
 		 * @return
 		 */
-		Builder whenUnmetRepeatEvery(Duration duration);
+		@NonNull
+		Builder whenUnmetRepeatEvery(@NonNull Duration duration);
 
 		/**
 		 * Build the trigger.
 		 *
 		 * @return
 		 */
+		@NonNull
 		Check build();
 	}
 
@@ -195,7 +206,8 @@ public interface Check
 		 * @param modifier
 		 * @return
 		 */
-		<O> SamplerWhenBuilder<O> apply(Operation<I, O> operation);
+		@NonNull
+		<O> SamplerWhenBuilder<O> apply(@NonNull Operation<I, O> operation);
 
 		/**
 		 * Apply an operation that can optionally resample based on the time
@@ -205,7 +217,8 @@ public interface Check
 		 * @param modifier
 		 * @return
 		 */
-		<O> SamplerWhenBuilder<O> applyResampling(Operation<Sample<I>, Sample<O>> operation);
+		@NonNull
+		<O> SamplerWhenBuilder<O> applyResampling(@NonNull Operation<Sample<I>, Sample<O>> operation);
 
 		/**
 		 * Set the predicate that checks if the value is meets the desired
@@ -214,7 +227,8 @@ public interface Check
 		 * @param condition
 		 * @return
 		 */
-		Builder is(Predicate<I> condition);
+		@NonNull
+		Builder is(@NonNull Predicate<I> condition);
 	}
 
 	/**
@@ -229,7 +243,8 @@ public interface Check
 		 * @param unit
 		 * @return
 		 */
-		ProbeWhenBuilder<I> withCheckInterval(Duration duration);
+		@NonNull
+		ProbeWhenBuilder<I> withCheckInterval(@NonNull Duration duration);
 
 		/**
 		 * Apply an operation to the value being sampled.
@@ -238,7 +253,8 @@ public interface Check
 		 * @param modifier
 		 * @return
 		 */
-		<O> ProbeWhenBuilder<O> apply(Operation<I, O> operation);
+		@NonNull
+		<O> ProbeWhenBuilder<O> apply(@NonNull Operation<I, O> operation);
 
 		/**
 		 * Apply an operation that can optionally resample based on the time
@@ -248,7 +264,8 @@ public interface Check
 		 * @param modifier
 		 * @return
 		 */
-		<O> ProbeWhenBuilder<O> applyResampling(Operation<Sample<I>, Sample<O>> operation);
+		@NonNull
+		<O> ProbeWhenBuilder<O> applyResampling(@NonNull Operation<Sample<I>, Sample<O>> operation);
 
 		/**
 		 * Set the predicate that checks if the value is meets the desired
@@ -257,7 +274,8 @@ public interface Check
 		 * @param condition
 		 * @return
 		 */
-		Builder is(Predicate<I> condition);
+		@NonNull
+		Builder is(@NonNull Predicate<I> condition);
 	}
 
 	/**
@@ -272,13 +290,15 @@ public interface Check
 		 * @param unit
 		 * @return
 		 */
-		BooleanSupplierWhenBuilder withCheckInterval(Duration duration);
+		@NonNull
+		BooleanSupplierWhenBuilder withCheckInterval(@NonNull Duration duration);
 
 		/**
 		 * Indicate that the supplier is done and continue building the check.
 		 *
 		 * @return
 		 */
+		@NonNull
 		Builder done();
 	}
 }

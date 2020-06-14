@@ -1,8 +1,8 @@
 package se.l4.vibe.sampling;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.vibe.Exportable;
 import se.l4.vibe.Handle;
 import se.l4.vibe.internal.sampling.SamplerWithOperation;
@@ -40,6 +40,7 @@ public interface TimeSampler<T>
 	 *
 	 * @return
 	 */
+	@NonNull
 	Handle start();
 
 	/**
@@ -47,7 +48,8 @@ public interface TimeSampler<T>
 	 *
 	 * @param listener
 	 */
-	Handle addListener(SampleListener<T> listener);
+	@NonNull
+	Handle addListener(@NonNull SampleListener<T> listener);
 
 	/**
 	 * Remove a listener from this series.
@@ -66,7 +68,8 @@ public interface TimeSampler<T>
 	 * @return
 	 *   new sampler
 	 */
-	default <O> TimeSampler<O> apply(Operation<T, O> operation)
+	@NonNull
+	default <O> TimeSampler<O> apply(@NonNull Operation<T, O> operation)
 	{
 		return applyResampling(TimeSampleOperation.over(operation));
 	}
@@ -81,7 +84,8 @@ public interface TimeSampler<T>
 	 * @return
 	 *   new sampler
 	 */
-	default <O> TimeSampler<O> applyResampling(Operation<Sample<T>, Sample<O>> operation)
+	@NonNull
+	default <O> TimeSampler<O> applyResampling(@NonNull Operation<Sample<T>, Sample<O>> operation)
 	{
 		return new SamplerWithOperation<>(this, operation);
 	}
@@ -91,7 +95,8 @@ public interface TimeSampler<T>
 	 *
 	 * @return
 	 */
-	static <T> Builder<T> forProbe(SampledProbe<T> probe)
+	@NonNull
+	static <T> Builder<T> forProbe(@NonNull SampledProbe<T> probe)
 	{
 		return new TimeSamplerImpl.BuilderImpl<>(probe);
 	}
@@ -101,7 +106,8 @@ public interface TimeSampler<T>
 	 *
 	 * @return
 	 */
-	static <T> Builder<T> forProbe(Probe<T> probe)
+	@NonNull
+	static <T> Builder<T> forProbe(@NonNull Probe<T> probe)
 	{
 		return new TimeSamplerImpl.BuilderImpl<>(SampledProbe.over(probe));
 	}
@@ -112,18 +118,10 @@ public interface TimeSampler<T>
 		 * Set how often the probe should be sampled.
 		 *
 		 * @param time
-		 * @param unit
 		 * @return
 		 */
-		Builder<T> withInterval(long time, TimeUnit unit);
-
-		/**
-		 * Set how often the probe should be sampled.
-		 *
-		 * @param time
-		 * @return
-		 */
-		Builder<T> withInterval(Duration time);
+		@NonNull
+		Builder<T> withInterval(@NonNull Duration time);
 
 		/**
 		 * Apply the given operation to the probe.
@@ -132,7 +130,8 @@ public interface TimeSampler<T>
 		 * @param operation
 		 * @return
 		 */
-		<O> Builder<O> apply(Operation<T, O> operation);
+		@NonNull
+		<O> Builder<O> apply(@NonNull Operation<T, O> operation);
 
 		/**
 		 * Apply the given operation to the probe.
@@ -141,7 +140,8 @@ public interface TimeSampler<T>
 		 * @param executor
 		 * @return
 		 */
-		<O> Builder<O> apply(OperationExecutor<T, O> executor);
+		@NonNull
+		<O> Builder<O> apply(@NonNull OperationExecutor<T, O> executor);
 
 		/**
 		 * Apply an operation that can modify the time of samples.
@@ -150,13 +150,15 @@ public interface TimeSampler<T>
 		 * @param operation
 		 * @return
 		 */
-		<O> Builder<O> applyResampling(Operation<Sample<T>, Sample<O>> operation);
+		@NonNull
+		<O> Builder<O> applyResampling(@NonNull Operation<Sample<T>, Sample<O>> operation);
 
 		/**
 		 * Build the sampler.
 		 *
 		 * @return
 		 */
+		@NonNull
 		TimeSampler<T> build();
 	}
 }
