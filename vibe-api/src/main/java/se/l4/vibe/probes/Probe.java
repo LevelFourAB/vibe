@@ -1,8 +1,11 @@
 package se.l4.vibe.probes;
 
+import java.util.function.Supplier;
+
 import se.l4.vibe.Exportable;
 import se.l4.vibe.internal.MergedProbes;
 import se.l4.vibe.operations.Operation;
+import se.l4.vibe.operations.OperationExecutor;
 import se.l4.vibe.sampling.SampledProbe;
 import se.l4.vibe.snapshots.MapSnapshot;
 
@@ -49,10 +52,37 @@ public interface Probe<T>
 	 */
 	default <O> Probe<O> apply(Operation<T, O> operation)
 	{
+		return apply(operation.create());
+	}
+
+	/**
+	 * Create a new probe that applies the given operation to the value of this
+	 * probe.
+	 *
+	 * @param <O>
+	 * @param executor
+	 *   operation to apply
+	 * @return
+	 *   new probe
+	 */
+	default <O> Probe<O> apply(OperationExecutor<T, O> executor)
+	{
 		return () -> {
 			T value = this.read();
-			return operation.apply(value);
+			return executor.apply(value);
 		};
+	}
+
+	/**
+	 * Turn a {@link Supplier} into a probe.
+	 *
+	 * @param <O>
+	 * @param supplier
+	 * @return
+	 */
+	static <O> Probe<O> over(Supplier<O> supplier)
+	{
+		return supplier::get;
 	}
 
 	/**

@@ -25,7 +25,7 @@ public class Sum
 	 */
 	public static <T extends Number> Operation<T, Long> sumAsLong()
 	{
-		return new Operation<T, Long>()
+		return () -> new OperationExecutor<T, Long>()
 		{
 			private long sum;
 
@@ -47,7 +47,7 @@ public class Sum
 	 */
 	public static <T extends Number> Operation<T, Double> sumAsDouble()
 	{
-		return new Operation<T, Double>()
+		return () -> new OperationExecutor<T, Double>()
 		{
 			private double sum;
 

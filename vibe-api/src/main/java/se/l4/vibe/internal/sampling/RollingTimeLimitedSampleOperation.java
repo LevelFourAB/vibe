@@ -3,7 +3,7 @@ package se.l4.vibe.internal.sampling;
 import java.util.LinkedList;
 
 import se.l4.vibe.operations.Operation;
-import se.l4.vibe.operations.TimeSampleOperation;
+import se.l4.vibe.operations.OperationExecutor;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampleListOperation;
 
@@ -15,7 +15,7 @@ import se.l4.vibe.sampling.SampleListOperation;
  * @param <Output>
  */
 public class RollingTimeLimitedSampleOperation<Input, Output>
-	implements TimeSampleOperation<Input, Output>
+	implements OperationExecutor<Sample<Input>, Sample<Output>>
 {
 	private final long maxAge;
 	private final SampleListOperation<Input, Output> operationToApply;

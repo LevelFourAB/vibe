@@ -2,6 +2,7 @@ package se.l4.vibe.internal.sampling;
 
 import se.l4.vibe.Handle;
 import se.l4.vibe.operations.Operation;
+import se.l4.vibe.operations.OperationExecutor;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.TimeSampler;
 
@@ -32,8 +33,9 @@ public class SamplerWithOperation<I, O>
 	@Override
 	protected void startSampling()
 	{
+		OperationExecutor<Sample<I>, Sample<O>> executor = modifier.create();
 		listenerHandle = input.addListener(sample -> {
-			Sample<O> nextSample = modifier.apply(sample);
+			Sample<O> nextSample = executor.apply(sample);
 			Sample<O> lastSample = lastSample();
 
 			if(lastSample == null || nextSample.getTime() != lastSample.getTime())

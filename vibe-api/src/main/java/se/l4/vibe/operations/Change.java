@@ -16,7 +16,7 @@ public class Change
 	 */
 	public static <T extends Number> Operation<T, Double> changeAsDouble()
 	{
-		return new Operation<T, Double>()
+		return () -> new OperationExecutor<T, Double>()
 		{
 			private double lastValue = 0;
 
@@ -38,7 +38,7 @@ public class Change
 	 */
 	public static <T extends Number> Operation<T, Long> changeAsLong()
 	{
-		return new Operation<T, Long>()
+		return () -> new OperationExecutor<T, Long>()
 		{
 			private long lastValue = 0;
 
@@ -61,7 +61,7 @@ public class Change
 	 */
 	public static <T extends Number> Operation<T, Double> changeAsFraction()
 	{
-		return new Operation<T, Double>()
+		return () -> new OperationExecutor<T, Double>()
 		{
 			private double lastValue = Double.NaN;
 

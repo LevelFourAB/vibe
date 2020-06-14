@@ -28,6 +28,6 @@ public class TimeLimited
 		SampleListOperation<I, O> operation
 	)
 	{
-		return new RollingTimeLimitedSampleOperation<>(duration.toMillis(), operation);
+		return () -> new RollingTimeLimitedSampleOperation<>(duration.toMillis(), operation);
 	}
 }

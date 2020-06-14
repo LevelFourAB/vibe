@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import se.l4.vibe.Handle;
 import se.l4.vibe.internal.Scheduling;
 import se.l4.vibe.operations.Operation;
+import se.l4.vibe.operations.OperationExecutor;
 import se.l4.vibe.operations.TimeSampleOperation;
 import se.l4.vibe.sampling.Sample;
 import se.l4.vibe.sampling.SampledProbe;
@@ -99,6 +100,12 @@ public class TimeSamplerImpl<T>
 		public <O> Builder<O> apply(Operation<T, O> operation)
 		{
 			return applyResampling(TimeSampleOperation.over(operation));
+		}
+
+		@Override
+		public <O> Builder<O> apply(OperationExecutor<T, O> executor)
+		{
+			return apply(() -> executor);
 		}
 
 		@Override

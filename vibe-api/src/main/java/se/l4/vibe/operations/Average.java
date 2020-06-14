@@ -23,7 +23,19 @@ public class Average
 	 */
 	public static <T extends Number> Operation<T, Double> average()
 	{
-		return new AveragingSampleOperation<>();
+		return () -> new OperationExecutor<T, Double>()
+		{
+			private double accumulated;
+			private long samples;
+
+			@Override
+			public Double apply(T sample)
+			{
+				accumulated += sample.doubleValue();
+				samples++;
+				return accumulated / samples;
+			}
+		};
 	}
 
 	/**
@@ -69,26 +81,6 @@ public class Average
 		public Double get()
 		{
 			return totalSum / totalEntries;
-		}
-	}
-
-	/**
-	 * Operation that averages all of the values ever sampled.
-	 *
-	 * @param <I>
-	 */
-	private static class AveragingSampleOperation<I extends Number>
-		implements Operation<I, Double>
-	{
-		private double accumulated;
-		private long samples;
-
-		@Override
-		public Double apply(I sample)
-		{
-			accumulated += sample.doubleValue();
-			samples++;
-			return accumulated / samples;
 		}
 	}
 }

@@ -25,7 +25,7 @@ public class Range
 	 */
 	public static <T extends Number> Operation<T, Double> minAsDouble()
 	{
-		return new Operation<T, Double>()
+		return () -> new OperationExecutor<T, Double>()
 		{
 			private double min = Double.MAX_VALUE;
 
@@ -47,7 +47,7 @@ public class Range
 	 */
 	public static <T extends Number> Operation<T, Long> minAsLong()
 	{
-		return new Operation<T, Long>()
+		return () -> new OperationExecutor<T, Long>()
 		{
 			private long min = Long.MAX_VALUE;
 
@@ -99,7 +99,7 @@ public class Range
 	 */
 	public static <T extends Number> Operation<T, Double> maxAsDouble()
 	{
-		return new Operation<T, Double>()
+		return () -> new OperationExecutor<T, Double>()
 		{
 			private double max = Double.MIN_VALUE;
 
@@ -121,7 +121,7 @@ public class Range
 	 */
 	public static <T extends Number> Operation<T, Long> maxAsLong()
 	{
-		return new Operation<T, Long>()
+		return () -> new OperationExecutor<T, Long>()
 		{
 			private long max = Long.MIN_VALUE;
 

@@ -7,6 +7,7 @@ import se.l4.vibe.Handle;
 import se.l4.vibe.internal.sampling.SamplerWithOperation;
 import se.l4.vibe.internal.sampling.TimeSamplerImpl;
 import se.l4.vibe.operations.Operation;
+import se.l4.vibe.operations.OperationExecutor;
 import se.l4.vibe.operations.TimeSampleOperation;
 import se.l4.vibe.probes.Probe;
 
@@ -130,6 +131,15 @@ public interface TimeSampler<T>
 		 * @return
 		 */
 		<O> Builder<O> apply(Operation<T, O> operation);
+
+		/**
+		 * Apply the given operation to the probe.
+		 *
+		 * @param <O>
+		 * @param executor
+		 * @return
+		 */
+		<O> Builder<O> apply(OperationExecutor<T, O> executor);
 
 		/**
 		 * Apply an operation that can modify the time of samples.

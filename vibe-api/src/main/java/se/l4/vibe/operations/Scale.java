@@ -21,7 +21,7 @@ public class Scale
 	)
 	{
 		double scale = decimals * 10;
-		return in -> (Math.round(in.doubleValue() * scale)) / (double) scale;
+		return () -> in -> (Math.round(in.doubleValue() * scale)) / (double) scale;
 	}
 
 
@@ -36,7 +36,7 @@ public class Scale
 		double divisor
 	)
 	{
-		return in -> in.doubleValue() / divisor;
+		return () -> in -> in.doubleValue() / divisor;
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class Scale
 		double divisor
 	)
 	{
-		return in -> (long) (in.longValue() / divisor);
+		return () -> in -> (long) (in.longValue() / divisor);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class Scale
 		double multiplier
 	)
 	{
-		return in -> in.doubleValue() * multiplier;
+		return () -> in -> in.doubleValue() * multiplier;
 	}
 
 	/**
@@ -78,6 +78,6 @@ public class Scale
 		double multiplier
 	)
 	{
-		return in -> (long) (in.doubleValue() * multiplier);
+		return () -> in -> (long) (in.doubleValue() * multiplier);
 	}
 }

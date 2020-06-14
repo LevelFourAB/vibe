@@ -3,6 +3,7 @@ package se.l4.vibe.sampling;
 import se.l4.vibe.Exportable;
 import se.l4.vibe.internal.MergedProbes;
 import se.l4.vibe.operations.Operation;
+import se.l4.vibe.operations.OperationExecutor;
 import se.l4.vibe.probes.Probe;
 import se.l4.vibe.snapshots.MapSnapshot;
 
@@ -40,9 +41,28 @@ public interface SampledProbe<T>
 	{
 		return () -> {
 			Sampler<T> probe = this.create();
+			OperationExecutor<T, O> executor = operation.create();
 			return () -> {
 				T value = probe.sample();
-				return operation.apply(value);
+				return executor.apply(value);
+			};
+		};
+	}
+
+	/**
+	 * Apply the given operation to the probe.
+	 *
+	 * @param <O>
+	 * @param operation
+	 * @return
+	 */
+	default <O> SampledProbe<O> apply(OperationExecutor<T, O> executor)
+	{
+		return () -> {
+			Sampler<T> probe = this.create();
+			return () -> {
+				T value = probe.sample();
+				return executor.apply(value);
 			};
 		};
 	}

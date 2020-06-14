@@ -23,6 +23,12 @@ public interface TimeSampleOperation<Input, Output>
 	 */
 	static <Input, Output> TimeSampleOperation<Input, Output> over(Operation<Input, Output> op)
 	{
-		return sample -> Sample.create(sample.getTime(), op.apply(sample.getValue()));
+		return () -> {
+			OperationExecutor<Input, Output> executor = op.create();
+			return sample -> Sample.create(
+				sample.getTime(),
+				executor.apply(sample.getValue())
+			);
+		};
 	}
 }
