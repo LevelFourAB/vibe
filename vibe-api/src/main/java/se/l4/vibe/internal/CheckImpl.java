@@ -271,7 +271,7 @@ public class CheckImpl<Input>
 		}
 
 		@Override
-		public ProbeWhenBuilder<I> setCheckInterval(Duration duration)
+		public ProbeWhenBuilder<I> withCheckInterval(Duration duration)
 		{
 			Objects.requireNonNull(duration, "duration can not be null");
 			this.builder.withInterval(duration);
@@ -326,7 +326,7 @@ public class CheckImpl<Input>
 		}
 
 		@Override
-		public BooleanSupplierWhenBuilder setCheckInterval(Duration duration)
+		public BooleanSupplierWhenBuilder withCheckInterval(Duration duration)
 		{
 			Objects.requireNonNull(duration, "duration must not be null");
 

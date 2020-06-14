@@ -229,7 +229,7 @@ public interface Check
 		 * @param unit
 		 * @return
 		 */
-		ProbeWhenBuilder<I> setCheckInterval(Duration duration);
+		ProbeWhenBuilder<I> withCheckInterval(Duration duration);
 
 		/**
 		 * Apply an operation to the value being sampled.
@@ -272,7 +272,7 @@ public interface Check
 		 * @param unit
 		 * @return
 		 */
-		BooleanSupplierWhenBuilder setCheckInterval(Duration duration);
+		BooleanSupplierWhenBuilder withCheckInterval(Duration duration);
 
 		/**
 		 * Indicate that the supplier is done and continue building the check.
